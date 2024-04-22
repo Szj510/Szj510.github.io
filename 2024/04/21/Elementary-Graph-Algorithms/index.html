@@ -1,0 +1,432 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Elementary Graph Algorithms | ius の blog</title><meta name="author" content="Szj"><meta name="copyright" content="Szj"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Elementary Graph AlgorithmsRepresentations of graphs$$G &#x3D; (V, E)$$$G \to Graph, V \to Vertex, E \to Edge$, 式子说明图是由顶点和边这两个元素组成，那么只要把顶点和边表示出来，图就表示出来了。其中有两种方法，一种是邻接表表示，一种是用矩阵表示，根据不同的情景需要会选取不同的表示方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elementary Graph Algorithms">
+<meta property="og:url" content="http://www.suzije.me/2024/04/21/Elementary-Graph-Algorithms/index.html">
+<meta property="og:site_name" content="ius の blog">
+<meta property="og:description" content="Elementary Graph AlgorithmsRepresentations of graphs$$G &#x3D; (V, E)$$$G \to Graph, V \to Vertex, E \to Edge$, 式子说明图是由顶点和边这两个元素组成，那么只要把顶点和边表示出来，图就表示出来了。其中有两种方法，一种是邻接表表示，一种是用矩阵表示，根据不同的情景需要会选取不同的表示方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.suzije.me/img/vinyltocat.png">
+<meta property="article:published_time" content="2024-04-21T08:27:36.000Z">
+<meta property="article:modified_time" content="2024-04-22T10:01:21.690Z">
+<meta property="article:author" content="Szj">
+<meta property="article:tag" content="Graph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.suzije.me/img/vinyltocat.png"><link rel="shortcut icon" href="/img/vinyltocat.png"><link rel="canonical" href="http://www.suzije.me/2024/04/21/Elementary-Graph-Algorithms/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Szj","link":"链接: ","source":"来源: ius の blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Elementary Graph Algorithms',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2024-04-22 18:01:21'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/vinyltocat.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/banner.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="ius の blog"><span class="site-name">ius の blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Elementary Graph Algorithms</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-21T08:27:36.000Z" title="发表于 2024-04-21 16:27:36">2024-04-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-22T10:01:21.690Z" title="更新于 2024-04-22 18:01:21">2024-04-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Graph/">Graph</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Elementary Graph Algorithms"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Elementary-Graph-Algorithms"><a href="#Elementary-Graph-Algorithms" class="headerlink" title="Elementary Graph Algorithms"></a>Elementary Graph Algorithms</h1><h2 id="Representations-of-graphs"><a href="#Representations-of-graphs" class="headerlink" title="Representations of graphs"></a>Representations of graphs</h2><p>$$<br>G &#x3D; (V, E)<br>$$<br>$G \to Graph, V \to Vertex, E \to Edge$, 式子说明图是由顶点和边这两个元素组成，那么只要把顶点和边表示出来，图就表示出来了。其中有两种方法，一种是邻接表表示，一种是用矩阵表示，根据不同的情景需要会选取不同的表示方法。</p>
+<h3 id="adjacency-list"><a href="#adjacency-list" class="headerlink" title="adjacency-list"></a>adjacency-list</h3><p><img src="https://www.hello-algo.com/chapter_graph/graph.assets/adjacency_list.png" alt="list"><br>&#x2F;&#x2F;邻接表可用链表，也可用哈希表</p>
+<blockquote>
+<p>If $G$ is a directed graph, the sum of the lengths of all the adjacency lists is |E|.<br>If $G$ is an undirected graph, the sum of the lengths of all the adjacency lists is 2|E|.</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//下面是无向图的示例，有向图需要修改部分method代码</span></span><br><span class="line"><span class="comment">//为了方便添加与删除顶点，以及简化代码，这里使用列表（动态数组）来代替链表。</span></span><br><span class="line"><span class="comment">//使用哈希表来存储邻接表，key为顶点实例，value为该顶点的邻接顶点列表（链表）。</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="built_in">Vertex</span>(<span class="type">int</span> value) : <span class="built_in">val</span>(value) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GraphAdjList</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    std::unordered_map&lt;Vertex *, std::vector&lt;Vertex *&gt;&gt; adjList;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">remove</span><span class="params">(std::vector&lt;Vertex *&gt; &amp;vec, Vertex *vet)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; vec.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (vec[i] == vet) &#123;</span><br><span class="line">                vec.<span class="built_in">erase</span>(vec.<span class="built_in">begin</span>() + i);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">GraphAdjList</span>(<span class="type">const</span> std::vector&lt;std::vector&lt;Vertex *&gt;&gt; &amp;edges) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> std::vector&lt;Vertex *&gt; &amp;edge : edges) &#123;</span><br><span class="line">            <span class="built_in">addVertex</span>(edge[<span class="number">0</span>]);</span><br><span class="line">            <span class="built_in">addVertex</span>(edge[<span class="number">1</span>]);</span><br><span class="line">            <span class="built_in">addEdge</span>(edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> adjList.<span class="built_in">size</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addEdge</span><span class="params">(Vertex *vet1, Vertex *vet2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!adjList.<span class="built_in">count</span>(vet1) || !adjList.<span class="built_in">count</span>(vet2) || vet1 == vet2)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">invalid_argument</span>(<span class="string">&quot;不存在顶点&quot;</span>);</span><br><span class="line">        adjList[vet1].<span class="built_in">push_back</span>(vet2);</span><br><span class="line">        adjList[vet2].<span class="built_in">push_back</span>(vet1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeEdge</span><span class="params">(Vertex *vet1, Vertex *vet2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!adjList.<span class="built_in">count</span>(vet1) || !adjList.<span class="built_in">count</span>(vet2) || vet1 == vet2)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">invalid_argument</span>(<span class="string">&quot;不存在顶点&quot;</span>);</span><br><span class="line">        <span class="built_in">remove</span>(adjList[vet1], vet2);</span><br><span class="line">        <span class="built_in">remove</span>(adjList[vet2], vet1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addVertex</span><span class="params">(Vertex *vet)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (adjList.<span class="built_in">count</span>(vet))</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        adjList[vet] = std::<span class="built_in">vector</span>&lt;Vertex *&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeVertex</span><span class="params">(Vertex *vet)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!adjList.<span class="built_in">count</span>(vet))</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">invalid_argument</span>(<span class="string">&quot;不存在顶点&quot;</span>);</span><br><span class="line">        adjList.<span class="built_in">erase</span>(vet);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;adj : adjList) &#123;</span><br><span class="line">            <span class="built_in">remove</span>(adj.second, vet);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;邻接表 =&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;adj : adjList) &#123;</span><br><span class="line">            <span class="type">const</span> <span class="keyword">auto</span> &amp;key = adj.first;</span><br><span class="line">            <span class="type">const</span> <span class="keyword">auto</span> &amp;vec = adj.second;</span><br><span class="line">            std::cout &lt;&lt; key-&gt;val &lt;&lt; <span class="string">&quot;: &quot;</span>;</span><br><span class="line">            <span class="built_in">printVector</span>(<span class="built_in">vetsToVals</span>(vec));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">vetsToVals</span><span class="params">(<span class="type">const</span> std::vector&lt;Vertex *&gt; &amp;vec)</span> </span>&#123;</span><br><span class="line">        std::vector&lt;<span class="type">int</span>&gt; vals;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> Vertex *vet : vec) &#123;</span><br><span class="line">            vals.<span class="built_in">push_back</span>(vet-&gt;val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> vals;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">printVector</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;vec)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> val : vec) &#123;</span><br><span class="line">            std::cout &lt;&lt; val &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        std::cout &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="加权图"><a href="#加权图" class="headerlink" title="加权图"></a>加权图</h4><blockquote>
+<p>加权图即边是有权值的，可添加Edge类来实现</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Edge</span> &#123; </span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">	Vertex *destination; </span><br><span class="line">	<span class="type">int</span> weight; </span><br><span class="line">	<span class="built_in">Edge</span>(Vertex *dest, <span class="type">int</span> w) : <span class="built_in">destination</span>(dest), <span class="built_in">weight</span>(w) &#123;&#125; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> &#123; </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="type">int</span> val; <span class="comment">// 顶点的值 </span></span><br><span class="line">	std::vector&lt;Edge*&gt; adjList; <span class="comment">// 邻接列表 </span></span><br><span class="line">	<span class="built_in">Vertex</span>(<span class="type">int</span> v) : <span class="built_in">val</span>(v) &#123;&#125; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>The adjacency-list representation is quite robust in that you can modify it to support many other graph variants.<br>&#x2F;&#x2F;上方的代码顶点都是唯一的实例，还可以往其添加属性，这就体现了邻接表的灵活性，加上它的动态性以及内存效率等的优势，共同构建了其健壮性，使其能够支持很多其它的图变体。</p>
+</blockquote>
+<blockquote>
+<p>邻接表查询边的存在性较慢, 邻接矩阵表示较快</p>
+</blockquote>
+<h3 id="adjacency-matrix"><a href="#adjacency-matrix" class="headerlink" title="adjacency-matrix"></a>adjacency-matrix</h3><p><img src="https://www.hello-algo.com/chapter_graph/graph.assets/adjacency_matrix.png" alt="matrix"></p>
+<blockquote>
+<p>in an undirected graph, the adjacency matrix A of an undirected graph is its own transpose: $A &#x3D; A^T$<br>&#x2F;&#x2F;正是因为有这一性质，在一些应用中，只选择存储对角线以上的元素来提高内存效率。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GraphAdjMat</span> &#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vertices;</span><br><span class="line">    std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt; adjMat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">GraphAdjMat</span>(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;vertices, <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt; &amp;edges) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> val : vertices) &#123;</span><br><span class="line">            <span class="built_in">addVertex</span>(val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;edge : edges) &#123;</span><br><span class="line">            <span class="built_in">addEdge</span>(edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">size</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> vertices.<span class="built_in">size</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addVertex</span><span class="params">(<span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = <span class="built_in">size</span>();</span><br><span class="line">        vertices.<span class="built_in">push_back</span>(val);</span><br><span class="line">        adjMat.<span class="built_in">emplace_back</span>(std::<span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span> (std::vector&lt;<span class="type">int</span>&gt; &amp;row : adjMat) &#123;</span><br><span class="line">            row.<span class="built_in">push_back</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeVertex</span><span class="params">(<span class="type">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (index &gt;= <span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">out_of_range</span>(<span class="string">&quot;顶点不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        vertices.<span class="built_in">erase</span>(vertices.<span class="built_in">begin</span>() + index);</span><br><span class="line">        adjMat.<span class="built_in">erase</span>(adjMat.<span class="built_in">begin</span>() + index);</span><br><span class="line">        <span class="keyword">for</span> (std::vector&lt;<span class="type">int</span>&gt; &amp;row : adjMat) &#123;</span><br><span class="line">            row.<span class="built_in">erase</span>(row.<span class="built_in">begin</span>() + index);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addEdge</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">0</span> || j &lt; <span class="number">0</span> || i &gt;= <span class="built_in">size</span>() || j &gt;= <span class="built_in">size</span>() || i == j) &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">out_of_range</span>(<span class="string">&quot;顶点不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        adjMat[i][j] = <span class="number">1</span>;</span><br><span class="line">        adjMat[j][i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeEdge</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">0</span> || j &lt; <span class="number">0</span> || i &gt;= <span class="built_in">size</span>() || j &gt;= <span class="built_in">size</span>() || i == j) &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">out_of_range</span>(<span class="string">&quot;顶点不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        adjMat[i][j] = <span class="number">0</span>;</span><br><span class="line">        adjMat[j][i] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;顶点列表 = &quot;</span>;</span><br><span class="line">        <span class="built_in">printVector</span>(vertices);</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;邻接矩阵 =&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="built_in">printVectorMatrix</span>(adjMat);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">printVector</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;vec)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> val : vec) &#123;</span><br><span class="line">            std::cout &lt;&lt; val &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        std::cout &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">printVectorMatrix</span><span class="params">(<span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt; &amp;matrix)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;row : matrix) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> val : row) &#123;</span><br><span class="line">                std::cout &lt;&lt; val &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            std::cout &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>邻接矩阵也可表示有权图，但空间浪费明显，无论稀疏还是密集：<br>在稀疏图中，尽管边的数量很少，但邻接矩阵仍然需要为每个可能的顶点对（即矩阵中的每个元素）分配空间。大多数这些顶点对之间实际上是没有边的，因此这些空间是浪费的。<br>   在密集图中，虽然边的数量很多，但邻接矩阵仍然需要为每个顶点对分配空间，即使某些顶点对之间可能有多个边。例如，如果图中有两个顶点之间有5条边，邻接矩阵中的对应元素就需要存储这5条边的权重信息，而实际上只需要存储一个权重信息就足够了。</p>
+</blockquote>
+<blockquote>
+<p>图规模较小时倾向于使用邻接矩阵</p>
+</blockquote>
+<h3 id="效率对比"><a href="#效率对比" class="headerlink" title="效率对比"></a>效率对比</h3><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">adjacency-matrix</th>
+<th align="center">adjacency-list(ll)</th>
+<th align="center">adjacency-list(hash)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">边的存在性</td>
+<td align="center">$O(1)$</td>
+<td align="center">$O(E)$</td>
+<td align="center">$O(1)$</td>
+</tr>
+<tr>
+<td align="center">添加边</td>
+<td align="center">$O(1)$</td>
+<td align="center">$O(1)$</td>
+<td align="center">$O(1)$</td>
+</tr>
+<tr>
+<td align="center">删除边</td>
+<td align="center">$O(1)$</td>
+<td align="center">$O(E)$</td>
+<td align="center">$O(1)$</td>
+</tr>
+<tr>
+<td align="center">添加顶点</td>
+<td align="center">$O(V)$</td>
+<td align="center">$O(1)$</td>
+<td align="center">$O(1)$</td>
+</tr>
+<tr>
+<td align="center">删除顶点</td>
+<td align="center">$O(V^2)$</td>
+<td align="center">$O(V+E)$</td>
+<td align="center">$O(V)$</td>
+</tr>
+<tr>
+<td align="center">内存空间占用</td>
+<td align="center">$O(V^2)$</td>
+<td align="center">$O(V+E)$</td>
+<td align="center">$O(V+E)$</td>
+</tr>
+</tbody></table>
+<h3 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h3><div class="callout question">
+  Given an adjacency-list representation of a directed graph, how long does it take
+  to compute the out-degree of every vertex? How long does it take to compute the
+  in-degrees?
+</div>
+   
+<blockquote>
+<p>题目是求基于邻接表表示的有向图，计算每个顶点的出度，入度的时间复杂度分别是多少。<br>   顶点的出度很容易，每个顶点的邻接表存储的就是其指向的顶点，故直接计算每个顶点的邻接表<br>   长度即为其出度，可知要遍历整个图，因此时间复杂度为O(V+E)。<br>顶点的入度的话，邻接表里存储的每个顶点都是被指向的顶点，也就是说在邻接表里的顶点每出现一次就表明其被指向一次，即入度+1，因此时间复杂度也为O(V+E)。</p>
+</blockquote>
+<div class="callout question">
+  The transpose of a directed graph $G = (V, E)$ is the graph $G^T = (V, E^T)$, where $E^T = \{(v, u) \in V \times V : (u, v) \in E\}$. That is, $G^T$ is $G$ with all its edges reversed.
+   Describe efficient algorithms for computing $G^T$ from $G$, for both the adjacency-
+   list and adjacency-matrix representations of $G$. Analyze the running times of your
+   algorithms.
+</div>
+
+<blockquote>
+<p>这题说的是有向图的转置，即把边的方向都反过来，描述计算$G^T$的算法。<br>伪代码如下</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">transposeAdjList</span><span class="params">(G)</span>:  //时间复杂度：O(V+E)</span></span><br><span class="line"><span class="function">    GT =</span> empty adjacency list <span class="keyword">for</span> each vertex in G</span><br><span class="line">    <span class="keyword">for</span> each vertex u in G:</span><br><span class="line">        <span class="keyword">for</span> each vertex v in adjacency list of u:</span><br><span class="line">            <span class="function">add u to adjacency list of v in GT</span></span><br><span class="line"><span class="function">    <span class="keyword">return</span> GT</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">function <span class="title">transposeAdjMatrix</span><span class="params">(G)</span>:  //时间复杂度：O(V^<span class="number">2</span>)</span></span><br><span class="line"><span class="function">    GT =</span> empty matrix of same size as G</span><br><span class="line">    <span class="keyword">for</span> each vertex u in G:</span><br><span class="line">        <span class="keyword">for</span> each vertex v in G:</span><br><span class="line">            <span class="keyword">if</span> G[u][v] == <span class="number">1</span>:</span><br><span class="line">                GT[v][u] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> GT</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>equivalent undirected graph等效无向图</p>
+</blockquote>
+<blockquote>
+<p>大概就是保留原有向图所有顶点，边的方向被忽略，不包含任何自环</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">convertToUndirectedGraph</span><span class="params">(G)</span>:</span></span><br><span class="line"><span class="function">    G0 =</span> <span class="keyword">new</span> adjacency list <span class="keyword">for</span> each vertex in G</span><br><span class="line">    <span class="keyword">for</span> each vertex u in G:</span><br><span class="line">        <span class="keyword">for</span> each vertex v in adjacency list of u:</span><br><span class="line">            <span class="keyword">if</span> u ≠ v <span class="built_in">and</span> (u, v) <span class="keyword">not</span> in G0 <span class="built_in">and</span> (v, u) <span class="keyword">not</span> in G0:<span class="comment">//忽略方向</span></span><br><span class="line">                <span class="built_in">add</span> (u, v) to G0</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> u = v:<span class="comment">//排除自环</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">return</span> G0</span><br></pre></td></tr></table></figure>
+
+<div class="callout question">
+  The square of a directed graph $G = (V, E)$ is the graph $G^2 = (V, E)$ such that
+   $(u, v) \in E^2$ if and only if $G$ contains a path with at most two edges between
+   u and v. Describe efficient algorithms for computing $G^2$ from $G$ for both the
+   adjacency-list and adjacency-matrix representations of $G$. Analyze the running
+   times of your algorithms.
+</div>
+
+<p>&#x2F;&#x2F;这题提出了平方有向图的定义，就是边(u, v)在$G^2$中当且仅当在$G$中包含了$u \to v$ 不超过两条边的路径，换句话说，$G^2$ 包含了 $G$ 中所有顶点对之间长度不超过 2 的路径，要求描述计算$G^2$的算法。(原图中有自环的话平方图也会有，如果想排除自环就添加控制条件约束即可)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(|V|^2+|V|E).</span></span><br><span class="line"><span class="function">Algorithm <span class="title">computeSquareAdjList</span><span class="params">(G)</span>:</span></span><br><span class="line"><span class="function">    // Initialize the adjacency list for the square graph G^<span class="number">2</span></span></span><br><span class="line"><span class="function">    G2 =</span> empty adjacency list <span class="keyword">for</span> each node in V</span><br><span class="line">    <span class="comment">// Iterate over each node u in the graph</span></span><br><span class="line">    <span class="keyword">for</span> each u in V:</span><br><span class="line">        <span class="comment">// Set of nodes reachable from u within one step</span></span><br><span class="line">        direct_neighbors = <span class="built_in">set</span>(G[u])</span><br><span class="line">        <span class="comment">// Set of nodes reachable from u within two steps</span></span><br><span class="line">        two_step_neighbors = <span class="built_in">set</span>()</span><br><span class="line">        <span class="comment">// Iterate over each direct neighbor v of u</span></span><br><span class="line">        <span class="keyword">for</span> each v in direct_neighbors:</span><br><span class="line">            <span class="comment">// Add direct neighbors to G^2</span></span><br><span class="line">            <span class="keyword">if</span> v <span class="keyword">not</span> in G2[u]:</span><br><span class="line">                G2[u].<span class="built_in">append</span>(v)</span><br><span class="line">            <span class="comment">// Iterate over each neighbor w of v</span></span><br><span class="line">            <span class="keyword">for</span> each w in G[v]:</span><br><span class="line">                <span class="comment">// Add w as a two-step neighbor of u if not already added</span></span><br><span class="line">                <span class="keyword">if</span> w != u <span class="keyword">and</span> w <span class="keyword">not</span> in direct_neighbors <span class="keyword">and</span> w <span class="keyword">not</span> in two_step_neighbors:</span><br><span class="line">                    two_step_neighbors.<span class="built_in">add</span>(w)</span><br><span class="line">                    G2[u].<span class="built_in">append</span>(w)</span><br><span class="line">    <span class="keyword">return</span> G2</span><br><span class="line"><span class="comment">//时间复杂度：(|V|^3)</span></span><br><span class="line">Algorithm <span class="built_in">computeSquareAdjMatrix</span>(G):</span><br><span class="line">    <span class="comment">// Initialize the adjacency matrix for the square graph G^2</span></span><br><span class="line">    n = number of nodes in V</span><br><span class="line">    A2 = <span class="keyword">new</span> matrix of size n x n filled with <span class="number">0</span>s</span><br><span class="line">    <span class="comment">// Calculate the square of the adjacency matrix</span></span><br><span class="line">    <span class="keyword">for</span> i = <span class="number">0</span> to n - <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">for</span> j = <span class="number">0</span> to n - <span class="number">1</span>:</span><br><span class="line">            <span class="comment">// A2[i][j] is 1 if there is a path of length at most 2 from i to j</span></span><br><span class="line">            <span class="keyword">if</span> A[i][j] == <span class="number">1</span>:</span><br><span class="line">                A2[i][j] = <span class="number">1</span>  <span class="comment">// Direct edge (i, j)</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">for</span> k = <span class="number">0</span> to n - <span class="number">1</span>:</span><br><span class="line">                    <span class="keyword">if</span> A[i][k] == <span class="number">1</span> <span class="keyword">and</span> A[k][j] == <span class="number">1</span>:</span><br><span class="line">                        A2[i][j] = <span class="number">1</span>  <span class="comment">// Path of length 2 from i to j</span></span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> A2</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>此题拓展：$G^k$ 包含了 $G$ 中所有顶点对之间长度不超过 $k$ 的路径</p>
+</blockquote>
+<div class="callout question">
+  Most graph algorithms that take an adjacency-matrix representation as input require $\Omega (V^2)$ time, but there are some exceptions. Show how to determine whether a directed graph $G$ contains a universal sink--a vertex with in-degree |V| - 1 and out-degree 0--in $O(V)$ time, given an adjacency matrix for $G$.
+</div>
+
+<p>&#x2F;&#x2F;这题说的是很多基于邻接矩阵的图算法都需要$\Omega (V^2)$的时间复杂度，但也有一些例外，比如查看一个有向图是否含有全局汇点（入度为|V| - 1，出度为0）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">findUniversalSink</span><span class="params">(G)</span>:</span></span><br><span class="line"><span class="function">    candidate =</span> <span class="number">1</span>  <span class="comment">//这里索引从1开始，candidate为候选全局汇点</span></span><br><span class="line">    <span class="keyword">for</span> v from <span class="number">2</span> to |V|:</span><br><span class="line">        <span class="keyword">if</span> G[candidate][v] == <span class="number">1</span>: <span class="comment">//找到第一个出度为0的点作为最终的候选点</span></span><br><span class="line">            candidate = v</span><br><span class="line"></span><br><span class="line">    inDegree = <span class="number">0</span></span><br><span class="line">    outDegree = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> u from <span class="number">1</span> to |V|:</span><br><span class="line">        inDegree += G[u][candidate]</span><br><span class="line">        outDegree += G[candidate][u]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> inDegree == |V| - <span class="number">1</span> <span class="keyword">and</span> outDegree == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> candidate</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No universal sink found&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里确定候选汇点的形式很讲究，首先主对角线上元素都为0，因此无参考价值，故只在其上方查找。只要遇到一个1，就换到下一行（即下一个顶点），因为全局汇点没有出边，只要是0，就在该行一直往后验证。到这里可能就有疑问（其实就是我的疑问罢了）：假设候选汇点一直都是1，那么就只检查了第一行，其它行都没检查呢，为啥只要这候选汇点不是真的全局汇点，整个图就没有全局汇点。其实每检查一条边就相当于检查了一个顶点，比如，如果$G[1][2] &#x3D;&#x3D; 0$的话，就说明第二个顶点没有接受第一个顶点的入边，这同样是不符合全局汇点定义的，因为全局汇点是除了它自身，其它顶点都会指向它，因此该次检查排除了第二个顶点。如果$G[1][3]$也&#x3D;&#x3D; 0的话，那就排除了第三个顶点，以此类推。所以无论$G[candidate][v]$等于0还是1，都是有价值的，这使得定位候选汇点是固定地检查|V| - 1遍即可。</p>
+</blockquote>
+<div class="callout question">
+ The incidence matrix of a directed graph $G = (V, E)$ with no self-loops is a $|V| \times |E|$ matrix $B = (b_{ij})$ such that
+ $$
+ b_{ij} = 
+ \begin{cases} 
+ -1, & \text{ if edge j leaves vertex i}  \\ 
+ 1, & \text{ if edge j enters vertex i} \\
+ 0, & \text{ otherwise}  
+ \end{cases} 
+ $$
+   Describe what the entries of the matrix product $B B^T$ represent, where $B^T$ is the
+   transpose of B.
+</div>
+
+<blockquote>
+<p>这题说的是有向无环图的关联矩阵，直接建立顶点与每条边的对应关系，出边就是-1，入边就是1，没有关系就是0。题目要求描述$B B^T$矩阵的元素都代表什么。</p>
+</blockquote>
+<ol>
+<li>对角线元素$c_{ii}$​表示顶点 i 的度数，即与该顶点相关联的边的数量，包括入度和出度的边。<blockquote>
+<ol start="2">
+<li>非对角线元素$c_{ij}$​（其中 i≠j）表示顶点 i 和 j 之间共享的边的数量，经计算我们可以发现$B B^T$矩阵的元素要么是0，要么是负数，没有正数。所以如果 $c_{ij}​&#x3D;0$，则表示顶点 i 和 j 之间没有共享的边，而非零值则表示它们之间存在共享的边，如果是有多重边(multiple edges)的话，这个非零值就不只是-1了。这里没直接说多重图(multigraphs)，是因为多重图是包括了自环和多重边的，但题目说的是有向无环图。</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<h2 id="Breadth-first-search"><a href="#Breadth-first-search" class="headerlink" title="Breadth-first search"></a>Breadth-first search</h2><blockquote>
+<p>&#x2F;&#x2F;时间复杂度：O(V + E)<br>$BFS(G, s)$<br>    for each vertex u $\in G.V - {s}$      &#x2F;&#x2F;初始化<br>        u.color &#x3D; WHITE<br>        $u.d &#x3D; \infty$                              &#x2F;&#x2F;d是距离<br>        u.$\pi$ &#x3D; NIL                            &#x2F;&#x2F;$\pi$是前驱<br>    s.color &#x3D; $GRAY$<br>    s.d &#x3D; 0<br>    s.$\pi$ &#x3D; NIL<br>    $Q &#x3D; \not 0$                                        &#x2F;&#x2F;初始化队列<br>    ENQUEUE(Q, s)<br>    while Q $\not &#x3D; \not 0$<br>        u &#x3D; DEQUEUE(Q)<br>        for each vertex v in $G$.Adj[u]<br>            if v.color &#x3D; WHITE<br>                v.color &#x3D; $GRAY$<br>                v.d &#x3D; u.d + 1<br>                v.$\pi$ &#x3D; u<br>                ENQUEUE(Q, v)      &#x2F;&#x2F;可以发现队列里的顶点都是灰色的<br>        u.color &#x3D; BLACK</p>
+</blockquote>
+<p>&#x2F;&#x2F;图的广搜使用了颜色标记方法，白色表示顶点未被发现，灰色表示该顶点已被发现，但其邻接顶点可能还有未被发现的顶点，黑色则表示其邻接顶点全被发现。<br><img src="https://telegraph-image-eja.pages.dev/file/68170db1c351c1c1154fb.png" alt="bfs"><br>&#x2F;&#x2F;该图展示了广搜全过程，广搜的结果可能不一样，这取决于for each vertex v in $G$.Adj[u]的遍历顺序。</p>
+<h3 id="Shortest-paths"><a href="#Shortest-paths" class="headerlink" title="Shortest paths"></a>Shortest paths</h3><blockquote>
+<p>定义$\delta(s, v)$为从s到v的所有路径中的最少的边数</p>
+</blockquote>
+<h4 id="Lemma"><a href="#Lemma" class="headerlink" title="Lemma"></a>Lemma</h4><ul>
+<li><p>(1) Let $G &#x3D; (V, E)$ be a directed or undirected graph, and let $s \in V$ be an arbitrary<br>vertex. Then, for any edge $(u, v) \in E$,<br>$$<br>\delta(s, v) \leq \delta(s, u) + 1<br>$$<br><img src="https://telegraph-image-eja.pages.dev/file/40f16ccf9c4b758354fd3.png" alt="image"></p>
+<blockquote>
+<p>对于该引理有个方便记忆的描述，即三角形两边之和大于第三边，见A图，公式中的1就是(u, v)这条确定的边。</p>
+<p>我一开始的想法是，(u, v)这条边有A, B, C三种情况(不严谨)，A表示顶点u, v是同级的，对应$\delta(s, v) &#x3D; \delta(s, u)$的情况；B表示顶点u相对于s的位置来说在v前面，对应$\delta(s, v) &#x3D; \delta(s, u) + 1$的情况；C表示顶点v相对于s的位置来说在u前面，对应$\delta(s, v) &lt; \delta(s, u)$的情况，特别地，C中的蓝色曲线代表了s到u的其他路径，所以说A是C的特殊情况，因此也可以分成两种情况，上面都是建立在u是从s可以到达的情况，不可以到达的情况参照下面的解释。<br>&#x2F;&#x2F;上面纯属主观想法描述，可能存在纰漏以及说法不严谨的地方。</p>
+<p>CLRS里面的解释：<br>① 如果u是从s可以到达的顶点，那么v也是可达的，这种情况下从$s \to v$的最短路径不可能比从$s \to u$的最短路径再加上边(u, v)更长，因此不等式成立。&#x2F;&#x2F;这是原话，看到这句我觉得我上面的想法貌似就是想表达这个意思。反正就是因为$\delta(s, u)$本身就是最短的，然后与顶点v再连一条边的话，那么$\delta(s, v)$的路径要么不经过u，要么经过u。不经过的话就必定有$\delta(s, v) \leq \delta(s, u) + 1$，因为如果不等号为&gt;，那么$\delta(s, u) + 1$这条路径才应该是$\delta(s, v)$真正的路径，因为它更短；经过u的话就说明u是$\delta(s, v)$路径的一部分，此时在无向图中$\delta(s, v)$不仅有上限$\delta(s, u) + 1$，还有$\delta(s, u) - 1$这个下限。<br>② 如果u是从s不可以到达的顶点，那么在上面伪代码算法中可知，$\delta(s, u) &#x3D; \infty$，等式显然成立。</p>
+</blockquote>
+</li>
+<li><p>(2) Let $G &#x3D; (V, E)$ be a directed or undirected graph, and suppose that BFS is run<br>on $G$ from a given source vertex $s \in V$ . Then, for each vertex $v \in V$ , the value v.d<br>computed by BFS satisfies $v.d \geq \delta (s, v)$ at all times, including at termination.</p>
+</li>
+</ul>
+<blockquote>
+<p>这里是用归纳法进行证明：归纳假设即为$v.d \geq \delta (s, v)$对于所有$v \in V$都成立<br>① 基本情况：在把源点s入队后，$s.d &#x3D; 0 &#x3D; \delta(s, s)$并且对于所有除s外的顶点v都有$v.d &#x3D; \infty \geq \delta(s, v)$，因此等式成立。<br>② 归纳：考虑到一个白色顶点v是在对顶点u的邻接表搜索中被发现的，因此$v.d &#x3D; u.d + 1$（可见伪代码），基于归纳假设，有$v.d \geq \delta(s, u) + 1$，由引理(1)可知$\delta(s, u) + 1 \geq \delta(s,v)$，因此等式成立。</p>
+</blockquote>
+<ul>
+<li>(3) Suppose that during the execution of BFS on a graph $G &#x3D; (V, E)$, the queue Q<br>contains the vertices $&lt;v_1, v_2, . . . , v_r&gt;$, where $v_1$ is the head of Q and $v_r$ is the tail.<br>Then, $v_r.d \leq v_1.d + 1$ and $v_i.d \leq v_{i + 1}.d$ for i &#x3D; 1, 2, . . . , r - 1.</li>
+</ul>
+<blockquote>
+<p>这里也是用归纳法进行证明，但直接理解好像更容易。首先，假设队列里只能有不超过两种距离不同的顶点，如果是只有一种距离，假设为d，那么队列里肯定都是上一次出队的那个顶点(距离为d - 1)的邻接表(假设为u)里的，假设还没遍历完，那就继续添加，此时队列里顶点距离都是d。遍历完后就又要把当前队列第一个顶点出队，如果其邻接表为空，那就下一个继续出队操作，此时队列还是一种距离的情况，如果不为空，那就开始遍历其邻接表，只要是对邻接表u里面的元素执行出队，之后入队的顶点的距离都会是d+1，在此过程中距离就有两种情况，这种情况持续到u的所有顶点都出队了，那么此时队列里就只有d+1的顶点了，就又变回一种距离的情况了，以此类推，因此队列里不可能有超过两种距离，且从过程可知，跨度不超过1，因此$v_r.d \leq v_1.d + 1$ 成立，又因为代码中d的计算只有加没有减，因此在后面入队的肯定$\geq$在前面入队的，因此，$v_i.d \leq v_{i + 1}.d$ 也成立。</p>
+</blockquote>
+<h4 id="Corollary"><a href="#Corollary" class="headerlink" title="Corollary"></a>Corollary</h4><ul>
+<li>Suppose that vertices $v_i$ and $v_j$ are enqueued during the execution of BFS, and that $v_i$ is enqueued before $v_j$. Then $v_i.d \leq v_j.d$ at the time that $v_j$ is enqueued.</li>
+</ul>
+<h4 id="Theorem"><a href="#Theorem" class="headerlink" title="Theorem"></a>Theorem</h4><ul>
+<li>Let $G &#x3D; (V, E)$ be a directed or undirected graph, and suppose that BFS is run<br>on $G$ from a given source vertex $s \in V$ . Then, during its execution, BFS discovers<br>every vertex $v \in V$ that is reachable from the source s, and upon termination,<br>$v.d &#x3D; \delta (s, v)$ for all $v \in V$ . Moreover, for any vertex $v \not &#x3D; s$ that is reachable from s, one of the shortest paths from s to v is a shortest path from s to $v.\pi$ followed by the edge $(v.\pi, v)$.</li>
+</ul>
+<blockquote>
+<p>这里定理其实主要表达的就是$v.d &#x3D; \delta (s, v)$，这就使得广搜可以用来求最短路径问题。<br>这个定理的证明采用反证法：<br>假设存在顶点的d值不等于它最短路径的距离。对于所有的这种顶点，设顶点v的最短距离为$\delta(s, v)$，通过引理(2)可知，$v.d \geq \delta(s, v)$，因此在这里的顶点v有$v.d &gt; \delta(s, v)$①，当然不能有$v \not &#x3D; s$，因为s.d &#x3D; 0并且$\delta(s, s) &#x3D; 0$。而且，顶点v必须是从s可达的，否则我们将有$\delta(s, v) &#x3D; \infty \geq v.d$。设u是从s到v的最短路径上紧邻v前面的顶点(因为$v \not &#x3D; s$，所以顶点u必须存在)，这样就有$\delta(s, v) &#x3D; \delta(s, u) + 1$②了。因此$\delta(s, u) &lt; \delta(s, v)$，又因为我们设u的方式，所以有$u.d &#x3D; \delta(s, u)$③。<br>结合①②③，就有了下图的公式，然后对v的所有情况进行讨论，推出矛盾，证明$v.d &#x3D; \delta (s, v)$成立。具体看下图：</p>
+</blockquote>
+<p><img src="https://telegraph-image-eja.pages.dev/file/a9bfbbf9fc07d7969e851.png" alt="?"></p>
+<h3 id="Breadth-first-trees"><a href="#Breadth-first-trees" class="headerlink" title="Breadth-first trees"></a>Breadth-first trees</h3><p>上面广搜全过程图片中的蓝色边正展示了广度优先树在BFS过程中被建立，这个树对应着$\pi$属性。<br>形式化的定义即是：对于有源点s的图$G &#x3D; (V, E)$，定义$G$的前驱子图(predecessor subgraph) $G_\pi &#x3D; (V_\pi, E_\pi)$，其中$V_\pi &#x3D; {v \in V: v.\pi \not &#x3D; NIL} \cup {s}$，$E_\pi &#x3D; {(v.\pi, v): v \in V_\pi - {s}}$。这样的$G_\pi$就是广度优先树，$E_\pi$为树边。</p>
+<h2 id="Depth-first-search"><a href="#Depth-first-search" class="headerlink" title="Depth-first search"></a>Depth-first search</h2><ul>
+<li>与广搜不同，深搜的前驱子图可能包含多个树，因为深搜可能从多个源点进行。<br>它对$G_\pi$的定义是：$G_\pi &#x3D; (V, E_\pi)$，其中$E_\pi &#x3D; {(v.\pi, v): v \in V \wedge v.\pi \not &#x3D; NIL}$。<br>深度优先搜索的前驱子图形成了包含多个深度优先树的深度优先森林。</li>
+<li>深度优先搜索着色方法与广搜一样，该方法在这里保证了每个顶点只在一棵深度优先树中出现，因此这些树都是不相交的。</li>
+<li>与广搜不一样的是，深搜过程还提供了时间戳，每个顶点有两个时间戳，第一个时间戳v.d记录了v什么时候第一次被发现，第二个时间戳v.f记录了什么时候完成了对v的邻接表的遍历。因为每个顶点都有两个时间戳，因此时间戳范围是$1 \to 2|V|$的整数，并且$v.d &lt; v.f$。v在v.d之前为白色，在v.d到v.f之间为灰色，在v.f之后为黑色。下面是深搜伪代码：</li>
+</ul>
+<blockquote>
+<p>&#x2F;&#x2F;时间复杂度：O(V + E)<br>$DFS(G)$<br>       for each vertex $u \in G.V$                  &#x2F;&#x2F;初始化<br>           u.color &#x3D; WHITE<br>           u.$\pi$ &#x3D; NIL<br>       time  &#x3D; 0<br>       for each vertex $u \in G.V$<br>           if u.color &#x3D;&#x3D; WHITE<br>               DFS-VISIT $(G, u)$<br>DFS-VISIT $(G, u)$<br>       time &#x3D; time + 1<br>       u.d &#x3D; time<br>       u.color &#x3D;$GRAY$<br>       for each vertex v in $G.Adj[u]$<br>           if v.color &#x3D;&#x3D; WHITE<br>               v.$\pi$ &#x3D; u<br>               DFS-VISIT $(G, v)$               &#x2F;&#x2F;体现了深度优先<br>       time &#x3D; time + 1<br>       u.f &#x3D; time<br>       u.color &#x3D; BLACK</p>
+</blockquote>
+<p><img src="https://telegraph-image-eja.pages.dev/file/275c9f0fa7b28c8b16770.png" alt="dfs"><br>&#x2F;&#x2F;这是深搜全过程图</p>
+<h3 id="Properties-of-depth-first-search"><a href="#Properties-of-depth-first-search" class="headerlink" title="Properties of depth-first search"></a>Properties of depth-first search</h3><ul>
+<li>(1) 深度优先搜索生成的前驱子图$G_\pi$为一个有若干棵树的森林，因为深度优先树的结构与 DFS-VISIT 递归调用的结构完全对应，也就是说，$u &#x3D; v.\pi$当且仅当 DFS-VISIT(G, v) 在搜索 u 的邻接表时被调用，此外，在深度优先森林中，顶点v是顶点u的后代当且仅当顶点v在顶点u为灰色的时间段里被发现。<br><img src="https://telegraph-image-eja.pages.dev/file/b2b7493044770da13ffa1.png" alt="image"></li>
+<li>(2) 顶点的发现时间和完成的时间具有括号化结构，与此对应的是括号化定理。</li>
+</ul>
+<h3 id="Parenthesis-theorem"><a href="#Parenthesis-theorem" class="headerlink" title="Parenthesis theorem"></a>Parenthesis theorem</h3><p>在对有向图或无向图 $G&#x3D;(V, E)$的深度优先搜索中，对于任意两个顶点 u 和 v ，以下三种情况只有一种成立：</p>
+<ul>
+<li>若 $[u.d, u.f]∩[v.d, v.f] &#x3D; ∅$ ，则在深度优先森林中，u不是v的后代，v也不是u的后代。</li>
+<li>若$[u.d, u.f]⊂[v.d, v.f]$，则在深度优先森林中，u是v的后代。</li>
+<li>若$[v.d, v.f]⊂[u.d, u.f]$，则在深度优先森林中，v是u是后代。<br><img src="https://telegraph-image-eja.pages.dev/file/26624ae22bfd773c415fa.png" alt="image"></li>
+</ul>
+<h3 id="Corollary-Nesting-of-descendants’-intervals"><a href="#Corollary-Nesting-of-descendants’-intervals" class="headerlink" title="Corollary(Nesting of descendants’ intervals)"></a>Corollary(Nesting of descendants’ intervals)</h3><p>在有向图或无向图$G &#x3D; (V, E)$的深度优先森林中，顶点v是顶点u的真后代当且仅当$u.d &lt; v.d &lt; v.f &lt; u.f$。</p>
+<h3 id="White-path-theorem"><a href="#White-path-theorem" class="headerlink" title="White-path theorem"></a>White-path theorem</h3><p>在有向图或无向图$G&#x3D;(V, E)$的深度优先森林中，顶点v是顶点u的后代当且仅当在搜索发现u的时刻u.d ，存在一条从u到v的全部由白色顶点构成的路径。</p>
+<ul>
+<li>$\Rightarrow$：如果v &#x3D; u，那么从u到v路径上只有一个顶点u，当u.d &#x3D; time时刻，u还是白色；如果v是u的真后代，根据推论，有$u.d &lt; v.d$， 因此v是白色。由于v可以是u的任意后代，所以在深度优先森林中从u到v的唯一简单路径上的所有顶点在时间u.d时为白色。</li>
+<li>$\Leftarrow$：若在时刻u.d，存在一条从u到v的全部由白色顶点构成的路径，先假设在深度优先森林中v不是u的后代。不失一般性，假设路径上除v以外的每个顶点都成为u的后代。(否则，假设v是在没有成为u的后代的路径上离u最近的顶点。)设w是v在路径上的前驱，那么w就是u的后代(w和u实际上可能是同一个顶点)。由推论可知，$w.f  \leq u.f$。又因为v必须在u被发现之后被发现，但在w完成的时间戳之前，则有$u.d &lt; v.d &lt; w.f \leq u.f$。根据括号化定理可知，$[v.d, v.f]⊂[u.d, u.f]$。由推论可知，v必须为u的后代</li>
+</ul>
+<h3 id="Classification-of-edges"><a href="#Classification-of-edges" class="headerlink" title="Classification of edges"></a>Classification of edges</h3><ul>
+<li>树边(Tree edges)：$G_\pi$上的边，若顶点v是通过边(u, v)第一次被发现，则(u,  v)是一条树边。</li>
+<li>后向边(Back edges)：若边(u, v)为连接u和它在深度优先树中的一个祖先v的边，包括自环(即u &#x3D; v)，则(u, v)是一条后向边。</li>
+<li>前向边(Forward edges)：若边(u, v)为连接u和它的一个真后代v的非树边，则(u, v)是一条前向边。</li>
+<li>横向边(Cross edges)：其它所有边，它们可以连接同一深度优先树中的顶点，只要其中一个顶点不是另一个顶点的祖先；它们也可以连接不同深度优先树中的顶点。</li>
+</ul>
+<h2 id="Topological-sort"><a href="#Topological-sort" class="headerlink" title="Topological sort"></a>Topological sort</h2><p>对象是有向无环图(directed acyclic graphs)，因此拓扑排序可以用来判断一个图有没有环，很多实际应用都需要使用有向无环图来指明时间的先后顺序。<br>拓扑排序是一种针对有向无环图（DAG）的排序算法，它不是基于元素之间的比较，而是基于它们之间的依赖关系。原理上，拓扑排序是对有向无环图进行深度优先搜索（DFS）或广度优先搜索（BFS）的一种应用。它通过这些搜索算法来确定图中节点的线性序列，这个序列满足：对于图中的每一条有向边(u, v)（从节点u指向节点v），u在序列中都出现在v之前。这样的序列满足了图中节点间的所有依赖关系。</p>
+<ul>
+<li><strong>依赖关系</strong>：<br>  图中的每个节点代表一个任务或活动，有向边代表一个任务必须在另一个任务之后完成。拓扑排序能够确保对于任何节点，它的所有前驱节点（即所有指向它的节点）都在它之前被访问。<blockquote>
+<p>伪代码：<br>TOPOLOGICAL-SORT$(G)$<br>     call $DFS(G)$ to compute finish times v.f for each vertex v<br>     as each vertex is finished, insert it onto the front of a linked list<br>     return the linked list of vertices</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Strongly-connected-components"><a href="#Strongly-connected-components" class="headerlink" title="Strongly connected components"></a>Strongly connected components</h2><ul>
+<li>有向图$G &#x3D; (V, E)$的一个强连通分量是一个最大顶点集$C \subseteq V$，对于每一对顶点$u, v \in C$，那么u, v相互可达。</li>
+<li>$G 和 G^T$有完全相同的强连通分量。</li>
+<li>分量图$G^{SCC} &#x3D; (V^{SCC},E^{SCC})$，为简化后的有向图，把每个强连通分量压缩成一个顶点，以便研究它们之间的关系。<br><img src="https://telegraph-image-eja.pages.dev/file/f02f4a1572ce744d646b2.png" alt="image"></li>
+</ul>
+<blockquote>
+<p>伪代码：<br>$STRONGLY-CONNECTED-COMPONENTS(G)$<br>1	call DFS(G) to compute finish times u.f for each vertex u<br>2	create $G^T$<br>3	call DFS($G^T$) , but in the main loop of DFS, consider the vertices<br>    in order of decreasing u.f (as computed in line 1)<br>4	output the vertices of each tree in the depth-ûrst forest formed in line 3 as a<br>        separate strongly connected component</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://www.suzije.me">Szj</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://www.suzije.me/2024/04/21/Elementary-Graph-Algorithms/">http://www.suzije.me/2024/04/21/Elementary-Graph-Algorithms/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.suzije.me" target="_blank">ius の blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Graph/">Graph</a></div><div class="post_share"><div class="social-share" data-image="/img/vinyltocat.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/wechat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Szj</div><div class="author-info__description">blog to ius</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Szj510"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Szj510" target="_blank" title="Github"><i style="color: #24292e;"></i></a><a class="social-icon" href="mailto:suzijie510@gmail.com" target="_blank" title="Email"><i style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">弱小和无知不是生存的障碍</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Elementary-Graph-Algorithms"><span class="toc-number">1.</span> <span class="toc-text">Elementary Graph Algorithms</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Representations-of-graphs"><span class="toc-number">1.1.</span> <span class="toc-text">Representations of graphs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#adjacency-list"><span class="toc-number">1.1.1.</span> <span class="toc-text">adjacency-list</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E6%9D%83%E5%9B%BE"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">加权图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#adjacency-matrix"><span class="toc-number">1.1.2.</span> <span class="toc-text">adjacency-matrix</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E7%8E%87%E5%AF%B9%E6%AF%94"><span class="toc-number">1.1.3.</span> <span class="toc-text">效率对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exercises"><span class="toc-number">1.1.4.</span> <span class="toc-text">Exercises</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Breadth-first-search"><span class="toc-number">1.2.</span> <span class="toc-text">Breadth-first search</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Shortest-paths"><span class="toc-number">1.2.1.</span> <span class="toc-text">Shortest paths</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Lemma"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">Lemma</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Corollary"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">Corollary</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Theorem"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">Theorem</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Breadth-first-trees"><span class="toc-number">1.2.2.</span> <span class="toc-text">Breadth-first trees</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Depth-first-search"><span class="toc-number">1.3.</span> <span class="toc-text">Depth-first search</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Properties-of-depth-first-search"><span class="toc-number">1.3.1.</span> <span class="toc-text">Properties of depth-first search</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parenthesis-theorem"><span class="toc-number">1.3.2.</span> <span class="toc-text">Parenthesis theorem</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Corollary-Nesting-of-descendants%E2%80%99-intervals"><span class="toc-number">1.3.3.</span> <span class="toc-text">Corollary(Nesting of descendants’ intervals)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#White-path-theorem"><span class="toc-number">1.3.4.</span> <span class="toc-text">White-path theorem</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Classification-of-edges"><span class="toc-number">1.3.5.</span> <span class="toc-text">Classification of edges</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Topological-sort"><span class="toc-number">1.4.</span> <span class="toc-text">Topological sort</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Strongly-connected-components"><span class="toc-number">1.5.</span> <span class="toc-text">Strongly connected components</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms">Elementary Graph Algorithms</a><time datetime="2024-04-21T08:27:36.000Z" title="发表于 2024-04-21 16:27:36">2024-04-21</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/banner.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2024 By Szj</div><div class="footer_custom_text"><p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
