@@ -3,16 +3,18 @@
   <entry>
     <title>Elementary Graph Algorithms</title>
     <url>/2024/04/21/Elementary-Graph-Algorithms/</url>
-    <content><![CDATA[<h1 id="Elementary-Graph-Algorithms"><a href="#Elementary-Graph-Algorithms" class="headerlink" title="Elementary Graph Algorithms"></a>Elementary Graph Algorithms</h1><h2 id="Representations-of-graphs"><a href="#Representations-of-graphs" class="headerlink" title="Representations of graphs"></a>Representations of graphs</h2><p>$$<br>G = (V, E)<br>$$<br>$G \to Graph, V \to Vertex, E \to Edge$, 式子说明图是由顶点和边这两个元素组成，那么只要把顶点和边表示出来，图就表示出来了。其中有两种方法，一种是邻接表表示，一种是用矩阵表示，根据不同的情景需要会选取不同的表示方法。</p>
+    <content><![CDATA[<h1 id="Elementary-Graph-Algorithms"><a href="#Elementary-Graph-Algorithms" class="headerlink" title="Elementary Graph Algorithms"></a>Elementary Graph Algorithms</h1><h2 id="Representations-of-graphs"><a href="#Representations-of-graphs" class="headerlink" title="Representations of graphs"></a>Representations of graphs</h2><p>$$<br>G = (V, E)<br>$$</p>
+<p>$G \to Graph, V \to Vertex, E \to Edge$, 式子说明图是由顶点和边这两个元素组成，那么只要把顶点和边表示出来，图就表示出来了。其中有两种方法，一种是邻接表表示，一种是用矩阵表示，根据不同的情景需要会选取不同的表示方法。</p>
 <h3 id="adjacency-list"><a href="#adjacency-list" class="headerlink" title="adjacency-list"></a>adjacency-list</h3><p><img src="https://www.hello-algo.com/chapter_graph/graph.assets/adjacency_list.png" alt="list"><br>// 邻接表可用链表，也可用哈希表</p>
 <blockquote>
 <p>If $G$ is a directed graph, the sum of the lengths of all the adjacency lists is |E|.<br>If $G$ is an undirected graph, the sum of the lengths of all the adjacency lists is 2|E|.</p>
 </blockquote>
 <figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//下面是无向图的示例，有向图需要修改部分method代码</span></span><br><span class="line"><span class="comment">//为了方便添加与删除顶点，以及简化代码，这里使用列表（动态数组）来代替链表。</span></span><br><span class="line"><span class="comment">//使用哈希表来存储邻接表，key为顶点实例，value为该顶点的邻接顶点列表（链表）。</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> {</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="built_in">Vertex</span>(<span class="type">int</span> value) : <span class="built_in">val</span>(value) {}</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GraphAdjList</span> {</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    std::unordered_map&lt;Vertex *, std::vector&lt;Vertex *&gt;&gt; adjList;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">remove</span><span class="params">(std::vector&lt;Vertex *&gt; &amp;vec, Vertex *vet)</span> </span>{</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; vec.<span class="built_in">size</span>(); i++) {</span><br><span class="line">            <span class="keyword">if</span> (vec[i] == vet) {</span><br><span class="line">                vec.<span class="built_in">erase</span>(vec.<span class="built_in">begin</span>() + i);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="built_in">GraphAdjList</span>(<span class="type">const</span> std::vector&lt;std::vector&lt;Vertex *&gt;&gt; &amp;edges) {</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> std::vector&lt;Vertex *&gt; &amp;edge : edges) {</span><br><span class="line">            <span class="built_in">addVertex</span>(edge[<span class="number">0</span>]);</span><br><span class="line">            <span class="built_in">addVertex</span>(edge[<span class="number">1</span>]);</span><br><span class="line">            <span class="built_in">addEdge</span>(edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">size</span><span class="params">()</span> </span>{</span><br><span class="line">        <span class="keyword">return</span> adjList.<span class="built_in">size</span>();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addEdge</span><span class="params">(Vertex *vet1, Vertex *vet2)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (!adjList.<span class="built_in">count</span>(vet1) || !adjList.<span class="built_in">count</span>(vet2) || vet1 == vet2)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">invalid_argument</span>(<span class="string">"不存在顶点"</span>);</span><br><span class="line">        adjList[vet1].<span class="built_in">push_back</span>(vet2);</span><br><span class="line">        adjList[vet2].<span class="built_in">push_back</span>(vet1);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeEdge</span><span class="params">(Vertex *vet1, Vertex *vet2)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (!adjList.<span class="built_in">count</span>(vet1) || !adjList.<span class="built_in">count</span>(vet2) || vet1 == vet2)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">invalid_argument</span>(<span class="string">"不存在顶点"</span>);</span><br><span class="line">        <span class="built_in">remove</span>(adjList[vet1], vet2);</span><br><span class="line">        <span class="built_in">remove</span>(adjList[vet2], vet1);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addVertex</span><span class="params">(Vertex *vet)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (adjList.<span class="built_in">count</span>(vet))</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        adjList[vet] = std::<span class="built_in">vector</span>&lt;Vertex *&gt;();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeVertex</span><span class="params">(Vertex *vet)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (!adjList.<span class="built_in">count</span>(vet))</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">invalid_argument</span>(<span class="string">"不存在顶点"</span>);</span><br><span class="line">        adjList.<span class="built_in">erase</span>(vet);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;adj : adjList) {</span><br><span class="line">            <span class="built_in">remove</span>(adj.second, vet);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>{</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"邻接表 ="</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;adj : adjList) {</span><br><span class="line">            <span class="type">const</span> <span class="keyword">auto</span> &amp;key = adj.first;</span><br><span class="line">            <span class="type">const</span> <span class="keyword">auto</span> &amp;vec = adj.second;</span><br><span class="line">            std::cout &lt;&lt; key-&gt;val &lt;&lt; <span class="string">": "</span>;</span><br><span class="line">            <span class="built_in">printVector</span>(<span class="built_in">vetsToVals</span>(vec));</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">vetsToVals</span><span class="params">(<span class="type">const</span> std::vector&lt;Vertex *&gt; &amp;vec)</span> </span>{</span><br><span class="line">        std::vector&lt;<span class="type">int</span>&gt; vals;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> Vertex *vet : vec) {</span><br><span class="line">            vals.<span class="built_in">push_back</span>(vet-&gt;val);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> vals;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">printVector</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;vec)</span> </span>{</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> val : vec) {</span><br><span class="line">            std::cout &lt;&lt; val &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        }</span><br><span class="line">        std::cout &lt;&lt; std::endl;</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+
 <h4 id="加权图"><a href="#加权图" class="headerlink" title="加权图"></a>加权图</h4><blockquote>
 <p>加权图即边是有权值的，可添加 Edge 类来实现</p>
 </blockquote>
-<figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Edge</span> { </span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">	Vertex *destination; </span><br><span class="line">	<span class="type">int</span> weight; </span><br><span class="line">	<span class="built_in">Edge</span>(Vertex *dest, <span class="type">int</span> w) : <span class="built_in">destination</span>(dest), <span class="built_in">weight</span>(w) {} </span><br><span class="line">};</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> { </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="type">int</span> val; <span class="comment">// 顶点的值 </span></span><br><span class="line">	std::vector&lt;Edge*&gt; adjList; <span class="comment">// 邻接列表 </span></span><br><span class="line">	<span class="built_in">Vertex</span>(<span class="type">int</span> v) : <span class="built_in">val</span>(v) {} </span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Edge</span> {</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Vertex *destination;</span><br><span class="line">	<span class="type">int</span> weight;</span><br><span class="line">	<span class="built_in">Edge</span>(Vertex *dest, <span class="type">int</span> w) : <span class="built_in">destination</span>(dest), <span class="built_in">weight</span>(w) {}</span><br><span class="line">};</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> {</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="type">int</span> val; <span class="comment">// 顶点的值</span></span><br><span class="line">	std::vector&lt;Edge*&gt; adjList; <span class="comment">// 邻接列表</span></span><br><span class="line">	<span class="built_in">Vertex</span>(<span class="type">int</span> v) : <span class="built_in">val</span>(v) {}</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>The adjacency-list representation is quite robust in that you can modify it to support many other graph variants.<br>// 上方的代码顶点都是唯一的实例，还可以往其添加属性，这就体现了邻接表的灵活性，加上它的动态性以及内存效率等的优势，共同构建了其健壮性，使其能够支持很多其它的图变体。</p>
@@ -27,7 +29,7 @@
 <figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GraphAdjMat</span> {</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vertices;</span><br><span class="line">    std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt; adjMat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">GraphAdjMat</span>(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;vertices, <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt; &amp;edges) {</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> val : vertices) {</span><br><span class="line">            <span class="built_in">addVertex</span>(val);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;edge : edges) {</span><br><span class="line">            <span class="built_in">addEdge</span>(edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">size</span><span class="params">()</span> <span class="type">const</span> </span>{</span><br><span class="line">        <span class="keyword">return</span> vertices.<span class="built_in">size</span>();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addVertex</span><span class="params">(<span class="type">int</span> val)</span> </span>{</span><br><span class="line">        <span class="type">int</span> n = <span class="built_in">size</span>();</span><br><span class="line">        vertices.<span class="built_in">push_back</span>(val);</span><br><span class="line">        adjMat.<span class="built_in">emplace_back</span>(std::<span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span> (std::vector&lt;<span class="type">int</span>&gt; &amp;row : adjMat) {</span><br><span class="line">            row.<span class="built_in">push_back</span>(<span class="number">0</span>);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeVertex</span><span class="params">(<span class="type">int</span> index)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (index &gt;= <span class="built_in">size</span>()) {</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">out_of_range</span>(<span class="string">"顶点不存在"</span>);</span><br><span class="line">        }</span><br><span class="line">        vertices.<span class="built_in">erase</span>(vertices.<span class="built_in">begin</span>() + index);</span><br><span class="line">        adjMat.<span class="built_in">erase</span>(adjMat.<span class="built_in">begin</span>() + index);</span><br><span class="line">        <span class="keyword">for</span> (std::vector&lt;<span class="type">int</span>&gt; &amp;row : adjMat) {</span><br><span class="line">            row.<span class="built_in">erase</span>(row.<span class="built_in">begin</span>() + index);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addEdge</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">0</span> || j &lt; <span class="number">0</span> || i &gt;= <span class="built_in">size</span>() || j &gt;= <span class="built_in">size</span>() || i == j) {</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">out_of_range</span>(<span class="string">"顶点不存在"</span>);</span><br><span class="line">        }</span><br><span class="line">        adjMat[i][j] = <span class="number">1</span>;</span><br><span class="line">        adjMat[j][i] = <span class="number">1</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeEdge</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">0</span> || j &lt; <span class="number">0</span> || i &gt;= <span class="built_in">size</span>() || j &gt;= <span class="built_in">size</span>() || i == j) {</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">out_of_range</span>(<span class="string">"顶点不存在"</span>);</span><br><span class="line">        }</span><br><span class="line">        adjMat[i][j] = <span class="number">0</span>;</span><br><span class="line">        adjMat[j][i] = <span class="number">0</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>{</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"顶点列表 = "</span>;</span><br><span class="line">        <span class="built_in">printVector</span>(vertices);</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"邻接矩阵 ="</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="built_in">printVectorMatrix</span>(adjMat);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">printVector</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;vec)</span> </span>{</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> val : vec) {</span><br><span class="line">            std::cout &lt;&lt; val &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        }</span><br><span class="line">        std::cout &lt;&lt; std::endl;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">printVectorMatrix</span><span class="params">(<span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt; &amp;matrix)</span> </span>{</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; &amp;row : matrix) {</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> val : row) {</span><br><span class="line">                std::cout &lt;&lt; val &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">            }</span><br><span class="line">            std::cout &lt;&lt; std::endl;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 
 <blockquote>
-<p>邻接矩阵也可表示有权图，但空间浪费明显，无论稀疏还是密集：<br>在稀疏图中，尽管边的数量很少，但邻接矩阵仍然需要为每个可能的顶点对（即矩阵中的每个元素）分配空间。大多数这些顶点对之间实际上是没有边的，因此这些空间是浪费的。<br>   在密集图中，虽然边的数量很多，但邻接矩阵仍然需要为每个顶点对分配空间，即使某些顶点对之间可能有多个边。例如，如果图中有两个顶点之间有 5 条边，邻接矩阵中的对应元素就需要存储这 5 条边的权重信息，而实际上只需要存储一个权重信息就足够了。</p>
+<p>邻接矩阵也可表示有权图，但空间浪费明显，无论稀疏还是密集：<br>在稀疏图中，尽管边的数量很少，但邻接矩阵仍然需要为每个可能的顶点对（即矩阵中的每个元素）分配空间。大多数这些顶点对之间实际上是没有边的，因此这些空间是浪费的。<br>在密集图中，虽然边的数量很多，但邻接矩阵仍然需要为每个顶点对分配空间，即使某些顶点对之间可能有多个边。例如，如果图中有两个顶点之间有 5 条边，邻接矩阵中的对应元素就需要存储这 5 条边的权重信息，而实际上只需要存储一个权重信息就足够了。</p>
 </blockquote>
 <blockquote>
 <p>图规模较小时倾向于使用邻接矩阵</p>
@@ -149,7 +151,7 @@
 <p>这题说的是有向无环图的关联矩阵，直接建立顶点与每条边的对应关系，出边就是 - 1，入边就是 1，没有关系就是 0。题目要求描述 $B B^T$ 矩阵的元素都代表什么。</p>
 </blockquote>
 <ol>
-<li>对角线元素 $c_{ii}$​表示顶点 i 的度数，即与该顶点相关联的边的数量，包括入度和出度的边。<blockquote>
+<li>对角线元素 $c_{ii}$​ 表示顶点 i 的度数，即与该顶点相关联的边的数量，包括入度和出度的边。<blockquote>
 <ol start="2">
 <li>非对角线元素 $c_{ij}$​（其中 i≠j）表示顶点 i 和 j 之间共享的边的数量，经计算我们可以发现 $B B^T$ 矩阵的元素要么是 0，要么是负数，没有正数。所以如果 $c_{ij}​=0$，则表示顶点 i 和 j 之间没有共享的边，而非零值则表示它们之间存在共享的边，如果是有多重边 (multiple edges) 的话，这个非零值就不只是 - 1 了。这里没直接说多重图 (multigraphs)，是因为多重图是包括了自环和多重边的，但题目说的是有向无环图。</li>
 </ol>
@@ -157,14 +159,35 @@
 </li>
 </ol>
 <h2 id="Breadth-first-search"><a href="#Breadth-first-search" class="headerlink" title="Breadth-first search"></a>Breadth-first search</h2><blockquote>
-<p>// 时间复杂度：O (V + E)<br>$BFS(G, s)$<br>    for each vertex u $\in G.V - {s}$      // 初始化<br>        u.color = WHITE<br>        $u.d = \infty$                              //d 是距离<br>        u.$\pi$ = NIL                            //$\pi$ 是前驱<br>    s.color = $GRAY$<br>    s.d = 0<br>    s.$\pi$ = NIL<br>    $Q = \not 0$                                        // 初始化队列<br>    ENQUEUE(Q, s)<br>    while Q $\not = \not 0$<br>        u = DEQUEUE(Q)<br>        for each vertex v in $G$.Adj[u]<br>            if v.color = WHITE<br>                v.color = $GRAY$<br>                v.d = u.d + 1<br>                v.$\pi$ = u<br>                ENQUEUE (Q, v)      // 可以发现队列里的顶点都是灰色的<br>        u.color = BLACK</p>
+<p>// 时间复杂度：O (V + E)<br>$BFS(G, s)$</p>
 </blockquote>
+<pre><code>for each vertex u $\in G.V - \{s\}$      //初始化
+    u.color = WHITE
+    $u.d = \infty$                              //d是距离
+    u.$\pi$ = NIL                            //$\pi$是前驱
+s.color = $GRAY$
+s.d = 0
+s.$\pi$ = NIL
+$Q = \not 0$                                        //初始化队列
+ENQUEUE(Q, s)
+while Q $\not = \not 0$
+    u = DEQUEUE(Q)
+    for each vertex v in $G$.Adj[u]
+        if v.color = WHITE
+            v.color = $GRAY$
+            v.d = u.d + 1
+            v.$\pi$ = u
+            ENQUEUE(Q, v)      //可以发现队列里的顶点都是灰色的
+    u.color = BLACK
+</code></pre>
 <p>// 图的广搜使用了颜色标记方法，白色表示顶点未被发现，灰色表示该顶点已被发现，但其邻接顶点可能还有未被发现的顶点，黑色则表示其邻接顶点全被发现。<br><img src="https://telegraph-image-eja.pages.dev/file/68170db1c351c1c1154fb.png" alt="bfs"><br>// 该图展示了广搜全过程，广搜的结果可能不一样，这取决于 for each vertex v in $G$.Adj [u] 的遍历顺序。</p>
 <h3 id="Shortest-paths"><a href="#Shortest-paths" class="headerlink" title="Shortest paths"></a>Shortest paths</h3><blockquote>
 <p>定义 $\delta (s, v)$ 为从 s 到 v 的所有路径中的最少的边数</p>
 </blockquote>
 <h4 id="Lemma"><a href="#Lemma" class="headerlink" title="Lemma"></a>Lemma</h4><ul>
-<li><p>(1) Let $G = (V, E)$ be a directed or undirected graph, and let $s \in V$ be an arbitrary<br>vertex. Then, for any edge $(u, v) \in E$,<br>$$<br>\delta(s, v) \leq \delta(s, u) + 1<br>$$<br><img src="https://telegraph-image-eja.pages.dev/file/40f16ccf9c4b758354fd3.png" alt="image"></p>
+<li><p>(1) Let $G = (V, E)$ be a directed or undirected graph, and let $s \in V$ be an arbitrary<br>vertex. Then, for any edge $(u, v) \in E$,</p>
+<p>$$<br>\delta(s, v) \leq \delta(s, u) + 1<br>$$</p>
+<p><img src="https://telegraph-image-eja.pages.dev/file/40f16ccf9c4b758354fd3.png" alt="image"></p>
 <blockquote>
 <p>对于该引理有个方便记忆的描述，即三角形两边之和大于第三边，见 A 图，公式中的 1 就是 (u, v) 这条确定的边。</p>
 <p>我一开始的想法是，(u, v) 这条边有 A, B, C 三种情况 (不严谨)，A 表示顶点 u, v 是同级的，对应 $\delta (s, v) = \delta (s, u)$ 的情况；B 表示顶点 u 相对于 s 的位置来说在 v 前面，对应 $\delta (s, v) = \delta (s, u) + 1$ 的情况；C 表示顶点 v 相对于 s 的位置来说在 u 前面，对应 $\delta (s, v) &lt; \delta (s, u)$ 的情况，特别地，C 中的蓝色曲线代表了 s 到 u 的其他路径，所以说 A 是 C 的特殊情况，因此也可以分成两种情况，上面都是建立在 u 是从 s 可以到达的情况，不可以到达的情况参照下面的解释。<br>// 上面纯属主观想法描述，可能存在纰漏以及说法不严谨的地方。</p>
@@ -190,7 +213,7 @@
 <li>Let $G = (V, E)$ be a directed or undirected graph, and suppose that BFS is run<br>on $G$ from a given source vertex $s \in V$ . Then, during its execution, BFS discovers<br>every vertex $v \in V$ that is reachable from the source s, and upon termination,<br>$v.d = \delta (s, v)$ for all $v \in V$ . Moreover, for any vertex $v \not = s$ that is reachable from s, one of the shortest paths from s to v is a shortest path from s to $v.\pi$ followed by the edge $(v.\pi, v)$.</li>
 </ul>
 <blockquote>
-<p>这里定理其实主要表达的就是 $v.d = \delta (s, v)$，这就使得广搜可以用来求最短路径问题。<br>这个定理的证明采用反证法：<br>假设存在顶点的 d 值不等于它最短路径的距离。对于所有的这种顶点，设顶点 v 的最短距离为 $\delta (s, v)$，通过引理 (2) 可知，$v.d \geq \delta (s, v)$，因此在这里的顶点 v 有 $v.d &gt; \delta (s, v)$①，当然不能有 $v \not = s$，因为 s.d = 0 并且 $\delta (s, s) = 0$。而且，顶点 v 必须是从 s 可达的，否则我们将有 $\delta (s, v) = \infty \geq v.d$。设 u 是从 s 到 v 的最短路径上紧邻 v 前面的顶点 (因为 $v \not = s$，所以顶点 u 必须存在)，这样就有 $\delta (s, v) = \delta (s, u) + 1$②了。因此 $\delta (s, u) &lt; \delta (s, v)$，又因为我们设 u 的方式，所以有 $u.d = \delta (s, u)$③。<br>结合①②③，就有了下图的公式，然后对 v 的所有情况进行讨论，推出矛盾，证明 $v.d = \delta (s, v)$ 成立。具体看下图：</p>
+<p>这里定理其实主要表达的就是 $v.d = \delta (s, v)$，这就使得广搜可以用来求最短路径问题。<br>这个定理的证明采用反证法：<br>假设存在顶点的 d 值不等于它最短路径的距离。对于所有的这种顶点，设顶点 v 的最短距离为 $\delta (s, v)$，通过引理 (2) 可知，$v.d \geq \delta (s, v)$，因此在这里的顶点 v 有 $v.d &gt; \delta (s, v)$①，当然不能有 $v \not = s$，因为 s.d = 0 并且 $\delta (s, s) = 0$。而且，顶点 v 必须是从 s 可达的，否则我们将有 $\delta (s, v) = \infty \geq v.d$。设 u 是从 s 到 v 的最短路径上紧邻 v 前面的顶点 (因为 $v \not = s$，所以顶点 u 必须存在)，这样就有 $\delta (s, v) = \delta (s, u) + 1$② 了。因此 $\delta (s, u) &lt; \delta (s, v)$，又因为我们设 u 的方式，所以有 $u.d = \delta (s, u)$③。<br>结合 ①②③，就有了下图的公式，然后对 v 的所有情况进行讨论，推出矛盾，证明 $v.d = \delta (s, v)$ 成立。具体看下图：</p>
 </blockquote>
 <p><img src="https://telegraph-image-eja.pages.dev/file/a9bfbbf9fc07d7969e851.png" alt="?"></p>
 <h3 id="Breadth-first-trees"><a href="#Breadth-first-trees" class="headerlink" title="Breadth-first trees"></a>Breadth-first trees</h3><p>上面广搜全过程图片中的蓝色边正展示了广度优先树在 BFS 过程中被建立，这个树对应着 $\pi$ 属性。<br>形式化的定义即是：对于有源点 s 的图 $G = (V, E)$，定义 $G$ 的前驱子图 (predecessor subgraph) $G_\pi = (V_\pi, E_\pi)$，其中 $V_\pi = {v \in V: v.\pi \not = NIL} \cup {s}$，$E_\pi = {(v.\pi, v): v \in V_\pi - {s}}$。这样的 $G_\pi$ 就是广度优先树，$E_\pi$ 为树边。</p>
@@ -200,16 +223,38 @@
 <li>与广搜不一样的是，深搜过程还提供了时间戳，每个顶点有两个时间戳，第一个时间戳 v.d 记录了 v 什么时候第一次被发现，第二个时间戳 v.f 记录了什么时候完成了对 v 的邻接表的遍历。因为每个顶点都有两个时间戳，因此时间戳范围是 $1 \to 2|V|$ 的整数，并且 $v.d &lt; v.f$。v 在 v.d 之前为白色，在 v.d 到 v.f 之间为灰色，在 v.f 之后为黑色。下面是深搜伪代码：</li>
 </ul>
 <blockquote>
-<p>// 时间复杂度：O (V + E)<br>$DFS(G)$<br>       for each vertex $u \in G.V$                  // 初始化<br>           u.color = WHITE<br>           u.$\pi$ = NIL<br>       time  = 0<br>       for each vertex $u \in G.V$<br>           if u.color == WHITE<br>               DFS-VISIT $(G, u)$<br>DFS-VISIT $(G, u)$<br>       time = time + 1<br>       u.d = time<br>       u.color =$GRAY$<br>       for each vertex v in $G.Adj[u]$<br>           if v.color == WHITE<br>               v.$\pi$ = u<br>               DFS-VISIT $(G, v)$               // 体现了深度优先<br>       time = time + 1<br>       u.f = time<br>       u.color = BLACK</p>
+<p>// 时间复杂度：O (V + E)<br>$DFS(G)$</p>
 </blockquote>
+<pre><code>   for each vertex $u \in G.V$                  //初始化
+       u.color = WHITE
+       u.$\pi$ = NIL
+   time  = 0
+   for each vertex $u \in G.V$
+       if u.color == WHITE
+           DFS-VISIT $(G, u)$
+</code></pre>
+<blockquote>
+<p>DFS-VISIT $(G, u)$</p>
+</blockquote>
+<pre><code>   time = time + 1
+   u.d = time
+   u.color =$GRAY$
+   for each vertex v in $G.Adj[u]$
+       if v.color == WHITE
+           v.$\pi$ = u
+           DFS-VISIT $(G, v)$               //体现了深度优先
+   time = time + 1
+   u.f = time
+   u.color = BLACK
+</code></pre>
 <p><img src="https://telegraph-image-eja.pages.dev/file/275c9f0fa7b28c8b16770.png" alt="dfs"><br>// 这是深搜全过程图</p>
 <h3 id="Properties-of-depth-first-search"><a href="#Properties-of-depth-first-search" class="headerlink" title="Properties of depth-first search"></a>Properties of depth-first search</h3><ul>
-<li>(1) 深度优先搜索生成的前驱子图 $G_\pi$ 为一个有若干棵树的森林，因为深度优先树的结构与&nbsp;DFS-VISIT&nbsp;递归调用的结构完全对应，也就是说，$u = v.\pi$ 当且仅当&nbsp;DFS-VISIT (G, v)&nbsp;在搜索&nbsp;u&nbsp;的邻接表时被调用，此外，在深度优先森林中，顶点 v 是顶点 u 的后代当且仅当顶点 v 在顶点 u 为灰色的时间段里被发现。<br><img src="https://telegraph-image-eja.pages.dev/file/b2b7493044770da13ffa1.png" alt="image"></li>
+<li>(1) 深度优先搜索生成的前驱子图 $G_\pi$ 为一个有若干棵树的森林，因为深度优先树的结构与 &nbsp;DFS-VISIT&nbsp; 递归调用的结构完全对应，也就是说，$u = v.\pi$ 当且仅当 &nbsp;DFS-VISIT (G, v)&nbsp; 在搜索 &nbsp;u&nbsp; 的邻接表时被调用，此外，在深度优先森林中，顶点 v 是顶点 u 的后代当且仅当顶点 v 在顶点 u 为灰色的时间段里被发现。<br><img src="https://telegraph-image-eja.pages.dev/file/b2b7493044770da13ffa1.png" alt="image"></li>
 <li>(2) 顶点的发现时间和完成的时间具有括号化结构，与此对应的是括号化定理。</li>
 </ul>
-<h3 id="Parenthesis-theorem"><a href="#Parenthesis-theorem" class="headerlink" title="Parenthesis theorem"></a>Parenthesis theorem</h3><p>在对有向图或无向图&nbsp;$G=(V, E)$ 的深度优先搜索中，对于任意两个顶点&nbsp;u&nbsp;和&nbsp;v&nbsp;，以下三种情况只有一种成立：</p>
+<h3 id="Parenthesis-theorem"><a href="#Parenthesis-theorem" class="headerlink" title="Parenthesis theorem"></a>Parenthesis theorem</h3><p>在对有向图或无向图 &nbsp;$G=(V, E)$ 的深度优先搜索中，对于任意两个顶点 &nbsp;u&nbsp; 和 &nbsp;v&nbsp;，以下三种情况只有一种成立：</p>
 <ul>
-<li>若&nbsp;$[u.d, u.f]∩[v.d, v.f] = ∅$&nbsp;，则在深度优先森林中，u 不是 v 的后代，v 也不是 u 的后代。</li>
+<li>若 &nbsp;$[u.d, u.f]∩[v.d, v.f] = ∅$&nbsp;，则在深度优先森林中，u 不是 v 的后代，v 也不是 u 的后代。</li>
 <li>若 $[u.d, u.f]⊂[v.d, v.f]$，则在深度优先森林中，u 是 v 的后代。</li>
 <li>若 $[v.d, v.f]⊂[u.d, u.f]$，则在深度优先森林中，v 是 u 是后代。<br><img src="https://telegraph-image-eja.pages.dev/file/26624ae22bfd773c415fa.png" alt="image"></li>
 </ul>
@@ -220,15 +265,15 @@
 <li>$\Leftarrow$：若在时刻 u.d，存在一条从 u 到 v 的全部由白色顶点构成的路径，先假设在深度优先森林中 v 不是 u 的后代。不失一般性，假设路径上除 v 以外的每个顶点都成为 u 的后代。(否则，假设 v 是在没有成为 u 的后代的路径上离 u 最近的顶点。) 设 w 是 v 在路径上的前驱，那么 w 就是 u 的后代 (w 和 u 实际上可能是同一个顶点)。由推论可知，$w.f  \leq u.f$。又因为 v 必须在 u 被发现之后被发现，但在 w 完成的时间戳之前，则有 $u.d &lt; v.d &lt; w.f \leq u.f$。根据括号化定理可知，$[v.d, v.f]⊂[u.d, u.f]$。由推论可知，v 必须为 u 的后代</li>
 </ul>
 <h3 id="Classification-of-edges"><a href="#Classification-of-edges" class="headerlink" title="Classification of edges"></a>Classification of edges</h3><ul>
-<li>树边 (Tree edges)：$G_\pi$ 上的边，若顶点 v 是通过边 (u, v) 第一次被发现，则 (u,  v) 是一条树边。</li>
+<li>树边 (Tree edges)：$G_\pi$ 上的边，若顶点 v 是通过边 (u, v) 第一次被发现，则 (u, v) 是一条树边。</li>
 <li>后向边 (Back edges)：若边 (u, v) 为连接 u 和它在深度优先树中的一个祖先 v 的边，包括自环 (即 u = v)，则 (u, v) 是一条后向边。</li>
 <li>前向边 (Forward edges)：若边 (u, v) 为连接 u 和它的一个真后代 v 的非树边，则 (u, v) 是一条前向边。</li>
 <li>横向边 (Cross edges)：其它所有边，它们可以连接同一深度优先树中的顶点，只要其中一个顶点不是另一个顶点的祖先；它们也可以连接不同深度优先树中的顶点。</li>
 </ul>
 <h2 id="Topological-sort"><a href="#Topological-sort" class="headerlink" title="Topological sort"></a>Topological sort</h2><p>对象是有向无环图 (directed acyclic graphs)，因此拓扑排序可以用来判断一个图有没有环，很多实际应用都需要使用有向无环图来指明时间的先后顺序。<br>拓扑排序是一种针对有向无环图（DAG）的排序算法，它不是基于元素之间的比较，而是基于它们之间的依赖关系。原理上，拓扑排序是对有向无环图进行深度优先搜索（DFS）或广度优先搜索（BFS）的一种应用。它通过这些搜索算法来确定图中节点的线性序列，这个序列满足：对于图中的每一条有向边 (u, v)（从节点 u 指向节点 v），u 在序列中都出现在 v 之前。这样的序列满足了图中节点间的所有依赖关系。</p>
 <ul>
-<li><strong>依赖关系</strong>：<br>  图中的每个节点代表一个任务或活动，有向边代表一个任务必须在另一个任务之后完成。拓扑排序能够确保对于任何节点，它的所有前驱节点（即所有指向它的节点）都在它之前被访问。<blockquote>
-<p>伪代码：<br>TOPOLOGICAL-SORT$(G)$<br>     call $DFS(G)$ to compute finish times v.f for each vertex v<br>     as each vertex is finished, insert it onto the front of a linked list<br>     return the linked list of vertices</p>
+<li><strong>依赖关系</strong>：<br>图中的每个节点代表一个任务或活动，有向边代表一个任务必须在另一个任务之后完成。拓扑排序能够确保对于任何节点，它的所有前驱节点（即所有指向它的节点）都在它之前被访问。<blockquote>
+<p>伪代码：<br>TOPOLOGICAL-SORT$(G)$<br>       call $DFS(G)$ to compute finish times v.f for each vertex v<br>       as each vertex is finished, insert it onto the front of a linked list<br>       return the linked list of vertices</p>
 </blockquote>
 </li>
 </ul>
@@ -238,49 +283,283 @@
 <li>分量图 $G^{SCC} = (V^{SCC},E^{SCC})$，为简化后的有向图，把每个强连通分量压缩成一个顶点，以便研究它们之间的关系。<br><img src="https://telegraph-image-eja.pages.dev/file/f02f4a1572ce744d646b2.png" alt="image"></li>
 </ul>
 <blockquote>
-<p>伪代码：<br>$STRONGLY-CONNECTED-COMPONENTS(G)$<br>1	call DFS(G) to compute finish times u.f for each vertex u<br>2	create $G^T$<br>3	call DFS($G^T$) , but in the main loop of DFS, consider the vertices<br>    in order of decreasing u.f (as computed in line 1)<br>4	output the vertices of each tree in the depth-ûrst forest formed in line 3 as a<br>        separate strongly connected component</p>
+<p>伪代码：<br>$STRONGLY-CONNECTED-COMPONENTS(G)$<br>1 call DFS(G) to compute finish times u.f for each vertex u<br>2 create $G^T$<br>3 call DFS($G^T$) , but in the main loop of DFS, consider the vertices<br>in order of decreasing u.f (as computed in line 1)<br>4 output the vertices of each tree in the depth-ûrst forest formed in line 3 as a</p>
 </blockquote>
+<pre><code>    separate strongly connected component
+</code></pre>
 ]]></content>
       <categories>
-        <category>Graph</category>
+        <category>算法</category>
       </categories>
       <tags>
         <tag>Graph</tag>
+        <tag>算法</tag>
+        <tag>数据结构</tag>
+        <tag>DFS</tag>
+        <tag>BFS</tag>
+        <tag>图论</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git Command 自用</title>
+    <url>/2025/08/06/Git-Command/</url>
+    <content><![CDATA[<h2 id="项目模拟场景"><a href="#项目模拟场景" class="headerlink" title="项目模拟场景"></a>项目模拟场景</h2><h3 id="项目初始化阶段"><a href="#项目初始化阶段" class="headerlink" title="项目初始化阶段"></a>项目初始化阶段</h3><h4 id="1-创建远程仓库"><a href="#1-创建远程仓库" class="headerlink" title="1. 创建远程仓库"></a>1. 创建远程仓库</h4><ul>
+<li>在 GitHub 创建 private 仓库</li>
+<li>邀请协作者</li>
+</ul>
+<h4 id="2-初始化本地项目"><a href="#2-初始化本地项目" class="headerlink" title="2. 初始化本地项目"></a>2. 初始化本地项目</h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir ProjectName &amp;&amp; cd ProjectName</span><br><span class="line">echo "# ProjectName - 项目描述" &gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "chore: initial project setup"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建基础分支结构</span></span><br><span class="line">git switch -c develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建初始目录结构</span></span><br><span class="line">mkdir -p backend frontend docs</span><br><span class="line">echo "后端服务" &gt; backend/README.md</span><br><span class="line">echo "前端应用" &gt; frontend/README.md</span><br><span class="line">echo "项目文档" &gt; docs/README.md</span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: create project structure"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推送到远程</span></span><br><span class="line">git remote add origin https://github.com/username/ProjectName.git</span><br><span class="line">git push -u origin main develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-设置分支保护-仓库-settings"><a href="#3-设置分支保护-仓库-settings" class="headerlink" title="3. 设置分支保护(仓库 settings)"></a>3. 设置分支保护 (仓库 settings)</h4><ul>
+<li><code>main</code> 分支：Require pull request, Require 1 approval, Require status checks</li>
+<li><code>develop</code> 分支：Require pull request, Require status checks</li>
+</ul>
+<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有团队成员克隆仓库</span></span><br><span class="line">git clone https://github.com/username/ProjectName.git</span><br><span class="line">cd ProjectName</span><br><span class="line">git switch develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化后端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 后端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd backend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">spring init --dependencies=web,data-jpa,mysql,security --build=gradle -n BackendProject</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> BackendProject/* . &amp;&amp; <span class="built_in">rmdir</span> BackendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize backend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化前端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 前端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">npm init vue@latest -- --projectName=<span class="string">"FrontendProject"</span> --typescript --pinia --vitest</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> FrontendProject/* . &amp;&amp; <span class="built_in">rmdir</span> FrontendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果develop设置了分支保护，该push会失败，可以采用以下方法：</span></span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/init-frontend</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行前端初始化命令</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push -u origin feature/init-frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端成员去github网页创建PR，reviewer在网页处理PR，接着前端成员同步最新的develop</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git branch -d feature/init-frontend   # 删掉本地功能分支</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="项目开发阶段"><a href="#项目开发阶段" class="headerlink" title="项目开发阶段"></a>项目开发阶段</h2><h3 id="迭代-1：用户认证系统"><a href="#迭代-1：用户认证系统" class="headerlink" title="迭代 1：用户认证系统"></a>迭代 1：用户认证系统</h3><h4 id="后端成员开发认证-API"><a href="#后端成员开发认证-API" class="headerlink" title="后端成员开发认证 API"></a>后端成员开发认证 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-auth</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证功能</span></span><br><span class="line"><span class="comment"># ... 编写JWT认证逻辑 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/auth/**</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement JWT authentication"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发API文档</span></span><br><span class="line"><span class="comment"># ... 添加Swagger注解 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/AuthController.java</span><br><span class="line">git commit -m <span class="string">"docs(auth): add swagger API documentation"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推送到远程</span></span><br><span class="line">git push -u origin feature/backend-auth</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发登录界面"><a href="#前端成员开发登录界面" class="headerlink" title="前端成员开发登录界面"></a>前端成员开发登录界面</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-login</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于后端Swagger生成TS类型</span></span><br><span class="line">npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api-types.d.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发登录组件</span></span><br><span class="line"><span class="comment"># ... 创建Login.vue ...</span></span><br><span class="line">git add frontend/src/views/Login.vue</span><br><span class="line">git commit -m <span class="string">"feat(login): implement login page UI"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证逻辑</span></span><br><span class="line"><span class="comment"># ... 实现axios拦截器 ...</span></span><br><span class="line">git add frontend/src/services/auth.ts</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement token management"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-login</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="代码审查与合并"><a href="#代码审查与合并" class="headerlink" title="代码审查与合并"></a>代码审查与合并</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员创建PR: feature/backend-auth → develop</span></span><br><span class="line"><span class="comment"># 前端成员创建PR: feature/frontend-login → develop</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审查过程：</span></span><br><span class="line"><span class="comment">## 1. 前端成员验证后端API文档</span></span><br><span class="line"><span class="comment">## 2. 后端成员检查前端token处理逻辑</span></span><br><span class="line"><span class="comment">## 3. 项目经理批准合并</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并后操作（项目经理）：</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="comment"># 如果不走网页PR，可在本地合并</span></span><br><span class="line">git merge --no-ff feature/backend-auth</span><br><span class="line">git merge --no-ff feature/frontend-login</span><br><span class="line">git push origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-2：数据分析看板"><a href="#迭代-2：数据分析看板" class="headerlink" title="迭代 2：数据分析看板"></a>迭代 2：数据分析看板</h3><h4 id="后端成员开发分析-API"><a href="#后端成员开发分析-API" class="headerlink" title="后端成员开发分析 API"></a>后端成员开发分析 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-analysis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据库迁移脚本</span></span><br><span class="line"><span class="comment"># ... 使用Liquibase/Flyway等 ...</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.1__analysis_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add analysis tables"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发分析算法</span></span><br><span class="line"><span class="comment"># ... 集成数据分析模型 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/AnalysisService.java</span><br><span class="line">git commit -m <span class="string">"feat(analysis): implement data analysis model"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/backend-analysis</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发可视化看板"><a href="#前端成员开发可视化看板" class="headerlink" title="前端成员开发可视化看板"></a>前端成员开发可视化看板</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-dashboard</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装可视化库</span></span><br><span class="line">npm install echarts vue-echarts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发看板组件</span></span><br><span class="line"><span class="comment"># ... 创建Dashboard.vue ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"feat(dashboard): implement analysis charts"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-dashboard</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到问题：API-变更冲突"><a href="#遇到问题：API-变更冲突" class="headerlink" title="遇到问题：API 变更冲突"></a>遇到问题：API 变更冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员修改了API响应格式</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/DataController.java</span><br><span class="line">git commit -m <span class="string">"refactor(api): update response format for frontend"</span></span><br><span class="line">git push origin feature/backend-analysis --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员需要同步变更</span></span><br><span class="line">git switch feature/frontend-dashboard</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop  <span class="comment"># 获取最新API变更</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决前端适配问题</span></span><br><span class="line"><span class="comment"># ... 更新数据处理逻辑 ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"fix(dashboard): adapt to new API response format"</span></span><br><span class="line">git push origin feature/frontend-dashboard --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-3：推荐系统"><a href="#迭代-3：推荐系统" class="headerlink" title="迭代 3：推荐系统"></a>迭代 3：推荐系统</h3><h4 id="多人协作开发"><a href="#多人协作开发" class="headerlink" title="多人协作开发"></a>多人协作开发</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A开发数据管理</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员开发推荐界面</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/frontend-recommendation</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B开发推荐算法</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-recommend-engine</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到数据库冲突"><a href="#遇到数据库冲突" class="headerlink" title="遇到数据库冲突"></a>遇到数据库冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A提交了数据表变更</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.2__data_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add data tables"</span></span><br><span class="line">git push origin feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B也需要修改数据库</span></span><br><span class="line">git switch feature/backend-recommend-engine</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遇到冲突：db/changelog/changelog-master.yaml</span></span><br><span class="line"><span class="comment"># 解决冲突后</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line">git push origin feature/backend-recommend-engine --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="测试与发布阶段"><a href="#测试与发布阶段" class="headerlink" title="测试与发布阶段"></a>测试与发布阶段</h2><h3 id="预发布准备"><a href="#预发布准备" class="headerlink" title="预发布准备"></a>预发布准备</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 创建发布分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c release/v1.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新版本号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"1.0.0"</span> &gt; VERSION</span><br><span class="line">git add VERSION</span><br><span class="line">git commit -m <span class="string">"chore: prepare release v1.0.0"</span></span><br><span class="line">git push -u origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试问题修复"><a href="#测试问题修复" class="headerlink" title="测试问题修复"></a>测试问题修复</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 发现权限问题</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git switch -c fix/permission-issue</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复后端权限验证</span></span><br><span class="line"><span class="comment"># ... 修改SecurityConfig等 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/config/SecurityConfig.java</span><br><span class="line">git commit -m <span class="string">"fix(auth): correct role permissions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并回发布分支</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git merge --no-ff fix/permission-issue</span><br><span class="line">git push origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="正式发布"><a href="#正式发布" class="headerlink" title="正式发布"></a>正式发布</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 合并到main分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git merge --no-ff release/v1.0.0</span><br><span class="line">git tag -a v1.0.0 -m <span class="string">"Initial release with core features"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新develop分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git merge release/v1.0.0</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除发布分支</span></span><br><span class="line">git branch -d release/v1.0.0</span><br><span class="line">git push origin --delete release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="生产环境问题处理"><a href="#生产环境问题处理" class="headerlink" title="生产环境问题处理"></a>生产环境问题处理</h2><h3 id="紧急修复示例"><a href="#紧急修复示例" class="headerlink" title="紧急修复示例"></a>紧急修复示例</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 从main创建热修复分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git switch -c hotfix/critical-bug-fix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复问题</span></span><br><span class="line"><span class="comment"># ... 修改相关服务 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/DataService.java</span><br><span class="line">git commit -m <span class="string">"fix(service): handle large dataset processing"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到main和develop</span></span><br><span class="line">git switch main</span><br><span class="line">git merge --no-ff hotfix/critical-bug-fix</span><br><span class="line">git tag -a v1.0.1 -m <span class="string">"Hotfix for critical bug"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line">git switch develop</span><br><span class="line">git merge hotfix/critical-bug-fix</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除热修复分支</span></span><br><span class="line">git branch -d hotfix/critical-bug-fix</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="checkout-和-switch-的区别"><a href="#checkout-和-switch-的区别" class="headerlink" title="checkout 和 switch 的区别"></a>checkout 和 switch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支切换</span></span><br><span class="line">git checkout existing-branch</span><br><span class="line">git switch existing-branch</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换分支</span></span><br><span class="line">git checkout -b feature/new-feature</span><br><span class="line">git switch -c feature/new-feature</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件恢复</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">核心场景：你还没提交，但把某个文件改坏了，想撤销所有未暂存的本地修改，让它立刻回到上一次提交时的样子（误删也用这个）</span></span><br><span class="line">git checkout -- src/components/Component.vue</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果已暂存，先用`git reset HEAD &lt;file&gt;`取消暂存，再用checkout</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看历史提交（只读模式）</span></span><br><span class="line">git checkout HEAD~3</span><br><span class="line">git switch --detach HEAD~3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安全机制</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当有未提交更改时尝试切换分支，switch会报错，而checkout会尝试自动合并，可能会导致数据丢失</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="pull-fetch-的区别"><a href="#pull-fetch-的区别" class="headerlink" title="pull &amp; fetch 的区别"></a>pull &amp; fetch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pull = fetch + merge</span></span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分步操作更安全</span></span><br><span class="line">git fetch origin           # 获取远程更新但不合并</span><br><span class="line">git log origin/develop..HEAD  # 查看差异</span><br><span class="line">git merge origin/develop    # 手动合并</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式拉取（保持线性历史）</span></span><br><span class="line">git pull --rebase origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="rebase-merge-的区别"><a href="#rebase-merge-的区别" class="headerlink" title="rebase &amp; merge 的区别"></a>rebase &amp; merge 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">merge方式：保留分支历史</span></span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login     # 创建合并提交</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式：线性历史更整洁</span></span><br><span class="line">git switch feature/login</span><br><span class="line">git rebase main            # 重新应用提交</span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login    # 快进合并</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看分支</td>
+<td><code>git branch -a</code></td>
+<td>显示所有分支</td>
+</tr>
+<tr>
+<td>切换分支</td>
+<td><code>git switch branch-name</code></td>
+<td>推荐用法</td>
+</tr>
+<tr>
+<td>创建切换</td>
+<td><code>git switch -c new-branch</code></td>
+<td>创建并切换到新分支</td>
+</tr>
+<tr>
+<td>删除分支</td>
+<td><code>git branch -d branch-name</code></td>
+<td>删除已合并分支</td>
+</tr>
+<tr>
+<td>强制删除</td>
+<td><code>git branch -D branch-name</code></td>
+<td>强制删除分支</td>
+</tr>
+</tbody></table>
+<h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>拉取更新</td>
+<td><code>git pull origin main</code></td>
+<td>拉取并合并</td>
+</tr>
+<tr>
+<td>获取更新</td>
+<td><code>git fetch origin</code></td>
+<td>只获取不合并</td>
+</tr>
+<tr>
+<td>推送分支</td>
+<td><code>git push -u origin HEAD</code></td>
+<td>推送当前分支</td>
+</tr>
+<tr>
+<td>强制推送</td>
+<td><code>git push --force-with-lease</code></td>
+<td>安全强推</td>
+</tr>
+</tbody></table>
+<h3 id="提交管理"><a href="#提交管理" class="headerlink" title="提交管理"></a>提交管理</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看状态</td>
+<td><code>git status</code></td>
+<td>检查工作区状态</td>
+</tr>
+<tr>
+<td>暂存文件</td>
+<td><code>git add .</code></td>
+<td>暂存所有变更</td>
+</tr>
+<tr>
+<td>提交变更</td>
+<td><code>git commit -m "message"</code></td>
+<td>提交暂存区</td>
+</tr>
+<tr>
+<td>修改提交</td>
+<td><code>git commit --amend</code></td>
+<td>修改最后一次提交</td>
+</tr>
+<tr>
+<td>撤销提交</td>
+<td><code>git reset --soft HEAD~1</code></td>
+<td>撤销但保留更改</td>
+</tr>
+</tbody></table>
+<h3 id="历史查看"><a href="#历史查看" class="headerlink" title="历史查看"></a>历史查看</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看历史</td>
+<td><code>git log --oneline</code></td>
+<td>简洁历史</td>
+</tr>
+<tr>
+<td>图形化历史</td>
+<td><code>git log --graph --all</code></td>
+<td>分支图</td>
+</tr>
+<tr>
+<td>文件历史</td>
+<td><code>git log -p filename</code></td>
+<td>文件变更历史</td>
+</tr>
+<tr>
+<td>查看差异</td>
+<td><code>git diff HEAD~1</code></td>
+<td>与上次提交比较</td>
+</tr>
+</tbody></table>
+<h2 id="关键-git-命令速查表"><a href="#关键-git-命令速查表" class="headerlink" title="关键 git 命令速查表"></a>关键 git 命令速查表</h2><table>
+<thead>
+<tr>
+<th align="center">场景</th>
+<th align="center">命令</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">开始新功能</td>
+<td align="center"> git switch develop &amp;&amp; git pull &amp;&amp; git switch -c feature/[name]</td>
+<td align="center"> 从 develop 创建新功能分支</td>
+</tr>
+<tr>
+<td align="center">每日同步</td>
+<td align="center"> git fetch origin &amp;&amp; git rebase origin/develop</td>
+<td align="center"> 保持与 develop 同步</td>
+</tr>
+<tr>
+<td align="center">提交变更</td>
+<td align="center"> git add . &amp;&amp; git commit -m “…” &amp;&amp; git push -u origin HEAD</td>
+<td align="center"> 推送当前分支</td>
+</tr>
+<tr>
+<td align="center">解决冲突</td>
+<td align="center"> git rebase –continue 或 git rebase –abort</td>
+<td align="center"> 变基操作控制</td>
+</tr>
+<tr>
+<td align="center">撤销错误提交</td>
+<td align="center"> git reset –soft HEAD~1</td>
+<td align="center"> 撤销最后一次提交</td>
+</tr>
+<tr>
+<td align="center">查看分支关系</td>
+<td align="center"> git log –all –graph –oneline</td>
+<td align="center"> 可视化分支历史</td>
+</tr>
+</tbody></table>
+<h2 id="git-提交规范"><a href="#git-提交规范" class="headerlink" title="git 提交规范"></a>git 提交规范</h2><figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">feat: 添加新功能</span><br><span class="line">fix: 修复 bug</span><br><span class="line">docs: 文档变更</span><br><span class="line">style: 代码格式/样式调整</span><br><span class="line">refactor: 代码重构</span><br><span class="line">test: 添加或修改测试</span><br><span class="line">chore: 构建过程或辅助工具变更</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用场景补充"><a href="#常用场景补充" class="headerlink" title="常用场景补充"></a>常用场景补充</h2><h3 id="储藏工作进度"><a href="#储藏工作进度" class="headerlink" title="储藏工作进度"></a>储藏工作进度</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时保存当前工作</span></span><br><span class="line">git stash push -m "work in progress"</span><br><span class="line">git stash list               # 查看储藏列表</span><br><span class="line">git stash pop               # 恢复最新储藏</span><br><span class="line">git stash apply stash@{1}   # 恢复指定储藏</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销已暂存的文件</span></span><br><span class="line">git reset HEAD filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销本地修改</span></span><br><span class="line">git checkout -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件修改者</span></span><br><span class="line">git blame filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">恢复已删除的文件</span></span><br><span class="line">git checkout HEAD~1 -- deleted-file.js</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="历史查看-1"><a href="#历史查看-1" class="headerlink" title="历史查看"></a>历史查看</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看简洁历史</span></span><br><span class="line">git log --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分支图</span></span><br><span class="line">git log --all --graph --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件变更历史</span></span><br><span class="line">git log -p -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搜索提交信息</span></span><br><span class="line">git log --grep="fix"</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>版本控制</tag>
+        <tag>命令笔记</tag>
       </tags>
   </entry>
   <entry>
     <title>Minimum Spanning Trees</title>
     <url>/2024/04/25/Minimum%20Spanning%20Trees/</url>
-    <content><![CDATA[<h1 id="Minimum-Spanning-Trees"><a href="#Minimum-Spanning-Trees" class="headerlink" title="Minimum Spanning Trees"></a>Minimum Spanning Trees</h1><p>对于无向图 $𝐺=(𝑉,𝐸)$，存在一个能够连接所有顶点的无环子集 $𝑇⊆𝐸$，由于&nbsp;𝑇&nbsp;无环且连接所有顶点，因此&nbsp;𝑇&nbsp;一定为一棵树 (树是特殊的图，为无环连通图)，被称为生成树 (spanning tree)。无向图 $𝐺=(𝑉,𝐸)$ 的所有生成树都恰有 $|𝑉|−1$ 条边。</p>
+    <content><![CDATA[<h1 id="Minimum-Spanning-Trees"><a href="#Minimum-Spanning-Trees" class="headerlink" title="Minimum Spanning Trees"></a>Minimum Spanning Trees</h1><p>对于无向图 $𝐺=(𝑉,𝐸)$，存在一个能够连接所有顶点的无环子集 $𝑇⊆𝐸$，由于 &nbsp;𝑇&nbsp; 无环且连接所有顶点，因此 &nbsp;𝑇&nbsp; 一定为一棵树 (树是特殊的图，为无环连通图)，被称为生成树 (spanning tree)。无向图 $𝐺=(𝑉,𝐸)$ 的所有生成树都恰有 $|𝑉|−1$ 条边。</p>
 <p>设边 $(𝑢,𝑣)∈𝐸$ 的权重为 $𝑤(𝑢,𝑣)$，生成树权重为 $𝑤(𝑇) = \sum_{(𝑢,𝑣)∈𝑇} 𝑤(𝑢,𝑣)$，所有生成树中权重最小的生成树被称为最小权重生成树 (minimum-weight spanning tree)，简称最小生成树 (minimum spanning tree)。</p>
-<h2 id="Growing-a-minimum-spanning-tree"><a href="#Growing-a-minimum-spanning-tree" class="headerlink" title="Growing a minimum spanning tree"></a>Growing a minimum spanning tree</h2><p>最小生成树问题的输入为一个无向连通图&nbsp;$𝐺=(𝑉,𝐸)$, 伪代码如下：</p>
+<h2 id="Growing-a-minimum-spanning-tree"><a href="#Growing-a-minimum-spanning-tree" class="headerlink" title="Growing a minimum spanning tree"></a>Growing a minimum spanning tree</h2><p>最小生成树问题的输入为一个无向连通图 &nbsp;$𝐺=(𝑉,𝐸)$, 伪代码如下：</p>
 <blockquote>
-<p>$GENERIC-MST(G, w)$<br>1    $A = \not 0$<br>2    while A does not form a spanning tree<br>3        find an edge (u, v) that is safe for A<br>4        $A = A \cup {(u, v)}$<br>5    return A</p>
+<p>$GENERIC-MST(G, w)$<br>1 $A = \not 0$<br>2 while A does not form a spanning tree<br>3 find an edge (u, v) that is safe for A<br>4 $A = A \cup {(u, v)}$<br>5 return A</p>
 </blockquote>
-<p>能够被加入&nbsp;𝐴&nbsp;的边&nbsp;(𝑢,𝑣)&nbsp;被称为&nbsp;𝐴&nbsp;的安全边 (safe edge)。通过&nbsp;𝐴&nbsp;维持了循环不变量可证明过程&nbsp;GENERIC-MST&nbsp;的正确性。在讨论如何识别安全边之前，我们需要了解一些定义。<br><img src="https://telegraph-image-eja.pages.dev/file/d85f5a52655f0d41a977d.png" alt="image"></p>
+<p>能够被加入 &nbsp;𝐴&nbsp; 的边 &nbsp;(𝑢,𝑣)&nbsp; 被称为 &nbsp;𝐴&nbsp; 的安全边 (safe edge)。通过 &nbsp;𝐴&nbsp; 维持了循环不变量可证明过程 &nbsp;GENERIC-MST&nbsp; 的正确性。在讨论如何识别安全边之前，我们需要了解一些定义。<br><img src="https://telegraph-image-eja.pages.dev/file/d85f5a52655f0d41a977d.png" alt="image"></p>
 <ul>
-<li>$cut$：无向图 $𝐺=(𝑉,𝐸)$ 的一个切割 (cut)&nbsp;$(𝑆,𝑉−𝑆)$ 是对顶点𝑉的一个划分，分成两个区域</li>
-<li> $cross$：若边 $(𝑢,𝑣)∈𝐸$ 的一个端点属于&nbsp;𝑆&nbsp;，另一个端点属于𝑉−𝑆&nbsp;，则称边 (𝑢,𝑣)&nbsp;横跨 (cross) cut (𝑆,𝑉−𝑆)，看图的话就是跟红色分割线相交的边都是 cross 的边</li>
-<li> $respect$：若集合&nbsp;𝐴&nbsp;中不存在横跨切割&nbsp;(𝑆,𝑉−𝑆)&nbsp;的边，则称该切割不影响 (respect)&nbsp;𝐴</li>
+<li>$cut$：无向图 $𝐺=(𝑉,𝐸)$ 的一个切割 (cut)&nbsp;$(𝑆,𝑉−𝑆)$ 是对顶点 𝑉 的一个划分，分成两个区域</li>
+<li> $cross$：若边 $(𝑢,𝑣)∈𝐸$ 的一个端点属于 &nbsp;𝑆&nbsp;，另一个端点属于 𝑉−𝑆&nbsp;，则称边 (𝑢,𝑣)&nbsp; 横跨 (cross) cut (𝑆,𝑉−𝑆)，看图的话就是跟红色分割线相交的边都是 cross 的边</li>
+<li> $respect$：若集合 &nbsp;𝐴&nbsp; 中不存在横跨切割 &nbsp;(𝑆,𝑉−𝑆)&nbsp; 的边，则称该切割不影响 (respect)&nbsp;𝐴</li>
 <li>$light\ edge$：权重最小的 cross 边即是轻量边 (light edge)<br>原文如下：<br><img src="https://telegraph-image-eja.pages.dev/file/1833dbc2edcac6e9a8fb9.png" alt="image"><br>当然最好还得知道树的性质：添加一条边就会构成环，删除一条边就会分裂成两棵树。</li>
 </ul>
 <h3 id="Theorem"><a href="#Theorem" class="headerlink" title="Theorem"></a>Theorem</h3><blockquote>
-<p>设&nbsp;𝐺=(𝑉, 𝐸)&nbsp;为一个无向连通图，其权重函数为&nbsp;𝑤: $𝐸\to𝑅$&nbsp;，设&nbsp;𝐴⊆𝐸&nbsp;，且&nbsp;𝐴&nbsp;包含于&nbsp;𝐺&nbsp;的一棵最小生成树中。设&nbsp;(𝑆, 𝑉−𝑆)&nbsp;为&nbsp;𝐺&nbsp;中不影响&nbsp;𝐴&nbsp;的任意一个切割，若&nbsp;(𝑢, 𝑣)&nbsp;为横跨&nbsp;(𝑆, 𝑉−𝑆)&nbsp;的一条轻量边，则对于&nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp;是安全的。</p>
+<p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 &nbsp;𝑤: $𝐸\to𝑅$&nbsp;，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 为 &nbsp;𝐺&nbsp; 中不影响 &nbsp;𝐴&nbsp; 的任意一个切割，若 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</p>
 </blockquote>
 <p><img src="https://telegraph-image-eja.pages.dev/file/bd123ede0b571e7df22aa.png" alt="image"></p>
 <p>// 图中橙色顶点属于 S，其它顶点属于 V-S，蓝色边就是 A 中的边</p>
 <p>证明如下：</p>
 <ul>
-<li>首先假设 T 是包含 A 的最小生成树，并假设 T 不包含轻量边 (u, v)，因为如果包含了，我们就不用证了。接着我们可以通过构造另一棵最小生成树 T’，其中 $A \cup {(u, v)} ⊆ T’$, 从而表明，边&nbsp;(𝑢, 𝑣)&nbsp;对于&nbsp;𝐴&nbsp;是安全的。</li>
-<li>由图可知边 (u, v) 与 $u \to v$ 的简单路径构成环路。因为 u, v 在 cut (𝑆, 𝑉−𝑆) 下分属两边，因此&nbsp;𝑇&nbsp;中至少有一条边属于简单路径&nbsp;𝑝&nbsp;并且横跨该切割，设&nbsp;(𝑥, 𝑦)&nbsp;为这样一条边。因为切割&nbsp;(𝑆, 𝑉−𝑆)&nbsp;不影响𝐴&nbsp;，所以&nbsp;(𝑥, 𝑦) ∉ 𝐴。又因为边&nbsp;(𝑥, 𝑦)&nbsp;位于&nbsp;𝑇&nbsp;中从&nbsp;𝑢&nbsp;到&nbsp;𝑣&nbsp;的唯一的简单路径上，所以移除&nbsp;(𝑥, 𝑦)&nbsp;会导致&nbsp;𝑇&nbsp;分裂成两部分。此时添加&nbsp;(𝑢, 𝑣)&nbsp;将这两部分重新连接成一棵新的生成树 ：𝑇′=(𝑇−{(𝑥,𝑦)})∪{(𝑢,𝑣)}&nbsp;。</li>
-<li>我们接下来要证明 T’是最小生成树。由于&nbsp;(𝑢, 𝑣)&nbsp;为横跨&nbsp;(𝑆, 𝑉−𝑆)&nbsp;的一条轻量边且&nbsp;(𝑥, 𝑦)&nbsp;为横跨&nbsp;(𝑆, 𝑉−𝑆)&nbsp;的一条边，即&nbsp;𝑤(𝑢, 𝑣)≤𝑤(𝑥, 𝑦)&nbsp;，因此：<br>$w(T’) = w(T) - w(x, y) + w(u, v)$<br> $\leq w(T)$<br>但是&nbsp;𝑇&nbsp;为一棵最小生成树，有&nbsp;𝑤(𝑇)≤𝑤(𝑇′)&nbsp;。因此，有&nbsp;𝑤(𝑇) = 𝑤(𝑇′)&nbsp;，所以&nbsp;𝑇′&nbsp;也是一棵最小生成树。</li>
-<li>最后，我们还需要说明边&nbsp;(𝑢, 𝑣)&nbsp;对于&nbsp;𝐴&nbsp;是安全的。因为&nbsp;𝐴⊆𝑇&nbsp;且&nbsp;(𝑥, 𝑦)∉𝐴&nbsp;，所以&nbsp;𝐴⊆𝑇′&nbsp;，所以&nbsp;(𝐴∪{(𝑢,𝑣)})⊆𝑇′&nbsp;。由于&nbsp;𝑇′&nbsp;是一棵最小生成树，因此对于&nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp;是安全的。</li>
+<li>首先假设 T 是包含 A 的最小生成树，并假设 T 不包含轻量边 (u, v)，因为如果包含了，我们就不用证了。接着我们可以通过构造另一棵最小生成树 T’，其中 $A \cup {(u, v)} ⊆ T’$, 从而表明，边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。</li>
+<li>由图可知边 (u, v) 与 $u \to v$ 的简单路径构成环路。因为 u, v 在 cut (𝑆, 𝑉−𝑆) 下分属两边，因此 &nbsp;𝑇&nbsp; 中至少有一条边属于简单路径 &nbsp;𝑝&nbsp; 并且横跨该切割，设 &nbsp;(𝑥, 𝑦)&nbsp; 为这样一条边。因为切割 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 不影响 𝐴&nbsp;，所以 &nbsp;(𝑥, 𝑦) ∉ 𝐴。又因为边 &nbsp;(𝑥, 𝑦)&nbsp; 位于 &nbsp;𝑇&nbsp; 中从 &nbsp;𝑢&nbsp; 到 &nbsp;𝑣&nbsp; 的唯一的简单路径上，所以移除 &nbsp;(𝑥, 𝑦)&nbsp; 会导致 &nbsp;𝑇&nbsp; 分裂成两部分。此时添加 &nbsp;(𝑢, 𝑣)&nbsp; 将这两部分重新连接成一棵新的生成树 ：𝑇′=(𝑇−{(𝑥,𝑦)})∪{(𝑢,𝑣)}&nbsp;。</li>
+<li>我们接下来要证明 T’是最小生成树。由于 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边且 &nbsp;(𝑥, 𝑦)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条边，即 &nbsp;𝑤(𝑢, 𝑣)≤𝑤(𝑥, 𝑦)&nbsp;，因此：<br>$w(T’) = w(T) - w(x, y) + w(u, v)$<br>$\leq w(T)$<br>但是 &nbsp;𝑇&nbsp; 为一棵最小生成树，有 &nbsp;𝑤(𝑇)≤𝑤(𝑇′)&nbsp;。因此，有 &nbsp;𝑤(𝑇) = 𝑤(𝑇′)&nbsp;，所以 &nbsp;𝑇′&nbsp; 也是一棵最小生成树。</li>
+<li>最后，我们还需要说明边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。因为 &nbsp;𝐴⊆𝑇&nbsp; 且 &nbsp;(𝑥, 𝑦)∉𝐴&nbsp;，所以 &nbsp;𝐴⊆𝑇′&nbsp;，所以 &nbsp;(𝐴∪{(𝑢,𝑣)})⊆𝑇′&nbsp;。由于 &nbsp;𝑇′&nbsp; 是一棵最小生成树，因此对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</li>
 </ul>
 <p>感觉有点难咀嚼的话可以看看下面的另一种证明 (算法 4)：<br><img src="https://telegraph-image-eja.pages.dev/file/ef60c9e50f8c87db41f0d.png" alt="image"></p>
 <blockquote>
 <p>在算法执行的任何时候，图 $G_A = (V, A)$ 是一个森林，$G_A$ 中每一个连通分量都是一棵树 (一些树可能只包含一个顶点，例如在算法开始时，A 是空的，因为还没开始加入安全边，并且此时森林包含了 | V | 棵树，每棵树都只有一个顶点)。此外，因为 $A \cup {(u, v)}$ 必须是无环的，因此每一条安全边 (u, v) 都连接着 $G_A$ 中的不同分量。</p>
 </blockquote>
-<h3 id="Corollary"><a href="#Corollary" class="headerlink" title="Corollary"></a>Corollary</h3><p>设&nbsp;𝐺=(𝑉, 𝐸)&nbsp;为一个无向连通图，其权重函数为 $𝑤:𝐸\to𝑅$，设&nbsp;𝐴⊆𝐸&nbsp;，且&nbsp;𝐴&nbsp;包含于&nbsp;𝐺&nbsp;的一棵最小生成树中。设 $𝐶=(𝑉_𝐶, 𝐸_𝐶)$ 为森林 $𝐺_𝐴=(𝑉,𝐴)$ 中的一个连通分量（一棵树）。若&nbsp;(𝑢,𝑣)&nbsp;是连接&nbsp;𝐶&nbsp;和 $𝐺_𝐴$ 中某一个其它的连通分量的一条轻量边，则对于&nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp;是安全边。</p>
+<h3 id="Corollary"><a href="#Corollary" class="headerlink" title="Corollary"></a>Corollary</h3><p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 $𝑤:𝐸\to𝑅$，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 $𝐶=(𝑉_𝐶, 𝐸_𝐶)$ 为森林 $𝐺_𝐴=(𝑉,𝐴)$ 中的一个连通分量（一棵树）。若 &nbsp;(𝑢,𝑣)&nbsp; 是连接 &nbsp;𝐶&nbsp; 和 $𝐺_𝐴$ 中某一个其它的连通分量的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全边。</p>
 <blockquote>
 <p>Proof：<br>切割 $(V_C,V-V_C)$ 不影响 A，又因为 (u, v) 是该切割的轻量边，因此，对于 A，(u, v) 是安全的。</p>
 </blockquote>
@@ -290,8 +569,8 @@
 <p>大家可以先通过上图感受一下该算法，蓝色边属于森林 A，透过上图我们还可以观察到被添加到 A 中的安全边的权重是从小到大的，所以容易发现 Kruskal 算法是贪心算法，每次都加入权重最小的安全边，以此来保证总权重最小。该算法以按权重排序的顺序来考虑每条边，因此正在考虑的那条边已经是当前未加入生成树的边中的轻量边，只需再判断是否产生环而决定是否将它加入 A，红色的箭头则指向在算法的每一步中所考虑的边。如果边 (u, v) 连接森林中两棵不同的树 (注意单一的顶点也是树），则将其添加到森林中，从而合并两棵树。</p>
 </blockquote>
 <ul>
-<li>设 $C_1$ 和 $C_2$ 表示由 (u, v) 连接的两棵树。因为 (u, v) 必须是连接 $C_1$ 和其他树的轻量边，根据推论 (Corollary)，&nbsp;(𝑢, 𝑣)&nbsp;是 $𝐶_1$ 的一条安全边。<br>伪代码如下：<blockquote>
-<p>// 时间复杂度：𝑂(𝐸 lg⁡ 𝑉)<br>$MST-KRUSKAL(G, w)$<br>1     A = $\not 0$       // 初始化空集合<br>2     for each vertex $v \in G.V$<br>3          MAKE-SET (v)    // 使用并查集 (disjoint-set) 的数据结构来维护几个不相交的元素集，               每个集合都包含当前林的一棵树中的顶点，初始化即一个顶点一棵树<br>4     create a single list of the edges in G.E<br>5     sort the list of edges into monotonically increasing order by weight w<br>6     for each edge (u, v) taken from the sorted list in order<br>7            if FIND-SET (u) $\not =$ FIND-SET (v)    // 确定两个顶点是否属于同一棵树，同一棵树就会                                                                  成环<br>8                 $A = A \cup {(u, v)}$      // 把边 (u, v) 加入到 A<br>9                 UNION (u, v)       // 合并树<br>10     return A</p>
+<li>设 $C_1$ 和 $C_2$ 表示由 (u, v) 连接的两棵树。因为 (u, v) 必须是连接 $C_1$ 和其他树的轻量边，根据推论 (Corollary)，&nbsp;(𝑢, 𝑣)&nbsp; 是 $𝐶_1$ 的一条安全边。<br>伪代码如下：<blockquote>
+<p>// 时间复杂度：𝑂(𝐸 lg⁡ 𝑉)<br>$MST-KRUSKAL(G, w)$<br>1 A = $\not 0$ // 初始化空集合<br>2 for each vertex $v \in G.V$<br>3 MAKE-SET (v) // 使用并查集 (disjoint-set) 的数据结构来维护几个不相交的元素集， 每个集合都包含当前林的一棵树中的顶点，初始化即一个顶点一棵树<br>4 create a single list of the edges in G.E<br>5 sort the list of edges into monotonically increasing order by weight w<br>6 for each edge (u, v) taken from the sorted list in order<br>7 if FIND-SET (u) $\not =$ FIND-SET (v) // 确定两个顶点是否属于同一棵树，同一棵树就会 成环<br>8 $A = A \cup {(u, v)}$ // 把边 (u, v) 加入到 A<br>9 UNION (u, v) // 合并树<br>10 return A</p>
 </blockquote>
 </li>
 </ul>
@@ -305,11 +584,11 @@
 <li>路径压缩：在 Find 过程中在返回之前，路径中的顶点的父节点直接设为根节点，毕竟 Find 返回的就是根节点，这有利于下一次查询的效率。</li>
 <li>按秩合并：上面所说的合并操作是将其中一个根节点的父节点设为另一个顶点，这未免有点随便。比如现在有一棵简单的树，一棵复杂的树，那么是将简单的往复杂的合并好还是复杂的往简单的合并好？答案是前者，如果把复杂的往简单的合并，那么原来在复杂树中的每个元素到根节点的距离都变长了，影响后面 Find 的效率；而如果把简单的往复杂的合并，到根节点距离变长的节点个数比较少。所以就引入秩，初始时每个顶点的秩设为 1，那么什么时候秩会增加呢？这发生在合并时，如果两棵树深度相同，则新的根节点的秩 + 1。秩越高，树 (或子树) 就越复杂。</li>
 </ul>
-<h3 id="Prim’s-algorithm"><a href="#Prim’s-algorithm" class="headerlink" title="Prim’s algorithm"></a>Prim’s algorithm</h3><p>跟上面一样，我们可以先通过过程图感受一下：<br><img src="https://telegraph-image-eja.pages.dev/file/0149f1a64ebab26f61bdd.png" alt="image"><br>// 从上图可以明显感受到与 Kruskal 算法不一样的是，蓝色边之间都是连通的，这里就揭露了 Prim 算法具有的一个性质是&nbsp;𝐴&nbsp;中的边总是构成一棵树，我们还可以发现添加边的权重是没有像 Kruskal 算法一样按权重排序的。</p>
-<p>如图所示，这棵树以任意一个顶点&nbsp;𝑟&nbsp;为根节点，不断生长直到包含&nbsp;𝑉&nbsp;中所有顶点。每次加入到&nbsp;𝐴&nbsp;中的安全边永远是 (𝐴, 𝑉−𝐴) 切割的轻量边。根据 Corollary，每次加入&nbsp;𝐴&nbsp;的边一定是安全边。该算法也满足贪心性质，因为在每一步它向树添加的一条边，都为树的权重贡献可能的最小量。</p>
+<h3 id="Prim’s-algorithm"><a href="#Prim’s-algorithm" class="headerlink" title="Prim’s algorithm"></a>Prim’s algorithm</h3><p>跟上面一样，我们可以先通过过程图感受一下：<br><img src="https://telegraph-image-eja.pages.dev/file/0149f1a64ebab26f61bdd.png" alt="image"><br>// 从上图可以明显感受到与 Kruskal 算法不一样的是，蓝色边之间都是连通的，这里就揭露了 Prim 算法具有的一个性质是 &nbsp;𝐴&nbsp; 中的边总是构成一棵树，我们还可以发现添加边的权重是没有像 Kruskal 算法一样按权重排序的。</p>
+<p>如图所示，这棵树以任意一个顶点 &nbsp;𝑟&nbsp; 为根节点，不断生长直到包含 &nbsp;𝑉&nbsp; 中所有顶点。每次加入到 &nbsp;𝐴&nbsp; 中的安全边永远是 (𝐴, 𝑉−𝐴) 切割的轻量边。根据 Corollary，每次加入 &nbsp;𝐴&nbsp; 的边一定是安全边。该算法也满足贪心性质，因为在每一步它向树添加的一条边，都为树的权重贡献可能的最小量。</p>
 <p>伪代码如下：</p>
 <blockquote>
-<p>$MST-PRIM(G, w, r)$<br>1     for each vertex $u \in G.V$<br>2          $u.key = \infty$             //&nbsp;u.𝑘𝑒𝑦保存连接 u 和树中任一其它节点的所有边中最小的边的权                                               重，若不存在这样的边，即设为 $\infty$，初始化时都设为 $\infty$。<br>3          $u.\pi = NIL$            //u.𝜋&nbsp;保存 u 在树中的父节点<br>4     $r.key = 0$                   // 把根节点 r 的 key 设为 0，方便第 9 行第一个处理 r<br>5     $Q = \not 0$                        // 创建基于&nbsp;𝑘𝑒𝑦&nbsp;属性的优先队列<br>6     for each vertex $u \in G.V$<br>7           INSERT (Q, u)<br>8     while $Q \not = \not 0$               // 只要队列非空<br>9          u = EXTRACT-MIN (Q)        // 把 u 加到树 (A) 中<br>10        for each vertex v in $G.Adj [u]$        // 更新 u 的非树邻居的 key<br>11              if $v \in Q$ and w(u, v) &lt; v.key<br>12                    $v.\pi = u$<br>13                    v.key = w(u, v)<br>14                    DECREASE-KEY (Q, v, w (u, v))        // 调整 Q 中 v 的 key 值</p>
+<p>$MST-PRIM(G, w, r)$<br>1 for each vertex $u \in G.V$<br>2 $u.key = \infty$ //&nbsp;u.𝑘𝑒𝑦 保存连接 u 和树中任一其它节点的所有边中最小的边的权 重，若不存在这样的边，即设为 $\infty$，初始化时都设为 $\infty$。<br>3 $u.\pi = NIL$ //u.𝜋&nbsp; 保存 u 在树中的父节点<br>4 $r.key = 0$ // 把根节点 r 的 key 设为 0，方便第 9 行第一个处理 r<br>5 $Q = \not 0$ // 创建基于 &nbsp;𝑘𝑒𝑦&nbsp; 属性的优先队列<br>6 for each vertex $u \in G.V$<br>7 INSERT (Q, u)<br>8 while $Q \not = \not 0$ // 只要队列非空<br>9 u = EXTRACT-MIN (Q) // 把 u 加到树 (A) 中<br>10 for each vertex v in $G.Adj [u]$ // 更新 u 的非树邻居的 key<br>11 if $v \in Q$ and w(u, v) &lt; v.key<br>12 $v.\pi = u$<br>13 v.key = w(u, v)<br>14 DECREASE-KEY (Q, v, w (u, v)) // 调整 Q 中 v 的 key 值</p>
 </blockquote>
 <p>该算法保持以下三个循环不变量：</p>
 <ul>
@@ -324,10 +603,15 @@
 </ul>
 ]]></content>
       <categories>
-        <category>Graph</category>
+        <category>算法</category>
       </categories>
       <tags>
         <tag>Graph</tag>
+        <tag>算法</tag>
+        <tag>最小生成树</tag>
+        <tag>Kruskal</tag>
+        <tag>Prim</tag>
+        <tag>贪心算法</tag>
       </tags>
   </entry>
 </search>
