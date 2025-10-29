@@ -9,7 +9,7 @@ mathjax: true
 
 # codewars-汉明数
 
-[(codewars 传送门)]([Hamming Numbers | Codewars](https://www.codewars.com/kata/526d84b98f428f14a60008da/))
+[codewars 传送门](https://www.codewars.com/kata/526d84b98f428f14a60008da/)
 
 ## 引入
 

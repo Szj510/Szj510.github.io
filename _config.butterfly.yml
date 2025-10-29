@@ -454,6 +454,12 @@ gitalk:
   admin: [Szj510]
   language: zh-CN # en, zh-CN, zh-TW, es-ES, fr, ru
   option:
+    labels: ["Gitalk"]
+    perPage: 10
+    pagerDirection: last # last/first
+    distractionFreeMode: false
+    createIssueManually: false
+    id: location.pathname # 尽量保持稳定且不超过50字符
 
 # valine
 # https://valine.js.org

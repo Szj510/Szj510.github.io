@@ -9,7 +9,7 @@ mathjax: true
 
 # codewars-fusc 函数
 
-[(codewars 传送门)]([The fusc function -- Part 2 | Codewars](https://www.codewars.com/kata/the-fusc-function-part-2))
+[codewars 传送门](https://www.codewars.com/kata/the-fusc-function-part-2)
 
 ## 引入
 
