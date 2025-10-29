@@ -1,0 +1,439 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Git Command 自用 | ius</title><meta name="author" content="Szj"><meta name="copyright" content="Szj"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Git常用命令整理笔记，通过模拟项目开发全流程记录各种场景下的Git操作，包含详细命令和注释说明。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git Command 自用">
+<meta property="og:url" content="https://ius7.qzz.io/2025/08/06/Git-Command/index.html">
+<meta property="og:site_name" content="ius">
+<meta property="og:description" content="Git常用命令整理笔记，通过模拟项目开发全流程记录各种场景下的Git操作，包含详细命令和注释说明。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ius7.qzz.io/img/cover_default.png">
+<meta property="article:published_time" content="2025-08-06T06:40:08.000Z">
+<meta property="article:modified_time" content="2025-08-06T07:15:59.236Z">
+<meta property="article:author" content="Szj">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="版本控制">
+<meta property="article:tag" content="命令笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ius7.qzz.io/img/cover_default.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Git Command 自用",
+  "url": "https://ius7.qzz.io/2025/08/06/Git-Command/",
+  "image": "https://ius7.qzz.io/img/cover_default.png",
+  "datePublished": "2025-08-06T06:40:08.000Z",
+  "dateModified": "2025-08-06T07:15:59.236Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Szj",
+      "url": "https://ius7.qzz.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/vinyltocat.png"><link rel="canonical" href="https://ius7.qzz.io/2025/08/06/Git-Command/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.4.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Git Command 自用',
+  isHighlightShrink: true,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg" style="background-image: url(/img/banner2.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover_default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ius</span></a><a class="nav-page-title" href="/"><span class="site-name">Git Command 自用</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Git Command 自用</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-06T06:40:08.000Z" title="发表于 2025-08-06 14:40:08">2025-08-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-06T07:15:59.236Z" title="更新于 2025-08-06 15:15:59">2025-08-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="项目模拟场景"><a href="#项目模拟场景" class="headerlink" title="项目模拟场景"></a>项目模拟场景</h2><h3 id="项目初始化阶段"><a href="#项目初始化阶段" class="headerlink" title="项目初始化阶段"></a>项目初始化阶段</h3><h4 id="1-创建远程仓库"><a href="#1-创建远程仓库" class="headerlink" title="1. 创建远程仓库"></a>1. 创建远程仓库</h4><ul>
+<li>在 GitHub 创建 private 仓库</li>
+<li>邀请协作者</li>
+</ul>
+<h4 id="2-初始化本地项目"><a href="#2-初始化本地项目" class="headerlink" title="2. 初始化本地项目"></a>2. 初始化本地项目</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mkdir ProjectName &amp;&amp; cd ProjectName</span><br><span class="line">echo "# ProjectName - 项目描述" &gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "chore: initial project setup"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建基础分支结构</span></span><br><span class="line">git switch -c develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建初始目录结构</span></span><br><span class="line">mkdir -p backend frontend docs</span><br><span class="line">echo "后端服务" &gt; backend/README.md</span><br><span class="line">echo "前端应用" &gt; frontend/README.md</span><br><span class="line">echo "项目文档" &gt; docs/README.md</span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: create project structure"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推送到远程</span></span><br><span class="line">git remote add origin https://github.com/username/ProjectName.git</span><br><span class="line">git push -u origin main develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-设置分支保护-仓库-settings"><a href="#3-设置分支保护-仓库-settings" class="headerlink" title="3. 设置分支保护(仓库 settings)"></a>3. 设置分支保护 (仓库 settings)</h4><ul>
+<li><code>main</code> 分支：Require pull request, Require 1 approval, Require status checks</li>
+<li><code>develop</code> 分支：Require pull request, Require status checks</li>
+</ul>
+<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有团队成员克隆仓库</span></span><br><span class="line">git clone https://github.com/username/ProjectName.git</span><br><span class="line">cd ProjectName</span><br><span class="line">git switch develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化后端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 后端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd backend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">spring init --dependencies=web,data-jpa,mysql,security --build=gradle -n BackendProject</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> BackendProject/* . &amp;&amp; <span class="built_in">rmdir</span> BackendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize backend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化前端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 前端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">npm init vue@latest -- --projectName=<span class="string">"FrontendProject"</span> --typescript --pinia --vitest</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> FrontendProject/* . &amp;&amp; <span class="built_in">rmdir</span> FrontendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果develop设置了分支保护，该push会失败，可以采用以下方法：</span></span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/init-frontend</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行前端初始化命令</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push -u origin feature/init-frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端成员去github网页创建PR，reviewer在网页处理PR，接着前端成员同步最新的develop</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git branch -d feature/init-frontend   # 删掉本地功能分支</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="项目开发阶段"><a href="#项目开发阶段" class="headerlink" title="项目开发阶段"></a>项目开发阶段</h2><h3 id="迭代-1：用户认证系统"><a href="#迭代-1：用户认证系统" class="headerlink" title="迭代 1：用户认证系统"></a>迭代 1：用户认证系统</h3><h4 id="后端成员开发认证-API"><a href="#后端成员开发认证-API" class="headerlink" title="后端成员开发认证 API"></a>后端成员开发认证 API</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-auth</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证功能</span></span><br><span class="line"><span class="comment"># ... 编写JWT认证逻辑 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/auth/**</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement JWT authentication"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发API文档</span></span><br><span class="line"><span class="comment"># ... 添加Swagger注解 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/AuthController.java</span><br><span class="line">git commit -m <span class="string">"docs(auth): add swagger API documentation"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推送到远程</span></span><br><span class="line">git push -u origin feature/backend-auth</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发登录界面"><a href="#前端成员开发登录界面" class="headerlink" title="前端成员开发登录界面"></a>前端成员开发登录界面</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-login</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于后端Swagger生成TS类型</span></span><br><span class="line">npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api-types.d.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发登录组件</span></span><br><span class="line"><span class="comment"># ... 创建Login.vue ...</span></span><br><span class="line">git add frontend/src/views/Login.vue</span><br><span class="line">git commit -m <span class="string">"feat(login): implement login page UI"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证逻辑</span></span><br><span class="line"><span class="comment"># ... 实现axios拦截器 ...</span></span><br><span class="line">git add frontend/src/services/auth.ts</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement token management"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-login</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="代码审查与合并"><a href="#代码审查与合并" class="headerlink" title="代码审查与合并"></a>代码审查与合并</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 后端成员创建PR: feature/backend-auth → develop</span></span><br><span class="line"><span class="comment"># 前端成员创建PR: feature/frontend-login → develop</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审查过程：</span></span><br><span class="line"><span class="comment">## 1. 前端成员验证后端API文档</span></span><br><span class="line"><span class="comment">## 2. 后端成员检查前端token处理逻辑</span></span><br><span class="line"><span class="comment">## 3. 项目经理批准合并</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并后操作（项目经理）：</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="comment"># 如果不走网页PR，可在本地合并</span></span><br><span class="line">git merge --no-ff feature/backend-auth</span><br><span class="line">git merge --no-ff feature/frontend-login</span><br><span class="line">git push origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-2：数据分析看板"><a href="#迭代-2：数据分析看板" class="headerlink" title="迭代 2：数据分析看板"></a>迭代 2：数据分析看板</h3><h4 id="后端成员开发分析-API"><a href="#后端成员开发分析-API" class="headerlink" title="后端成员开发分析 API"></a>后端成员开发分析 API</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-analysis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据库迁移脚本</span></span><br><span class="line"><span class="comment"># ... 使用Liquibase/Flyway等 ...</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.1__analysis_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add analysis tables"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发分析算法</span></span><br><span class="line"><span class="comment"># ... 集成数据分析模型 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/AnalysisService.java</span><br><span class="line">git commit -m <span class="string">"feat(analysis): implement data analysis model"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/backend-analysis</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发可视化看板"><a href="#前端成员开发可视化看板" class="headerlink" title="前端成员开发可视化看板"></a>前端成员开发可视化看板</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-dashboard</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装可视化库</span></span><br><span class="line">npm install echarts vue-echarts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发看板组件</span></span><br><span class="line"><span class="comment"># ... 创建Dashboard.vue ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"feat(dashboard): implement analysis charts"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-dashboard</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到问题：API-变更冲突"><a href="#遇到问题：API-变更冲突" class="headerlink" title="遇到问题：API 变更冲突"></a>遇到问题：API 变更冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 后端成员修改了API响应格式</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/DataController.java</span><br><span class="line">git commit -m <span class="string">"refactor(api): update response format for frontend"</span></span><br><span class="line">git push origin feature/backend-analysis --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员需要同步变更</span></span><br><span class="line">git switch feature/frontend-dashboard</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop  <span class="comment"># 获取最新API变更</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决前端适配问题</span></span><br><span class="line"><span class="comment"># ... 更新数据处理逻辑 ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"fix(dashboard): adapt to new API response format"</span></span><br><span class="line">git push origin feature/frontend-dashboard --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-3：推荐系统"><a href="#迭代-3：推荐系统" class="headerlink" title="迭代 3：推荐系统"></a>迭代 3：推荐系统</h3><h4 id="多人协作开发"><a href="#多人协作开发" class="headerlink" title="多人协作开发"></a>多人协作开发</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 后端成员A开发数据管理</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员开发推荐界面</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/frontend-recommendation</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B开发推荐算法</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-recommend-engine</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到数据库冲突"><a href="#遇到数据库冲突" class="headerlink" title="遇到数据库冲突"></a>遇到数据库冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 后端成员A提交了数据表变更</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.2__data_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add data tables"</span></span><br><span class="line">git push origin feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B也需要修改数据库</span></span><br><span class="line">git switch feature/backend-recommend-engine</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遇到冲突：db/changelog/changelog-master.yaml</span></span><br><span class="line"><span class="comment"># 解决冲突后</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line">git push origin feature/backend-recommend-engine --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="测试与发布阶段"><a href="#测试与发布阶段" class="headerlink" title="测试与发布阶段"></a>测试与发布阶段</h2><h3 id="预发布准备"><a href="#预发布准备" class="headerlink" title="预发布准备"></a>预发布准备</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建发布分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c release/v1.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新版本号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"1.0.0"</span> &gt; VERSION</span><br><span class="line">git add VERSION</span><br><span class="line">git commit -m <span class="string">"chore: prepare release v1.0.0"</span></span><br><span class="line">git push -u origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试问题修复"><a href="#测试问题修复" class="headerlink" title="测试问题修复"></a>测试问题修复</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发现权限问题</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git switch -c fix/permission-issue</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复后端权限验证</span></span><br><span class="line"><span class="comment"># ... 修改SecurityConfig等 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/config/SecurityConfig.java</span><br><span class="line">git commit -m <span class="string">"fix(auth): correct role permissions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并回发布分支</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git merge --no-ff fix/permission-issue</span><br><span class="line">git push origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="正式发布"><a href="#正式发布" class="headerlink" title="正式发布"></a>正式发布</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并到main分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git merge --no-ff release/v1.0.0</span><br><span class="line">git tag -a v1.0.0 -m <span class="string">"Initial release with core features"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新develop分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git merge release/v1.0.0</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除发布分支</span></span><br><span class="line">git branch -d release/v1.0.0</span><br><span class="line">git push origin --delete release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="生产环境问题处理"><a href="#生产环境问题处理" class="headerlink" title="生产环境问题处理"></a>生产环境问题处理</h2><h3 id="紧急修复示例"><a href="#紧急修复示例" class="headerlink" title="紧急修复示例"></a>紧急修复示例</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从main创建热修复分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git switch -c hotfix/critical-bug-fix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复问题</span></span><br><span class="line"><span class="comment"># ... 修改相关服务 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/DataService.java</span><br><span class="line">git commit -m <span class="string">"fix(service): handle large dataset processing"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到main和develop</span></span><br><span class="line">git switch main</span><br><span class="line">git merge --no-ff hotfix/critical-bug-fix</span><br><span class="line">git tag -a v1.0.1 -m <span class="string">"Hotfix for critical bug"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line">git switch develop</span><br><span class="line">git merge hotfix/critical-bug-fix</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除热修复分支</span></span><br><span class="line">git branch -d hotfix/critical-bug-fix</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="checkout-和-switch-的区别"><a href="#checkout-和-switch-的区别" class="headerlink" title="checkout 和 switch 的区别"></a>checkout 和 switch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支切换</span></span><br><span class="line">git checkout existing-branch</span><br><span class="line">git switch existing-branch</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换分支</span></span><br><span class="line">git checkout -b feature/new-feature</span><br><span class="line">git switch -c feature/new-feature</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件恢复</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">核心场景：你还没提交，但把某个文件改坏了，想撤销所有未暂存的本地修改，让它立刻回到上一次提交时的样子（误删也用这个）</span></span><br><span class="line">git checkout -- src/components/Component.vue</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果已暂存，先用`git reset HEAD &lt;file&gt;`取消暂存，再用checkout</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看历史提交（只读模式）</span></span><br><span class="line">git checkout HEAD~3</span><br><span class="line">git switch --detach HEAD~3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安全机制</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当有未提交更改时尝试切换分支，switch会报错，而checkout会尝试自动合并，可能会导致数据丢失</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="pull-fetch-的区别"><a href="#pull-fetch-的区别" class="headerlink" title="pull &amp; fetch 的区别"></a>pull &amp; fetch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pull = fetch + merge</span></span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分步操作更安全</span></span><br><span class="line">git fetch origin           # 获取远程更新但不合并</span><br><span class="line">git log origin/develop..HEAD  # 查看差异</span><br><span class="line">git merge origin/develop    # 手动合并</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式拉取（保持线性历史）</span></span><br><span class="line">git pull --rebase origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="rebase-merge-的区别"><a href="#rebase-merge-的区别" class="headerlink" title="rebase &amp; merge 的区别"></a>rebase &amp; merge 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">merge方式：保留分支历史</span></span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login     # 创建合并提交</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式：线性历史更整洁</span></span><br><span class="line">git switch feature/login</span><br><span class="line">git rebase main            # 重新应用提交</span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login    # 快进合并</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看分支</td>
+<td><code>git branch -a</code></td>
+<td>显示所有分支</td>
+</tr>
+<tr>
+<td>切换分支</td>
+<td><code>git switch branch-name</code></td>
+<td>推荐用法</td>
+</tr>
+<tr>
+<td>创建切换</td>
+<td><code>git switch -c new-branch</code></td>
+<td>创建并切换到新分支</td>
+</tr>
+<tr>
+<td>删除分支</td>
+<td><code>git branch -d branch-name</code></td>
+<td>删除已合并分支</td>
+</tr>
+<tr>
+<td>强制删除</td>
+<td><code>git branch -D branch-name</code></td>
+<td>强制删除分支</td>
+</tr>
+</tbody></table>
+<h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>拉取更新</td>
+<td><code>git pull origin main</code></td>
+<td>拉取并合并</td>
+</tr>
+<tr>
+<td>获取更新</td>
+<td><code>git fetch origin</code></td>
+<td>只获取不合并</td>
+</tr>
+<tr>
+<td>推送分支</td>
+<td><code>git push -u origin HEAD</code></td>
+<td>推送当前分支</td>
+</tr>
+<tr>
+<td>强制推送</td>
+<td><code>git push --force-with-lease</code></td>
+<td>安全强推</td>
+</tr>
+</tbody></table>
+<h3 id="提交管理"><a href="#提交管理" class="headerlink" title="提交管理"></a>提交管理</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看状态</td>
+<td><code>git status</code></td>
+<td>检查工作区状态</td>
+</tr>
+<tr>
+<td>暂存文件</td>
+<td><code>git add .</code></td>
+<td>暂存所有变更</td>
+</tr>
+<tr>
+<td>提交变更</td>
+<td><code>git commit -m "message"</code></td>
+<td>提交暂存区</td>
+</tr>
+<tr>
+<td>修改提交</td>
+<td><code>git commit --amend</code></td>
+<td>修改最后一次提交</td>
+</tr>
+<tr>
+<td>撤销提交</td>
+<td><code>git reset --soft HEAD~1</code></td>
+<td>撤销但保留更改</td>
+</tr>
+</tbody></table>
+<h3 id="历史查看"><a href="#历史查看" class="headerlink" title="历史查看"></a>历史查看</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看历史</td>
+<td><code>git log --oneline</code></td>
+<td>简洁历史</td>
+</tr>
+<tr>
+<td>图形化历史</td>
+<td><code>git log --graph --all</code></td>
+<td>分支图</td>
+</tr>
+<tr>
+<td>文件历史</td>
+<td><code>git log -p filename</code></td>
+<td>文件变更历史</td>
+</tr>
+<tr>
+<td>查看差异</td>
+<td><code>git diff HEAD~1</code></td>
+<td>与上次提交比较</td>
+</tr>
+</tbody></table>
+<h2 id="关键-git-命令速查表"><a href="#关键-git-命令速查表" class="headerlink" title="关键 git 命令速查表"></a>关键 git 命令速查表</h2><table>
+<thead>
+<tr>
+<th align="center">场景</th>
+<th align="center">命令</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">开始新功能</td>
+<td align="center"> git switch develop &amp;&amp; git pull &amp;&amp; git switch -c feature/[name]</td>
+<td align="center"> 从 develop 创建新功能分支</td>
+</tr>
+<tr>
+<td align="center">每日同步</td>
+<td align="center"> git fetch origin &amp;&amp; git rebase origin/develop</td>
+<td align="center"> 保持与 develop 同步</td>
+</tr>
+<tr>
+<td align="center">提交变更</td>
+<td align="center"> git add . &amp;&amp; git commit -m “…” &amp;&amp; git push -u origin HEAD</td>
+<td align="center"> 推送当前分支</td>
+</tr>
+<tr>
+<td align="center">解决冲突</td>
+<td align="center"> git rebase –continue 或 git rebase –abort</td>
+<td align="center"> 变基操作控制</td>
+</tr>
+<tr>
+<td align="center">撤销错误提交</td>
+<td align="center"> git reset –soft HEAD~1</td>
+<td align="center"> 撤销最后一次提交</td>
+</tr>
+<tr>
+<td align="center">查看分支关系</td>
+<td align="center"> git log –all –graph –oneline</td>
+<td align="center"> 可视化分支历史</td>
+</tr>
+</tbody></table>
+<h2 id="git-提交规范"><a href="#git-提交规范" class="headerlink" title="git 提交规范"></a>git 提交规范</h2><figure class="highlight markdown"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">feat: 添加新功能</span><br><span class="line">fix: 修复 bug</span><br><span class="line">docs: 文档变更</span><br><span class="line">style: 代码格式/样式调整</span><br><span class="line">refactor: 代码重构</span><br><span class="line">test: 添加或修改测试</span><br><span class="line">chore: 构建过程或辅助工具变更</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用场景补充"><a href="#常用场景补充" class="headerlink" title="常用场景补充"></a>常用场景补充</h2><h3 id="储藏工作进度"><a href="#储藏工作进度" class="headerlink" title="储藏工作进度"></a>储藏工作进度</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时保存当前工作</span></span><br><span class="line">git stash push -m "work in progress"</span><br><span class="line">git stash list               # 查看储藏列表</span><br><span class="line">git stash pop               # 恢复最新储藏</span><br><span class="line">git stash apply stash@{1}   # 恢复指定储藏</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销已暂存的文件</span></span><br><span class="line">git reset HEAD filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销本地修改</span></span><br><span class="line">git checkout -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件修改者</span></span><br><span class="line">git blame filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">恢复已删除的文件</span></span><br><span class="line">git checkout HEAD~1 -- deleted-file.js</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="历史查看-1"><a href="#历史查看-1" class="headerlink" title="历史查看"></a>历史查看</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看简洁历史</span></span><br><span class="line">git log --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分支图</span></span><br><span class="line">git log --all --graph --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件变更历史</span></span><br><span class="line">git log -p -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搜索提交信息</span></span><br><span class="line">git log --grep="fix"</span><br></pre></td></tr></tbody></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ius7.qzz.io">Szj</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ius7.qzz.io/2025/08/06/Git-Command/">https://ius7.qzz.io/2025/08/06/Git-Command/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ius7.qzz.io" target="_blank">ius</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Git/">Git</a><a class="post-meta__tags" href="/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/">版本控制</a><a class="post-meta__tags" href="/tags/%E5%91%BD%E4%BB%A4%E7%AC%94%E8%AE%B0/">命令笔记</a></div><div class="post-share"><div class="social-share" data-image="/img/cover_default.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/wechat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width no-desc" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img class="cover" src="/img/cover_default.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Minimum Spanning Trees</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Szj</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/Szj510"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Szj510" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:suzijie510@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%8B%9F%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">项目模拟场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.</span> <span class="toc-text">项目初始化阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">1. 创建远程仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 初始化本地项目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%AE%BE%E7%BD%AE%E5%88%86%E6%94%AF%E4%BF%9D%E6%8A%A4-%E4%BB%93%E5%BA%93-settings"><span class="toc-number">1.1.3.</span> <span class="toc-text">3. 设置分支保护 (仓库 settings)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.</span> <span class="toc-text">开发环境配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E9%98%B6%E6%AE%B5"><span class="toc-number">2.</span> <span class="toc-text">项目开发阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3-1%EF%BC%9A%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.1.</span> <span class="toc-text">迭代 1：用户认证系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E6%88%90%E5%91%98%E5%BC%80%E5%8F%91%E8%AE%A4%E8%AF%81-API"><span class="toc-number">2.1.1.</span> <span class="toc-text">后端成员开发认证 API</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E6%88%90%E5%91%98%E5%BC%80%E5%8F%91%E7%99%BB%E5%BD%95%E7%95%8C%E9%9D%A2"><span class="toc-number">2.1.2.</span> <span class="toc-text">前端成员开发登录界面</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5%E4%B8%8E%E5%90%88%E5%B9%B6"><span class="toc-number">2.1.3.</span> <span class="toc-text">代码审查与合并</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3-2%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%9C%8B%E6%9D%BF"><span class="toc-number">2.2.</span> <span class="toc-text">迭代 2：数据分析看板</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E6%88%90%E5%91%98%E5%BC%80%E5%8F%91%E5%88%86%E6%9E%90-API"><span class="toc-number">2.2.1.</span> <span class="toc-text">后端成员开发分析 API</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E6%88%90%E5%91%98%E5%BC%80%E5%8F%91%E5%8F%AF%E8%A7%86%E5%8C%96%E7%9C%8B%E6%9D%BF"><span class="toc-number">2.2.2.</span> <span class="toc-text">前端成员开发可视化看板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E9%97%AE%E9%A2%98%EF%BC%9AAPI-%E5%8F%98%E6%9B%B4%E5%86%B2%E7%AA%81"><span class="toc-number">2.2.3.</span> <span class="toc-text">遇到问题：API 变更冲突</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3-3%EF%BC%9A%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.3.</span> <span class="toc-text">迭代 3：推荐系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91"><span class="toc-number">2.3.1.</span> <span class="toc-text">多人协作开发</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%B2%E7%AA%81"><span class="toc-number">2.3.2.</span> <span class="toc-text">遇到数据库冲突</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83%E9%98%B6%E6%AE%B5"><span class="toc-number">3.</span> <span class="toc-text">测试与发布阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%8F%91%E5%B8%83%E5%87%86%E5%A4%87"><span class="toc-number">3.1.</span> <span class="toc-text">预发布准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%97%AE%E9%A2%98%E4%BF%AE%E5%A4%8D"><span class="toc-number">3.2.</span> <span class="toc-text">测试问题修复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83"><span class="toc-number">3.3.</span> <span class="toc-text">正式发布</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">生产环境问题处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A7%E6%80%A5%E4%BF%AE%E5%A4%8D%E7%A4%BA%E4%BE%8B"><span class="toc-number">4.1.</span> <span class="toc-text">紧急修复示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#checkout-%E5%92%8C-switch-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">5.</span> <span class="toc-text">checkout 和 switch 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pull-fetch-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">6.</span> <span class="toc-text">pull &amp; fetch 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rebase-merge-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.</span> <span class="toc-text">rebase &amp; merge 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5"><span class="toc-number">8.</span> <span class="toc-text">常用命令速查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%94%AF%E6%93%8D%E4%BD%9C"><span class="toc-number">8.1.</span> <span class="toc-text">分支操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E6%93%8D%E4%BD%9C"><span class="toc-number">8.2.</span> <span class="toc-text">同步操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E7%AE%A1%E7%90%86"><span class="toc-number">8.3.</span> <span class="toc-text">提交管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2%E6%9F%A5%E7%9C%8B"><span class="toc-number">8.4.</span> <span class="toc-text">历史查看</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE-git-%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-number">9.</span> <span class="toc-text">关键 git 命令速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83"><span class="toc-number">10.</span> <span class="toc-text">git 提交规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E8%A1%A5%E5%85%85"><span class="toc-number">11.</span> <span class="toc-text">常用场景补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%A8%E8%97%8F%E5%B7%A5%E4%BD%9C%E8%BF%9B%E5%BA%A6"><span class="toc-number">11.1.</span> <span class="toc-text">储藏工作进度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="toc-number">11.2.</span> <span class="toc-text">文件操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2%E6%9F%A5%E7%9C%8B-1"><span class="toc-number">11.3.</span> <span class="toc-text">历史查看</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/06/Git-Command/" title="Git Command 自用"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Git Command 自用"/></a><div class="content"><a class="title" href="/2025/08/06/Git-Command/" title="Git Command 自用">Git Command 自用</a><time datetime="2025-08-06T06:40:08.000Z" title="发表于 2025-08-06 14:40:08">2025-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Minimum Spanning Trees"/></a><div class="content"><a class="title" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees">Minimum Spanning Trees</a><time datetime="2024-04-25T08:22:36.000Z" title="发表于 2024-04-25 16:22:36">2024-04-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Elementary Graph Algorithms"/></a><div class="content"><a class="title" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms">Elementary Graph Algorithms</a><time datetime="2024-04-21T08:27:36.000Z" title="发表于 2024-04-21 16:27:36">2024-04-21</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2024 - 2025 By Szj</span></div><div class="footer_custom_text"><p><a target="_blank" href="https://hexo.io/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.4.3"></script><script src="/js/main.js?v=5.4.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '95998e7ed95c5dfc6d4a',
+      clientSecret: '975e1be8ac3c393708c3e62cea2a49c33bd13882',
+      repo: 'ius-blog',
+      owner: 'Szj510',
+      admin: ['Szj510'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'f251842f7df4238e9f483e4ed65156e9'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><!-- 添加音乐页面的JavaScript支持--><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

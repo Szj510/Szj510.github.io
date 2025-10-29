@@ -1,0 +1,976 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>music | ius</title><meta name="author" content="Szj"><meta name="copyright" content="Szj"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="&#x2F;* 音乐播放器页面样式 *&#x2F; .music-player-page {   max-width: 1200px;   margin: 0 auto;   padding: 20px;   background: linear-gradient (135deg,      rgba (17, 24, 39, 0.95) 0%,      rgba (31, 41, 55, 0.95) 50%,">
+<meta property="og:type" content="website">
+<meta property="og:title" content="music">
+<meta property="og:url" content="https://ius7.qzz.io/music/index.html">
+<meta property="og:site_name" content="ius">
+<meta property="og:description" content="&#x2F;* 音乐播放器页面样式 *&#x2F; .music-player-page {   max-width: 1200px;   margin: 0 auto;   padding: 20px;   background: linear-gradient (135deg,      rgba (17, 24, 39, 0.95) 0%,      rgba (31, 41, 55, 0.95) 50%,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ius7.qzz.io/img/vinyltocat.png">
+<meta property="article:published_time" content="2024-04-22T04:41:14.000Z">
+<meta property="article:modified_time" content="2025-08-06T08:34:46.552Z">
+<meta property="article:author" content="Szj">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ius7.qzz.io/img/vinyltocat.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/vinyltocat.png"><link rel="canonical" href="https://ius7.qzz.io/music/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.4.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'music',
+  isHighlightShrink: true,
+  isToc: false,
+  pageType: 'page'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg" style="background-image: url(/img/banner2.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="page type-music" id="body-wrap"><header class="not-home-page" id="page-header" style="background: transparent;"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ius</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">music</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><div class="music-page-container"><div class="artist-carousel-wrapper"><div class="artist-carousel"><div class="artist-card" data-artist="陈奕迅"><div class="artist-cover" style="background-image: url(/img/eason-1.jpg)"><div class="artist-name">陈奕迅</div></div><ul class="song-list"><li class="song-item">抱拥这分钟</li><li class="song-item">今日</li><li class="song-item">失恋太少</li><li class="song-item">猜情寻</li><li class="song-item">四季</li><li class="song-item">失忆蝴蝶</li><li class="song-item">24</li><li class="song-item">天下无双</li><li class="song-item">我的快乐时代</li><li class="song-item">相信相依</li><li class="song-item">歌·颂</li><li class="song-item">我们</li><li class="song-item">任我行</li><li class="song-item">不来也不去</li><li class="song-item">还有什么可以送给你</li><li class="song-item">一切还好</li><li class="song-item">多少</li><li class="song-item">黄金时代</li><li class="song-item">大情大性</li><li class="song-item">斯德哥尔摩情人</li><li class="song-item">岁月如歌</li><li class="song-item">黑择明</li><li class="song-item">与你常在</li><li class="song-item">阿牛</li><li class="song-item">是但求其爱</li><li class="song-item">之外</li><li class="song-item">我们万岁</li><li class="song-item">陪你度过漫长岁月</li><li class="song-item">因为爱情</li><li class="song-item">Sleep Alone</li><li class="song-item">Shall We Talk</li><li class="song-item">粤语残片</li><li class="song-item">不要说话</li><li class="song-item">于心有愧</li><li class="song-item">幸福摩天轮</li><li class="song-item">让我留在你身边</li><li class="song-item">陀飞轮</li><li class="song-item">好久不见</li><li class="song-item">白玫瑰</li><li class="song-item">苦瓜</li><li class="song-item">落花流水</li><li class="song-item">完</li><li class="song-item">淘汰</li><li class="song-item">一丝不挂</li><li class="song-item">十面埋伏</li><li class="song-item">葡萄成熟时</li><li class="song-item">富士山下</li><li class="song-item">最佳损友</li><li class="song-item">倾城</li><li class="song-item">人来人往</li><li class="song-item">七百年后</li><li class="song-item">最冷一天</li><li class="song-item">不如不见</li><li class="song-item">无条件</li><li class="song-item">单车</li><li class="song-item">K歌之王</li><li class="song-item">红玫瑰</li><li class="song-item">明年今日</li><li class="song-item">十年</li></ul></div><div class="artist-card" data-artist="张敬轩"><div class="artist-cover" style="background-image: url(/img/eason-2.jpg)"><div class="artist-name">张敬轩</div></div><ul class="song-list"><li class="song-item">壮举</li><li class="song-item">倾慕</li><li class="song-item">无能为力</li><li class="song-item">雪花妙</li><li class="song-item">百年树木</li><li class="song-item">黄色大门</li><li class="song-item">青春告别式</li><li class="song-item">赛勒斯的爱</li><li class="song-item">鲸落</li><li class="song-item">装睡的情人</li><li class="song-item">罗宾</li><li class="song-item">灵魂相认</li><li class="song-item">My Way</li><li class="song-item">石径</li><li class="song-item">过云雨</li><li class="song-item">遇见神</li><li class="song-item">明明他已离开妳</li><li class="song-item">余震</li><li class="song-item">断点</li><li class="song-item">追风筝的孩子</li><li class="song-item">尘埃落定</li><li class="song-item">笑忘书</li><li class="song-item">只是太爱你</li><li class="song-item">隐形游乐场</li><li class="song-item">俏郎君</li><li class="song-item">我的天</li><li class="song-item">樱花树下</li><li class="song-item">春秋</li></ul></div><div class="artist-card" data-artist="杨千嬅"><div class="artist-cover" style="background-image: url(/img/eason-3.jpg)"><div class="artist-name">杨千嬅</div></div><ul class="song-list"><li class="song-item">无去无来</li><li class="song-item">火鸟</li><li class="song-item">稀客</li><li class="song-item">嫁给爱情</li><li class="song-item">炼金术</li><li class="song-item">花与爱丽斯</li><li class="song-item">飞女正传</li><li class="song-item">小星星</li><li class="song-item">偷生</li><li class="song-item">少女的祈祷</li><li class="song-item">假如让我说下去</li><li class="song-item">处处吻</li><li class="song-item">小城大事</li><li class="song-item">勇</li><li class="song-item">笑中有泪</li><li class="song-item">野孩子</li><li class="song-item">可惜我是水瓶座</li></ul></div><div class="artist-card" data-artist="周杰伦"><div class="artist-cover" style="background-image: url(/img/eason-4.jpg)"><div class="artist-name">周杰伦</div></div><ul class="song-list"><li class="song-item">我是如此相信</li><li class="song-item">烟花易冷</li><li class="song-item">花海</li><li class="song-item">青花瓷</li><li class="song-item">明明就</li><li class="song-item">反方向的钟</li><li class="song-item">七里香</li><li class="song-item">我落泪情绪零碎</li><li class="song-item">枫</li><li class="song-item">兰亭序</li><li class="song-item">说好不哭</li><li class="song-item">简单爱</li><li class="song-item">夜曲</li><li class="song-item">一路向北</li><li class="song-item">晴天</li><li class="song-item">不能说的秘密</li></ul></div><div class="artist-card" data-artist="周柏豪"><div class="artist-cover" style="background-image: url(/img/eason-6.jpg)"><div class="artist-name">周柏豪</div></div><ul class="song-list"><li class="song-item">到此为止</li><li class="song-item">请你爱我</li><li class="song-item">男人背后</li><li class="song-item">够钟</li><li class="song-item">还记得</li><li class="song-item">我的宣言</li><li class="song-item">小白</li><li class="song-item">走狗</li><li class="song-item">让爱高飞</li><li class="song-item">宏愿</li><li class="song-item">百年不合</li><li class="song-item">传闻</li><li class="song-item">一生爱你一个</li></ul></div></div></div></div><style>
+/* 音乐播放器页面样式 */
+.music-player-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient (135deg, 
+    rgba (17, 24, 39, 0.95) 0%, 
+    rgba (31, 41, 55, 0.95) 50%, 
+    rgba (55, 65, 81, 0.95) 100%);
+  border-radius: 24px;
+  backdrop-filter: blur (20px);
+  box-shadow: 0 25px 50px -12px rgba (0, 0, 0, 0.5);
+  min-height: 80vh;
+}
+
+/* 主播放器区域 */
+.main-player {
+  margin-bottom: 40px;
+  padding: 40px;
+  background: rgba (255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba (255, 255, 255, 0.1);
+}
+
+.current-song {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+/* 专辑封面区域 */
+.album-art {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+}
+
+.album-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 10px 40px rgba (0, 0, 0, 0.6);
+}
+
+.vinyl-disc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient (from 0deg, 
+    rgba (0, 0, 0, 0.1) 0%, 
+    rgba (255, 255, 255, 0.05) 25%, 
+    rgba (0, 0, 0, 0.1) 50%, 
+    rgba (255, 255, 255, 0.05) 75%);
+  animation: spin 20s linear infinite;
+  animation-play-state: paused;
+}
+
+.vinyl-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate (-50%, -50%);
+  width: 30px;
+  height: 30px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 4px rgba (255, 255, 255, 0.1);
+}
+
+@keyframes spin {
+  from { transform: rotate (0deg); }
+  to { transform: rotate (360deg); }
+}
+
+/* 歌曲信息区域 */
+.song-details {
+  flex: 1;
+}
+
+.current-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  background: linear-gradient (135deg, #fff 0%, #e5e7eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.current-artist {
+  font-size: 1.2rem;
+  color: rgba (255, 255, 255, 0.7);
+  margin: 0 0 30px 0;
+}
+
+/* 主控制按钮 */
+.main-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.ctrl-btn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: rgba (255, 255, 255, 0.1);
+  color: rgba (255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.ctrl-btn:hover {
+  background: rgba (255, 255, 255, 0.2);
+  color: white;
+  transform: translateY (-2px);
+}
+
+.ctrl-btn.play-pause {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient (135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  font-size: 24px;
+  box-shadow: 0 8px 25px rgba (59, 130, 246, 0.5);
+}
+
+.ctrl-btn.play-pause:hover {
+  transform: translateY (-3px) scale (1.05);
+  box-shadow: 0 12px 35px rgba (59, 130, 246, 0.6);
+}
+
+/* 进度条容器 */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.time {
+  font-size: 14px;
+  color: rgba (255, 255, 255, 0.6);
+  min-width: 40px;
+  text-align: center;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba (255, 255, 255, 0.1);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient (90deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+.progress-handle {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate (-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba (0, 0, 0, 0.3);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.progress-bar:hover .progress-handle {
+  opacity: 1;
+}
+
+/* 播放列表 */
+.playlist {
+  background: rgba (255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba (255, 255, 255, 0.05);
+}
+
+.playlist-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba (255, 255, 255, 0.9);
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playlist-title i {
+  color: #3b82f6;
+}
+
+/* 歌曲列表项 */
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.song-item:hover {
+  background: rgba (255, 255, 255, 0.05);
+  transform: translateX (4px);
+}
+
+.song-item.active {
+  background: rgba (59, 130, 246, 0.1);
+  border: 1px solid rgba (59, 130, 246, 0.2);
+}
+
+.song-item.active .song-meta h4 {
+  color: #3b82f6;
+}
+
+.song-cover {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.song-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.play-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba (59, 130, 246, 0.8);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.song-item:hover .play-indicator,
+.song-item.active .play-indicator {
+  opacity: 1;
+}
+
+.song-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.song-meta h4 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: rgba (255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-meta p {
+  font-size: 14px;
+  color: rgba (255, 255, 255, 0.6);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-duration {
+  color: rgba (255, 255, 255, 0.5);
+  font-size: 14px;
+  margin-right: 16px;
+}
+
+.song-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.song-item:hover .song-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba (255, 255, 255, 0.1);
+  color: rgba (255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.action-btn:hover {
+  background: rgba (255, 255, 255, 0.2);
+  color: rgba (255, 255, 255, 0.9);
+}
+
+.action-btn.liked {
+  color: #ef4444;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .music-player-page {
+  background: linear-gradient (135deg, 
+    rgba (17, 24, 39, 0.98) 0%, 
+    rgba (31, 41, 55, 0.98) 50%, 
+    rgba (55, 65, 81, 0.98) 100%);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .music-player-page {
+    margin: 0 10px;
+    padding: 16px;
+  }
+  
+  .main-player {
+    padding: 24px;
+  }
+  
+  .current-song {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+  
+  .album-art {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .current-title {
+    font-size: 2rem;
+  }
+  
+  .main-controls {
+    justify-content: center;
+  }
+  
+  .song-item {
+    padding: 8px 12px;
+  }
+  
+  .song-cover {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .playlist {
+    padding: 16px;
+  }
+}
+
+/* 播放状态动画 */
+.playing .vinyl-disc {
+  animation-play-state: running;
+}
+
+/* 音频可视化效果 */
+.audio-visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.audio-bar {
+  width: 3px;
+  background: linear-gradient (to top, #3b82f6, #1d4ed8);
+  border-radius: 2px;
+  animation: audioWave 1s ease-in-out infinite;
+}
+
+.audio-bar:nth-child (2) { animation-delay: 0.1s; }
+.audio-bar:nth-child (3) { animation-delay: 0.2s; }
+.audio-bar:nth-child (4) { animation-delay: 0.3s; }
+.audio-bar:nth-child (5) { animation-delay: 0.4s; }
+
+@keyframes audioWave {
+  0%, 100% { height: 5px; }
+  50% { height: 25px; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 歌曲数据
+  const songs = [
+    { title: '富士山下', artist: '陈奕迅', duration: '3:55', image: '/img/eason-1.jpg', totalSeconds: 235 },
+    { title: '十年', artist: '陈奕迅', duration: '4:21', image: '/img/eason-2.jpg', totalSeconds: 261 },
+    { title: '红玫瑰', artist: '陈奕迅', duration: '4:02', image: '/img/eason-3.jpg', totalSeconds: 242 },
+    { title: '爱情转移', artist: '陈奕迅', duration: '4:38', image: '/img/eason-4.jpg', totalSeconds: 278 },
+    { title: '浮夸', artist: '陈奕迅', duration: '3:47', image: '/img/eason-5.jpg', totalSeconds: 227 },
+    { title: '单车', artist: '陈奕迅', duration: '4:15', image: '/img/eason-6.jpg', totalSeconds: 255 }
+  ];
+
+  let currentSongIndex = 0;
+  let isPlaying = false;
+  let currentTime = 0;
+  let progressInterval;
+
+  // DOM 元素
+  const mainPlayBtn = document.getElementById('main-play');
+  const mainTitle = document.getElementById('main-title');
+  const mainArtist = document.getElementById('main-artist');
+  const mainAlbumImg = document.getElementById('main-album-img');
+  const progressBar = document.getElementById('main-progress');
+  const progressFill = progressBar.querySelector('.progress-fill');
+  const progressHandle = progressBar.querySelector('.progress-handle');
+  const currentTimeSpan = document.querySelector('.current-time');
+  const totalTimeSpan = document.querySelector('.total-time');
+  const songItems = document.querySelectorAll('.song-item');
+  const vinylDisc = document.querySelector('.vinyl-disc');
+  const musicPlayerPage = document.querySelector('.music-player-page');
+
+  // 初始化
+  updateMainPlayer();
+  updatePlaylist();
+
+  // 播放/暂停切换
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    const icon = mainPlayBtn.querySelector('i');
+    
+    if (isPlaying) {
+      icon.className = 'fas fa-pause';
+      startProgress();
+      musicPlayerPage.classList.add('playing');
+    } else {
+      icon.className = 'fas fa-play';
+      stopProgress();
+      musicPlayerPage.classList.remove('playing');
+    }
+    
+    updatePlaylistIndicators();
+  }
+
+  // 开始进度条动画
+  function startProgress() {
+    progressInterval = setInterval(() => {
+      currentTime += 0.5;
+      const currentSong = songs[currentSongIndex];
+      
+      if (currentTime >= currentSong.totalSeconds) {
+        currentTime = 0;
+        nextSong();
+        return;
+      }
+      
+      updateProgressBar();
+      updateTimeDisplay();
+    }, 500);
+  }
+
+  // 停止进度条动画
+  function stopProgress() {
+    clearInterval(progressInterval);
+  }
+
+  // 更新进度条
+  function updateProgressBar() {
+    const currentSong = songs[currentSongIndex];
+    const percentage = (currentTime / currentSong.totalSeconds) * 100;
+    progressFill.style.width = percentage + '%';
+    progressHandle.style.left = percentage + '%';
+  }
+
+  // 更新时间显示
+  function updateTimeDisplay() {
+    currentTimeSpan.textContent = formatTime(Math.floor(currentTime));
+  }
+
+  // 格式化时间
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // 更新主播放器显示
+  function updateMainPlayer() {
+    const currentSong = songs[currentSongIndex];
+    mainTitle.textContent = currentSong.title;
+    mainArtist.textContent = currentSong.artist;
+    mainAlbumImg.src = currentSong.image;
+    mainAlbumImg.alt = currentSong.title;
+    totalTimeSpan.textContent = currentSong.duration;
+    currentTime = 0;
+    updateProgressBar();
+    updateTimeDisplay();
+  }
+
+  // 更新播放列表
+  function updatePlaylist() {
+    songItems.forEach((item, index) => {
+      item.classList.toggle('active', index === currentSongIndex);
+    });
+  }
+
+  // 更新播放列表指示器
+  function updatePlaylistIndicators() {
+    songItems.forEach((item, index) => {
+      const indicator = item.querySelector('.play-indicator i');
+      if (index === currentSongIndex && isPlaying) {
+        indicator.className = 'fas fa-pause';
+      } else {
+        indicator.className = 'fas fa-play';
+      }
+    });
+  }
+
+  // 切换到指定歌曲
+  function switchToSong(index) {
+    if (index === currentSongIndex && isPlaying) {
+      togglePlay();
+      return;
+    }
+    
+    currentSongIndex = index;
+    const wasPlaying = isPlaying;
+    
+    if (isPlaying) {
+      stopProgress();
+      isPlaying = false;
+    }
+    
+    updateMainPlayer();
+    updatePlaylist();
+    
+    if (wasPlaying || index !== currentSongIndex) {
+      setTimeout(() => togglePlay(), 100);
+    }
+  }
+
+  // 下一首歌
+  function nextSong() {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    updateMainPlayer();
+    updatePlaylist();
+    
+    if (isPlaying) {
+      startProgress();
+    }
+  }
+
+  // 上一首歌
+  function prevSong() {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    updateMainPlayer();
+    updatePlaylist();
+    
+    if (isPlaying) {
+      startProgress();
+    }
+  }
+
+  // 事件监听器
+  mainPlayBtn.addEventListener('click', togglePlay);
+
+  // 主控制按钮
+  document.querySelector('.ctrl-btn.prev').addEventListener('click', prevSong);
+  document.querySelector('.ctrl-btn.next').addEventListener('click', nextSong);
+
+  // 进度条点击
+  progressBar.addEventListener('click', (e) => {
+    const rect = progressBar.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percentage = clickX / rect.width;
+    const currentSong = songs[currentSongIndex];
+    currentTime = percentage * currentSong.totalSeconds;
+    updateProgressBar();
+    updateTimeDisplay();
+  });
+
+  // 播放列表点击
+  songItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      switchToSong(index);
+    });
+    
+    // 播放指示器点击
+    const playIndicator = item.querySelector('.play-indicator');
+    playIndicator.addEventListener('click', (e) => {
+      e.stopPropagation();
+      switchToSong(index);
+    });
+    
+    // 喜欢按钮
+    const likeBtn = item.querySelector('.action-btn.like');
+    likeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const icon = likeBtn.querySelector('i');
+      if (icon.className.includes('far')) {
+        icon.className = 'fas fa-heart';
+        likeBtn.classList.add('liked');
+      } else {
+        icon.className = 'far fa-heart';
+        likeBtn.classList.remove('liked');
+      }
+    });
+  });
+
+  // 随机播放按钮
+  document.querySelector('.ctrl-btn.shuffle').addEventListener('click', function() {
+    this.classList.toggle('active');
+    this.style.color = this.classList.contains('active') ? '#3b82f6' : '';
+  });
+
+  // 循环播放按钮
+  document.querySelector('.ctrl-btn.repeat').addEventListener('click', function() {
+    this.classList.toggle('active');
+    this.style.color = this.classList.contains('active') ? '#3b82f6' : '';
+  });
+
+  // 键盘控制
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    
+    switch(e.code) {
+      case 'Space':
+        e.preventDefault();
+        togglePlay();
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        prevSong();
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        nextSong();
+        break;
+    }
+  });
+
+  // 添加音频可视化效果
+  function createAudioVisualizer() {
+    const visualizer = document.createElement('div');
+    visualizer.className = 'audio-visualizer';
+    
+    for (let i = 0; i < 5; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'audio-bar';
+      bar.style.height = Math.random() * 20 + 5 + 'px';
+      visualizer.appendChild(bar);
+    }
+    
+    return visualizer;
+  }
+
+  // 在当前播放的歌曲项添加可视化效果
+  function updateVisualizer() {
+    songItems.forEach((item, index) => {
+      const existingVisualizer = item.querySelector('.audio-visualizer');
+      if (existingVisualizer) {
+        existingVisualizer.remove();
+      }
+      
+      if (index === currentSongIndex && isPlaying) {
+        const visualizer = createAudioVisualizer();
+        const songMeta = item.querySelector('.song-meta');
+        songMeta.appendChild(visualizer);
+      }
+    });
+  }
+
+  // 每次播放状态改变时更新可视化效果
+  const originalTogglePlay = togglePlay;
+  togglePlay = function() {
+    originalTogglePlay();
+    updateVisualizer();
+  };
+
+  // 添加平滑滚动效果
+  function smoothScrollToCurrentSong() {
+    const currentSongItem = songItems[currentSongIndex];
+    if (currentSongItem) {
+      currentSongItem.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+  }
+
+  // 每次切歌时滚动到当前歌曲
+  const originalSwitchToSong = switchToSong;
+  switchToSong = function(index) {
+    originalSwitchToSong(index);
+    smoothScrollToCurrentSong();
+  };
+});
+</script>
+</div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Szj</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/Szj510"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Szj510" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:suzijie510@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/06/Git-Command/" title="Git Command 自用"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Git Command 自用"/></a><div class="content"><a class="title" href="/2025/08/06/Git-Command/" title="Git Command 自用">Git Command 自用</a><time datetime="2025-08-06T06:40:08.000Z" title="发表于 2025-08-06 14:40:08">2025-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Minimum Spanning Trees"/></a><div class="content"><a class="title" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees">Minimum Spanning Trees</a><time datetime="2024-04-25T08:22:36.000Z" title="发表于 2024-04-25 16:22:36">2024-04-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Elementary Graph Algorithms"/></a><div class="content"><a class="title" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms">Elementary Graph Algorithms</a><time datetime="2024-04-21T08:27:36.000Z" title="发表于 2024-04-21 16:27:36">2024-04-21</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/"><span class="card-category-list-name">工具</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%AE%97%E6%B3%95/"><span class="card-category-list-name">算法</span><span class="card-category-list-count">2</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Graph/" style="font-size: 1.5em; color: #99a9bf">Graph</a> <a href="/tags/BFS/" style="font-size: 1.1em; color: #999">BFS</a> <a href="/tags/Kruskal/" style="font-size: 1.1em; color: #999">Kruskal</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.1em; color: #999">数据结构</a> <a href="/tags/Git/" style="font-size: 1.1em; color: #999">Git</a> <a href="/tags/Prim/" style="font-size: 1.1em; color: #999">Prim</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.5em; color: #99a9bf">算法</a> <a href="/tags/%E5%91%BD%E4%BB%A4%E7%AC%94%E8%AE%B0/" style="font-size: 1.1em; color: #999">命令笔记</a> <a href="/tags/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/" style="font-size: 1.1em; color: #999">最小生成树</a> <a href="/tags/DFS/" style="font-size: 1.1em; color: #999">DFS</a> <a href="/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 1.1em; color: #999">版本控制</a> <a href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" style="font-size: 1.1em; color: #999">贪心算法</a> <a href="/tags/%E5%9B%BE%E8%AE%BA/" style="font-size: 1.1em; color: #999">图论</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/08/">
+            <span class="card-archive-list-date">
+              八月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/04/">
+            <span class="card-archive-list-date">
+              四月 2024
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">3</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-08-06T11:55:35.750Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2024 - 2025 By Szj</span></div><div class="footer_custom_text"><p><a target="_blank" href="https://hexo.io/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.4.3"></script><script src="/js/main.js?v=5.4.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '95998e7ed95c5dfc6d4a',
+      clientSecret: '975e1be8ac3c393708c3e62cea2a49c33bd13882',
+      repo: 'ius-blog',
+      owner: 'Szj510',
+      admin: ['Szj510'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'a15f1fd5740f0079cfbca8dea62a8c75'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><!-- 添加音乐页面的JavaScript支持--><script src="/js/music.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

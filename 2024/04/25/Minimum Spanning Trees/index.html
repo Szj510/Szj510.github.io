@@ -1,0 +1,299 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Minimum Spanning Trees | ius</title><meta name="author" content="Szj"><meta name="copyright" content="Szj"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="最小生成树算法学习笔记，详解Kruskal算法和Prim算法的原理与实现，包括贪心策略和算法复杂度分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Minimum Spanning Trees">
+<meta property="og:url" content="https://ius7.qzz.io/2024/04/25/Minimum%20Spanning%20Trees/index.html">
+<meta property="og:site_name" content="ius">
+<meta property="og:description" content="最小生成树算法学习笔记，详解Kruskal算法和Prim算法的原理与实现，包括贪心策略和算法复杂度分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ius7.qzz.io/img/cover_default.png">
+<meta property="article:published_time" content="2024-04-25T08:22:36.000Z">
+<meta property="article:modified_time" content="2025-08-06T07:20:38.290Z">
+<meta property="article:author" content="Szj">
+<meta property="article:tag" content="Graph">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="最小生成树">
+<meta property="article:tag" content="Kruskal">
+<meta property="article:tag" content="Prim">
+<meta property="article:tag" content="贪心算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ius7.qzz.io/img/cover_default.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Minimum Spanning Trees",
+  "url": "https://ius7.qzz.io/2024/04/25/Minimum%20Spanning%20Trees/",
+  "image": "https://ius7.qzz.io/img/cover_default.png",
+  "datePublished": "2024-04-25T08:22:36.000Z",
+  "dateModified": "2025-08-06T07:20:38.290Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Szj",
+      "url": "https://ius7.qzz.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/vinyltocat.png"><link rel="canonical" href="https://ius7.qzz.io/2024/04/25/Minimum%20Spanning%20Trees/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.4.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Minimum Spanning Trees',
+  isHighlightShrink: true,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg" style="background-image: url(/img/banner2.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover_default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ius</span></a><a class="nav-page-title" href="/"><span class="site-name">Minimum Spanning Trees</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Minimum Spanning Trees</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-25T08:22:36.000Z" title="发表于 2024-04-25 16:22:36">2024-04-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-06T07:20:38.290Z" title="更新于 2025-08-06 15:20:38">2025-08-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Minimum-Spanning-Trees"><a href="#Minimum-Spanning-Trees" class="headerlink" title="Minimum Spanning Trees"></a>Minimum Spanning Trees</h1><p>对于无向图 $𝐺=(𝑉,𝐸)$，存在一个能够连接所有顶点的无环子集 $𝑇⊆𝐸$，由于 &nbsp;𝑇&nbsp; 无环且连接所有顶点，因此 &nbsp;𝑇&nbsp; 一定为一棵树 (树是特殊的图，为无环连通图)，被称为生成树 (spanning tree)。无向图 $𝐺=(𝑉,𝐸)$ 的所有生成树都恰有 $|𝑉|−1$ 条边。</p>
+<p>设边 $(𝑢,𝑣)∈𝐸$ 的权重为 $𝑤(𝑢,𝑣)$，生成树权重为 $𝑤(𝑇) = \sum_{(𝑢,𝑣)∈𝑇} 𝑤(𝑢,𝑣)$，所有生成树中权重最小的生成树被称为最小权重生成树 (minimum-weight spanning tree)，简称最小生成树 (minimum spanning tree)。</p>
+<h2 id="Growing-a-minimum-spanning-tree"><a href="#Growing-a-minimum-spanning-tree" class="headerlink" title="Growing a minimum spanning tree"></a>Growing a minimum spanning tree</h2><p>最小生成树问题的输入为一个无向连通图 &nbsp;$𝐺=(𝑉,𝐸)$, 伪代码如下：</p>
+<blockquote>
+<p>$GENERIC-MST(G, w)$<br>1 $A = \not 0$<br>2 while A does not form a spanning tree<br>3 find an edge (u, v) that is safe for A<br>4 $A = A \cup {(u, v)}$<br>5 return A</p>
+</blockquote>
+<p>能够被加入 &nbsp;𝐴&nbsp; 的边 &nbsp;(𝑢,𝑣)&nbsp; 被称为 &nbsp;𝐴&nbsp; 的安全边 (safe edge)。通过 &nbsp;𝐴&nbsp; 维持了循环不变量可证明过程 &nbsp;GENERIC-MST&nbsp; 的正确性。在讨论如何识别安全边之前，我们需要了解一些定义。<br><img src="https://telegraph-image-eja.pages.dev/file/d85f5a52655f0d41a977d.png" alt="image"></p>
+<ul>
+<li>$cut$：无向图 $𝐺=(𝑉,𝐸)$ 的一个切割 (cut)&nbsp;$(𝑆,𝑉−𝑆)$ 是对顶点 𝑉 的一个划分，分成两个区域</li>
+<li> $cross$：若边 $(𝑢,𝑣)∈𝐸$ 的一个端点属于 &nbsp;𝑆&nbsp;，另一个端点属于 𝑉−𝑆&nbsp;，则称边 (𝑢,𝑣)&nbsp; 横跨 (cross) cut (𝑆,𝑉−𝑆)，看图的话就是跟红色分割线相交的边都是 cross 的边</li>
+<li> $respect$：若集合 &nbsp;𝐴&nbsp; 中不存在横跨切割 &nbsp;(𝑆,𝑉−𝑆)&nbsp; 的边，则称该切割不影响 (respect)&nbsp;𝐴</li>
+<li>$light\ edge$：权重最小的 cross 边即是轻量边 (light edge)<br>原文如下：<br><img src="https://telegraph-image-eja.pages.dev/file/1833dbc2edcac6e9a8fb9.png" alt="image"><br>当然最好还得知道树的性质：添加一条边就会构成环，删除一条边就会分裂成两棵树。</li>
+</ul>
+<h3 id="Theorem"><a href="#Theorem" class="headerlink" title="Theorem"></a>Theorem</h3><blockquote>
+<p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 &nbsp;𝑤: $𝐸\to𝑅$&nbsp;，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 为 &nbsp;𝐺&nbsp; 中不影响 &nbsp;𝐴&nbsp; 的任意一个切割，若 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</p>
+</blockquote>
+<p><img src="https://telegraph-image-eja.pages.dev/file/bd123ede0b571e7df22aa.png" alt="image"></p>
+<p>// 图中橙色顶点属于 S，其它顶点属于 V-S，蓝色边就是 A 中的边</p>
+<p>证明如下：</p>
+<ul>
+<li>首先假设 T 是包含 A 的最小生成树，并假设 T 不包含轻量边 (u, v)，因为如果包含了，我们就不用证了。接着我们可以通过构造另一棵最小生成树 T’，其中 $A \cup {(u, v)} ⊆ T’$, 从而表明，边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。</li>
+<li>由图可知边 (u, v) 与 $u \to v$ 的简单路径构成环路。因为 u, v 在 cut (𝑆, 𝑉−𝑆) 下分属两边，因此 &nbsp;𝑇&nbsp; 中至少有一条边属于简单路径 &nbsp;𝑝&nbsp; 并且横跨该切割，设 &nbsp;(𝑥, 𝑦)&nbsp; 为这样一条边。因为切割 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 不影响 𝐴&nbsp;，所以 &nbsp;(𝑥, 𝑦) ∉ 𝐴。又因为边 &nbsp;(𝑥, 𝑦)&nbsp; 位于 &nbsp;𝑇&nbsp; 中从 &nbsp;𝑢&nbsp; 到 &nbsp;𝑣&nbsp; 的唯一的简单路径上，所以移除 &nbsp;(𝑥, 𝑦)&nbsp; 会导致 &nbsp;𝑇&nbsp; 分裂成两部分。此时添加 &nbsp;(𝑢, 𝑣)&nbsp; 将这两部分重新连接成一棵新的生成树 ：𝑇′=(𝑇−{(𝑥,𝑦)})∪{(𝑢,𝑣)}&nbsp;。</li>
+<li>我们接下来要证明 T’是最小生成树。由于 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边且 &nbsp;(𝑥, 𝑦)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条边，即 &nbsp;𝑤(𝑢, 𝑣)≤𝑤(𝑥, 𝑦)&nbsp;，因此：<br>$w(T’) = w(T) - w(x, y) + w(u, v)$<br>$\leq w(T)$<br>但是 &nbsp;𝑇&nbsp; 为一棵最小生成树，有 &nbsp;𝑤(𝑇)≤𝑤(𝑇′)&nbsp;。因此，有 &nbsp;𝑤(𝑇) = 𝑤(𝑇′)&nbsp;，所以 &nbsp;𝑇′&nbsp; 也是一棵最小生成树。</li>
+<li>最后，我们还需要说明边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。因为 &nbsp;𝐴⊆𝑇&nbsp; 且 &nbsp;(𝑥, 𝑦)∉𝐴&nbsp;，所以 &nbsp;𝐴⊆𝑇′&nbsp;，所以 &nbsp;(𝐴∪{(𝑢,𝑣)})⊆𝑇′&nbsp;。由于 &nbsp;𝑇′&nbsp; 是一棵最小生成树，因此对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</li>
+</ul>
+<p>感觉有点难咀嚼的话可以看看下面的另一种证明 (算法 4)：<br><img src="https://telegraph-image-eja.pages.dev/file/ef60c9e50f8c87db41f0d.png" alt="image"></p>
+<blockquote>
+<p>在算法执行的任何时候，图 $G_A = (V, A)$ 是一个森林，$G_A$ 中每一个连通分量都是一棵树 (一些树可能只包含一个顶点，例如在算法开始时，A 是空的，因为还没开始加入安全边，并且此时森林包含了 | V | 棵树，每棵树都只有一个顶点)。此外，因为 $A \cup {(u, v)}$ 必须是无环的，因此每一条安全边 (u, v) 都连接着 $G_A$ 中的不同分量。</p>
+</blockquote>
+<h3 id="Corollary"><a href="#Corollary" class="headerlink" title="Corollary"></a>Corollary</h3><p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 $𝑤:𝐸\to𝑅$，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 $𝐶=(𝑉_𝐶, 𝐸_𝐶)$ 为森林 $𝐺_𝐴=(𝑉,𝐴)$ 中的一个连通分量（一棵树）。若 &nbsp;(𝑢,𝑣)&nbsp; 是连接 &nbsp;𝐶&nbsp; 和 $𝐺_𝐴$ 中某一个其它的连通分量的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全边。</p>
+<blockquote>
+<p>Proof：<br>切割 $(V_C,V-V_C)$ 不影响 A，又因为 (u, v) 是该切割的轻量边，因此，对于 A，(u, v) 是安全的。</p>
+</blockquote>
+<h2 id="The-algorithms-of-Kruskal-and-Prim"><a href="#The-algorithms-of-Kruskal-and-Prim" class="headerlink" title="The algorithms of Kruskal and Prim"></a>The algorithms of Kruskal and Prim</h2><p>这里描述的两种最小生成树算法详细介绍了上面的通用方法。它们各自使用一个特殊的规则来确定 $GENERIC-MST (G, w)$ 的第 3 行中的 find an edge (u, v) that is safe for A。在 Kruskal 算法中，集合 A 是一个森林，其顶点都是给定图的顶点。添加到 A 中的安全边总是图中连接两个不同分量的最低权重边。在 Prim 算法中，集合 A 形成了一棵树，算法执行过程中始终为一棵树。添加到 A 中的安全边始终是连接树和树中以外的顶点的最低权重边。下面的介绍中，两种算法都假设输入图是连通的，并由邻接列表表示。</p>
+<h3 id="Kruskal’s-algorithm"><a href="#Kruskal’s-algorithm" class="headerlink" title="Kruskal’s algorithm"></a>Kruskal’s algorithm</h3><p><img src="https://telegraph-image-eja.pages.dev/file/a9d9c05f942462df59992.png" alt="image"><br><img src="https://telegraph-image-eja.pages.dev/file/f2dcf3043bd0577717a43.png" alt="image"></p>
+<blockquote>
+<p>大家可以先通过上图感受一下该算法，蓝色边属于森林 A，透过上图我们还可以观察到被添加到 A 中的安全边的权重是从小到大的，所以容易发现 Kruskal 算法是贪心算法，每次都加入权重最小的安全边，以此来保证总权重最小。该算法以按权重排序的顺序来考虑每条边，因此正在考虑的那条边已经是当前未加入生成树的边中的轻量边，只需再判断是否产生环而决定是否将它加入 A，红色的箭头则指向在算法的每一步中所考虑的边。如果边 (u, v) 连接森林中两棵不同的树 (注意单一的顶点也是树），则将其添加到森林中，从而合并两棵树。</p>
+</blockquote>
+<ul>
+<li>设 $C_1$ 和 $C_2$ 表示由 (u, v) 连接的两棵树。因为 (u, v) 必须是连接 $C_1$ 和其他树的轻量边，根据推论 (Corollary)，&nbsp;(𝑢, 𝑣)&nbsp; 是 $𝐶_1$ 的一条安全边。<br>伪代码如下：<blockquote>
+<p>// 时间复杂度：𝑂(𝐸 lg⁡ 𝑉)<br>$MST-KRUSKAL(G, w)$<br>1 A = $\not 0$ // 初始化空集合<br>2 for each vertex $v \in G.V$<br>3 MAKE-SET (v) // 使用并查集 (disjoint-set) 的数据结构来维护几个不相交的元素集， 每个集合都包含当前林的一棵树中的顶点，初始化即一个顶点一棵树<br>4 create a single list of the edges in G.E<br>5 sort the list of edges into monotonically increasing order by weight w<br>6 for each edge (u, v) taken from the sorted list in order<br>7 if FIND-SET (u) $\not =$ FIND-SET (v) // 确定两个顶点是否属于同一棵树，同一棵树就会 成环<br>8 $A = A \cup {(u, v)}$ // 把边 (u, v) 加入到 A<br>9 UNION (u, v) // 合并树<br>10 return A</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>上面说到了并查集数据结构，下面简要说一下，已掌握可跳过。</p>
+</blockquote>
+<h4 id="Disjoint-set"><a href="#Disjoint-set" class="headerlink" title="Disjoint-set"></a>Disjoint-set</h4><p>首先并查集用数组来实现，数组的值代表其父节点的位置，在上面代码中的初始化中，一个顶点就是一棵树，因此没有父节点，可以把所有顶点的数组值标为 - 1。<br>并查集支持两个操作：</p>
+<ul>
+<li>查找 (Find)：确定某个元素属于哪个子集，它可以用来确定两个元素是否属于同一个子集。</li>
+<li>合并 (Union)：将两个子集合并成一个集合<br>上面代码中的 FIND-SET 即是查找操作，对某个顶点 i 查找，即循环查找当前位置 i 的父节点，直到 arr [i] = -1 为止，返回 i，如果两个顶点的 FIND-SET 返回结果一样，即两个顶点属于同一棵树。<br>合并操作即是先分别找到 u，v 的根节点，然后将其中一个根节点的父节点设为另一个顶点。这是最基础的并查集实现，要提高效率的话就要进行路径压缩和按秩合并。</li>
+<li>路径压缩：在 Find 过程中在返回之前，路径中的顶点的父节点直接设为根节点，毕竟 Find 返回的就是根节点，这有利于下一次查询的效率。</li>
+<li>按秩合并：上面所说的合并操作是将其中一个根节点的父节点设为另一个顶点，这未免有点随便。比如现在有一棵简单的树，一棵复杂的树，那么是将简单的往复杂的合并好还是复杂的往简单的合并好？答案是前者，如果把复杂的往简单的合并，那么原来在复杂树中的每个元素到根节点的距离都变长了，影响后面 Find 的效率；而如果把简单的往复杂的合并，到根节点距离变长的节点个数比较少。所以就引入秩，初始时每个顶点的秩设为 1，那么什么时候秩会增加呢？这发生在合并时，如果两棵树深度相同，则新的根节点的秩 + 1。秩越高，树 (或子树) 就越复杂。</li>
+</ul>
+<h3 id="Prim’s-algorithm"><a href="#Prim’s-algorithm" class="headerlink" title="Prim’s algorithm"></a>Prim’s algorithm</h3><p>跟上面一样，我们可以先通过过程图感受一下：<br><img src="https://telegraph-image-eja.pages.dev/file/0149f1a64ebab26f61bdd.png" alt="image"><br>// 从上图可以明显感受到与 Kruskal 算法不一样的是，蓝色边之间都是连通的，这里就揭露了 Prim 算法具有的一个性质是 &nbsp;𝐴&nbsp; 中的边总是构成一棵树，我们还可以发现添加边的权重是没有像 Kruskal 算法一样按权重排序的。</p>
+<p>如图所示，这棵树以任意一个顶点 &nbsp;𝑟&nbsp; 为根节点，不断生长直到包含 &nbsp;𝑉&nbsp; 中所有顶点。每次加入到 &nbsp;𝐴&nbsp; 中的安全边永远是 (𝐴, 𝑉−𝐴) 切割的轻量边。根据 Corollary，每次加入 &nbsp;𝐴&nbsp; 的边一定是安全边。该算法也满足贪心性质，因为在每一步它向树添加的一条边，都为树的权重贡献可能的最小量。</p>
+<p>伪代码如下：</p>
+<blockquote>
+<p>$MST-PRIM(G, w, r)$<br>1 for each vertex $u \in G.V$<br>2 $u.key = \infty$ //&nbsp;u.𝑘𝑒𝑦 保存连接 u 和树中任一其它节点的所有边中最小的边的权 重，若不存在这样的边，即设为 $\infty$，初始化时都设为 $\infty$。<br>3 $u.\pi = NIL$ //u.𝜋&nbsp; 保存 u 在树中的父节点<br>4 $r.key = 0$ // 把根节点 r 的 key 设为 0，方便第 9 行第一个处理 r<br>5 $Q = \not 0$ // 创建基于 &nbsp;𝑘𝑒𝑦&nbsp; 属性的优先队列<br>6 for each vertex $u \in G.V$<br>7 INSERT (Q, u)<br>8 while $Q \not = \not 0$ // 只要队列非空<br>9 u = EXTRACT-MIN (Q) // 把 u 加到树 (A) 中<br>10 for each vertex v in $G.Adj [u]$ // 更新 u 的非树邻居的 key<br>11 if $v \in Q$ and w(u, v) &lt; v.key<br>12 $v.\pi = u$<br>13 v.key = w(u, v)<br>14 DECREASE-KEY (Q, v, w (u, v)) // 调整 Q 中 v 的 key 值</p>
+</blockquote>
+<p>该算法保持以下三个循环不变量：</p>
+<ul>
+<li>$𝐴={(𝑣, 𝑣.𝜋): 𝑣∈𝑉−{𝑟}−𝑄}$，(算法终止时，&nbsp;𝑄=∅，因此 G 的最小生成树 $𝐴={(𝑣, 𝑣.𝜋): 𝑣∈𝑉−{𝑟}}$。)</li>
+<li> 已经放在最小生成树中的顶点都是 V - Q 中的顶点。</li>
+<li>对于图中所有的顶点 v∈Q，如果 $v.\pi$ 不等于 NIL，那么 v.key 小于正无穷大，v.key 是连接 v 到已经放置在最小生成树中的某个顶点的轻量边 $(v,v.\pi)$ 的权重。</li>
+</ul>
+<p>Prim 算法的运行时间取决于最小优先级队列 Q 的实现：</p>
+<ul>
+<li>二叉堆：时间复杂度：$𝑂(𝐸lg⁡𝑉)$</li>
+<li> 斐波那契堆：时间复杂度：$O (E+V lg V)$</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ius7.qzz.io">Szj</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ius7.qzz.io/2024/04/25/Minimum%20Spanning%20Trees/">https://ius7.qzz.io/2024/04/25/Minimum%20Spanning%20Trees/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ius7.qzz.io" target="_blank">ius</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Graph/">Graph</a><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95/">算法</a><a class="post-meta__tags" href="/tags/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/">最小生成树</a><a class="post-meta__tags" href="/tags/Kruskal/">Kruskal</a><a class="post-meta__tags" href="/tags/Prim/">Prim</a><a class="post-meta__tags" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/">贪心算法</a></div><div class="post-share"><div class="social-share" data-image="/img/cover_default.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/wechat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms"><img class="cover" src="/img/cover_default.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Elementary Graph Algorithms</div></div></div></a><a class="pagination-related  no-desc" href="/2025/08/06/Git-Command/" title="Git Command 自用"><img class="cover" src="/img/cover_default.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Git Command 自用</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms"><img class="cover" src="/img/cover_default.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-21</div><div class="info-item-2">Elementary Graph Algorithms</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Szj</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/Szj510"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Szj510" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:suzijie510@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Minimum-Spanning-Trees"><span class="toc-number">1.</span> <span class="toc-text">Minimum Spanning Trees</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Growing-a-minimum-spanning-tree"><span class="toc-number">1.1.</span> <span class="toc-text">Growing a minimum spanning tree</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Theorem"><span class="toc-number">1.1.1.</span> <span class="toc-text">Theorem</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Corollary"><span class="toc-number">1.1.2.</span> <span class="toc-text">Corollary</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-algorithms-of-Kruskal-and-Prim"><span class="toc-number">1.2.</span> <span class="toc-text">The algorithms of Kruskal and Prim</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kruskal%E2%80%99s-algorithm"><span class="toc-number">1.2.1.</span> <span class="toc-text">Kruskal’s algorithm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Disjoint-set"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">Disjoint-set</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prim%E2%80%99s-algorithm"><span class="toc-number">1.2.2.</span> <span class="toc-text">Prim’s algorithm</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/06/Git-Command/" title="Git Command 自用"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Git Command 自用"/></a><div class="content"><a class="title" href="/2025/08/06/Git-Command/" title="Git Command 自用">Git Command 自用</a><time datetime="2025-08-06T06:40:08.000Z" title="发表于 2025-08-06 14:40:08">2025-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Minimum Spanning Trees"/></a><div class="content"><a class="title" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees">Minimum Spanning Trees</a><time datetime="2024-04-25T08:22:36.000Z" title="发表于 2024-04-25 16:22:36">2024-04-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Elementary Graph Algorithms"/></a><div class="content"><a class="title" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms">Elementary Graph Algorithms</a><time datetime="2024-04-21T08:27:36.000Z" title="发表于 2024-04-21 16:27:36">2024-04-21</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2024 - 2025 By Szj</span></div><div class="footer_custom_text"><p><a target="_blank" href="https://hexo.io/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.4.3"></script><script src="/js/main.js?v=5.4.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '95998e7ed95c5dfc6d4a',
+      clientSecret: '975e1be8ac3c393708c3e62cea2a49c33bd13882',
+      repo: 'ius-blog',
+      owner: 'Szj510',
+      admin: ['Szj510'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '7d8bfb78342590d1175b82a5cf333733'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><!-- 添加音乐页面的JavaScript支持--><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
