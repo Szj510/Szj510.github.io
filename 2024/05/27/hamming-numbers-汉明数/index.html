@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>汉明数 (Hamming Numbers) | ius</title><meta name="author" content="Szj"><meta name="copyright" content="Szj"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="介绍汉明数的定义与求法，包含用三指针法生成汉明数序列的思路与 Python 实现示例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汉明数 (Hamming Numbers)">
+<meta property="og:url" content="https://ius7.qzz.io/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/index.html">
+<meta property="og:site_name" content="ius">
+<meta property="og:description" content="介绍汉明数的定义与求法，包含用三指针法生成汉明数序列的思路与 Python 实现示例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ius7.qzz.io/img/cover_default.png">
+<meta property="article:published_time" content="2024-05-27T02:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-29T11:42:37.990Z">
+<meta property="article:author" content="Szj">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="刷题">
+<meta property="article:tag" content="codewars">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ius7.qzz.io/img/cover_default.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "汉明数 (Hamming Numbers)",
+  "url": "https://ius7.qzz.io/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/",
+  "image": "https://ius7.qzz.io/img/cover_default.png",
+  "datePublished": "2024-05-27T02:00:00.000Z",
+  "dateModified": "2025-10-29T11:42:37.990Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Szj",
+      "url": "https://ius7.qzz.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/vinyltocat.png"><link rel="canonical" href="https://ius7.qzz.io/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.4.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '汉明数 (Hamming Numbers)',
+  isHighlightShrink: true,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg" style="background-image: url(/img/banner2.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover_default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ius</span></a><a class="nav-page-title" href="/"><span class="site-name">汉明数 (Hamming Numbers)</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">汉明数 (Hamming Numbers)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-27T02:00:00.000Z" title="发表于 2024-05-27 10:00:00">2024-05-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-29T11:42:37.990Z" title="更新于 2025-10-29 19:42:37">2025-10-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/codewars/">codewars</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="codewars-汉明数"><a href="#codewars-汉明数" class="headerlink" title="codewars-汉明数"></a>codewars - 汉明数</h1><p>[(codewars 传送门)](<a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.codewars.com/kata/526d84b98f428f14a60008da/">Hamming Numbers | Codewars</a>)</p>
+<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>汉明数是形如 $2^i3^j5^k$ 的正整数，<code>i, j, k</code> 是非负整数，题目要求写一个函数计算出第 n 个最小汉明数<br>特别地：</p>
+<ul>
+<li>第一个最小汉明数是 $1 = 2^03^05^0$</li>
+<li> 第二个最小汉明数是 $2 = 2^13^05^0$</li>
+<li> 第三个最小汉明数是 $3 = 2^03^15^0$</li>
+<li> 第四个最小汉明数是 $4 = 2^23^05^0$</li>
+<li> 第五个最小汉明数是 $5 = 2^03^05^1$</li>
+<li> 第六个最小汉明数是 $6 = 2^13^15^0$<br>首先容易想到的就是暴力解法咯，套三层循环，同时也容易想到必定超时，因此需要设计。</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>第一个问题我觉得就是要考虑汉明数是用数组存着每一个最小汉明数，还是用一个变量存着然后一直更新变量的值。通过观察发现每一个最小汉明数都是由前面的某一个最小汉明数进行乘 2 或乘 3 或乘 5 得到的，因而可以知道的是每一个最小汉明数都得存起来，排除了只用一个变量存储的可能。</p>
+<p>现在就得想如何知道进行什么操作才能做到每一次都是最小的。首先，我们先假设现在前面已经有若干个最小汉明数存着了，现在要求第 n 个，这第 n 个最小汉明数是由 2 或 3 或 5 乘以前面某一个最小汉明数得到，这里有两个未知的量，因此我们先假设某个量是定的，比如假设要进行的是乘 2 操作，接下来就要从前面的最小汉明数中找一个与之相乘，使其乘积最小，那么很显然，我们要找的那个最小汉明数肯定是越前越好，所以就引出关键问题了，我们得知道前面的最小汉明数有没有被用过，或者说有没有被乘 2 这个操作用过，被用过的话就代表着在第 n 个前面肯定是有一个最小汉明数是对其进行乘 2 操作得到的，因此第 n 个就得在后面找第一个没有被用过的，因此我们需要东西去记录用过的汉明数，不难发现只用一个标记就够了，通过右移来更新标记，在标记前面的最小汉明数都是被用过的。因为前面假设的是乘 2 操作，那么乘 3 或乘 5 是同样的情况，所以需要三个标记去记录，这里把标记记为 <code>i, j, k</code> 分别代表着 2，3，5 ，这里的标记其实就是最小汉明数数组的索引，注意此 <code>ijk</code> 跟题目定义的 <code>ijk</code> 不是一个东西，切勿混淆。</p>
+<p>下一步就得考虑一下初始状态了，存储最小汉明数的数组初始化首先得搞个数字存进去吧，那么是存 0 好呢还是把第一个最小汉明数丢进去呢。假设先存个 0，那么 <code>i, j, k</code> 初始化都得是 0，毕竟数组里暂时只有 0 这个索引有数字，那么第一个最小汉明数按上面的操作的话就求不出来了，因为 0 乘任何数都是 0。假设先存个 1，然后从第二个最小汉明数开始按照上面分析的操作进行，2,3,5 分别乘 1，得出 2 最小，接着把 2 加在最小汉明数数组中，然后还得更新 2 所对应的 i 标记右移一个单位，这时 <code>i == 1</code>，此时 i 指向的是数组中索引为 1 的数，即 2，其它两个标记还是 0，为了验证并理解，再举两个例子推演。下面到第三个最小汉明数，为了方便叙述，我把数组实际化为 nums，那么第三个最小汉明数就要在 $nums [i] * 2=4$ ，$nums [j]*3=3$，$nums [k]*5=5$ 中的最小值取得，即是中间的 3，把它加入到 nums 中，并把 j 右移一位，现在 i 和 j 都是 1，k 是 0,。接着第四个最小汉明数就要从 $nums [i] * 2=4$ ，$nums [j]*3=6$，$nums [k]*5=5$ 中取得，即是 4，把 4 加入到 nums，i 再次右移一位，后面的同理。</p>
+<p>可能说的还是有点模糊，下面用一张图来进行具象化：<br><img src="https://telegraph-image-eja.pages.dev/file/12bb4c8ae58643b244279.jpg" alt="image"><br>那就直接上代码</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hamming</span>(<span class="params">n</span>):</span><br><span class="line">    i, j, k = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    nums = [<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(nums) &lt; n:</span><br><span class="line">        nums.append(<span class="built_in">min</span>(nums[i]*<span class="number">2</span>, nums[j]*<span class="number">3</span>, nums[k]*<span class="number">5</span>))</span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[i]*<span class="number">2</span>: i += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[j]*<span class="number">3</span>: j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[k]*<span class="number">5</span>: k += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> nums[-<span class="number">1</span>]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>没想到做完两题就直接从 8kyu 到 6kyu 了</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ius7.qzz.io">Szj</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ius7.qzz.io/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/">https://ius7.qzz.io/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ius7.qzz.io" target="_blank">ius</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95/">算法</a><a class="post-meta__tags" href="/tags/%E5%88%B7%E9%A2%98/">刷题</a><a class="post-meta__tags" href="/tags/codewars/">codewars</a></div><div class="post-share"><div class="social-share" data-image="/img/cover_default.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/wechat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img class="cover" src="/img/cover_default.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Minimum Spanning Trees</div></div></div></a><a class="pagination-related  no-desc" href="/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/" title="fusc 函数与尾递归优化"><img class="cover" src="/img/cover_default.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">fusc 函数与尾递归优化</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/" title="fusc 函数与尾递归优化"><img class="cover" src="/img/cover_default.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-07</div><div class="info-item-2">fusc 函数与尾递归优化</div></div></div></a><a class="pagination-related no-desc" href="/2024/04/21/Elementary-Graph-Algorithms/" title="Elementary Graph Algorithms"><img class="cover" src="/img/cover_default.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-21</div><div class="info-item-2">Elementary Graph Algorithms</div></div></div></a><a class="pagination-related no-desc" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img class="cover" src="/img/cover_default.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-25</div><div class="info-item-2">Minimum Spanning Trees</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/vinyltocat.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Szj</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/Szj510"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Szj510" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:suzijie510@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#codewars-%E6%B1%89%E6%98%8E%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">codewars - 汉明数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5"><span class="toc-number">1.1.</span> <span class="toc-text">引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-number">1.2.</span> <span class="toc-text">思路</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/06/Git-Command/" title="Git Command 自用"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Git Command 自用"/></a><div class="content"><a class="title" href="/2025/08/06/Git-Command/" title="Git Command 自用">Git Command 自用</a><time datetime="2025-08-06T06:40:08.000Z" title="发表于 2025-08-06 14:40:08">2025-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/28/Cpp-Smart-Pointer/" title="Cpp 智能指针"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Cpp 智能指针"/></a><div class="content"><a class="title" href="/2024/09/28/Cpp-Smart-Pointer/" title="Cpp 智能指针">Cpp 智能指针</a><time datetime="2024-09-28T02:00:00.000Z" title="发表于 2024-09-28 10:00:00">2024-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/" title="fusc 函数与尾递归优化"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="fusc 函数与尾递归优化"/></a><div class="content"><a class="title" href="/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/" title="fusc 函数与尾递归优化">fusc 函数与尾递归优化</a><time datetime="2024-07-07T02:00:00.000Z" title="发表于 2024-07-07 10:00:00">2024-07-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/" title="汉明数 (Hamming Numbers)"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="汉明数 (Hamming Numbers)"/></a><div class="content"><a class="title" href="/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/" title="汉明数 (Hamming Numbers)">汉明数 (Hamming Numbers)</a><time datetime="2024-05-27T02:00:00.000Z" title="发表于 2024-05-27 10:00:00">2024-05-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees"><img src="/img/cover_default.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Minimum Spanning Trees"/></a><div class="content"><a class="title" href="/2024/04/25/Minimum%20Spanning%20Trees/" title="Minimum Spanning Trees">Minimum Spanning Trees</a><time datetime="2024-04-25T08:22:36.000Z" title="发表于 2024-04-25 16:22:36">2024-04-25</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2024 - 2025 By Szj</span></div><div class="footer_custom_text"><p><a target="_blank" href="https://hexo.io/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.4.3"></script><script src="/js/main.js?v=5.4.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '95998e7ed95c5dfc6d4a',
+      clientSecret: '975e1be8ac3c393708c3e62cea2a49c33bd13882',
+      repo: 'ius-blog',
+      owner: 'Szj510',
+      admin: ['Szj510'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '6bcc0f2a9575dec1fddce8ae88b1140e'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><!-- 添加音乐页面的JavaScript支持--><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
