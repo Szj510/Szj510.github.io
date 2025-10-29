@@ -94,6 +94,233 @@
       </tags>
   </entry>
   <entry>
+    <title>Git Command 自用</title>
+    <url>/2025/08/06/Git-Command/</url>
+    <content><![CDATA[<h2 id="项目模拟场景"><a href="#项目模拟场景" class="headerlink" title="项目模拟场景"></a>项目模拟场景</h2><h3 id="项目初始化阶段"><a href="#项目初始化阶段" class="headerlink" title="项目初始化阶段"></a>项目初始化阶段</h3><h4 id="1-创建远程仓库"><a href="#1-创建远程仓库" class="headerlink" title="1. 创建远程仓库"></a>1. 创建远程仓库</h4><ul>
+<li>在 GitHub 创建 private 仓库</li>
+<li>邀请协作者</li>
+</ul>
+<h4 id="2-初始化本地项目"><a href="#2-初始化本地项目" class="headerlink" title="2. 初始化本地项目"></a>2. 初始化本地项目</h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir ProjectName &amp;&amp; cd ProjectName</span><br><span class="line">echo "# ProjectName - 项目描述" &gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "chore: initial project setup"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建基础分支结构</span></span><br><span class="line">git switch -c develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建初始目录结构</span></span><br><span class="line">mkdir -p backend frontend docs</span><br><span class="line">echo "后端服务" &gt; backend/README.md</span><br><span class="line">echo "前端应用" &gt; frontend/README.md</span><br><span class="line">echo "项目文档" &gt; docs/README.md</span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: create project structure"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推送到远程</span></span><br><span class="line">git remote add origin https://github.com/username/ProjectName.git</span><br><span class="line">git push -u origin main develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-设置分支保护-仓库-settings"><a href="#3-设置分支保护-仓库-settings" class="headerlink" title="3. 设置分支保护(仓库 settings)"></a>3. 设置分支保护 (仓库 settings)</h4><ul>
+<li><code>main</code> 分支：Require pull request, Require 1 approval, Require status checks</li>
+<li><code>develop</code> 分支：Require pull request, Require status checks</li>
+</ul>
+<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有团队成员克隆仓库</span></span><br><span class="line">git clone https://github.com/username/ProjectName.git</span><br><span class="line">cd ProjectName</span><br><span class="line">git switch develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化后端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 后端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd backend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">spring init --dependencies=web,data-jpa,mysql,security --build=gradle -n BackendProject</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> BackendProject/* . &amp;&amp; <span class="built_in">rmdir</span> BackendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize backend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化前端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 前端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">npm init vue@latest -- --projectName=<span class="string">"FrontendProject"</span> --typescript --pinia --vitest</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> FrontendProject/* . &amp;&amp; <span class="built_in">rmdir</span> FrontendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果develop设置了分支保护，该push会失败，可以采用以下方法：</span></span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/init-frontend</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行前端初始化命令</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push -u origin feature/init-frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端成员去github网页创建PR，reviewer在网页处理PR，接着前端成员同步最新的develop</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git branch -d feature/init-frontend   # 删掉本地功能分支</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="项目开发阶段"><a href="#项目开发阶段" class="headerlink" title="项目开发阶段"></a>项目开发阶段</h2><h3 id="迭代-1：用户认证系统"><a href="#迭代-1：用户认证系统" class="headerlink" title="迭代 1：用户认证系统"></a>迭代 1：用户认证系统</h3><h4 id="后端成员开发认证-API"><a href="#后端成员开发认证-API" class="headerlink" title="后端成员开发认证 API"></a>后端成员开发认证 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-auth</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证功能</span></span><br><span class="line"><span class="comment"># ... 编写JWT认证逻辑 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/auth/**</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement JWT authentication"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发API文档</span></span><br><span class="line"><span class="comment"># ... 添加Swagger注解 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/AuthController.java</span><br><span class="line">git commit -m <span class="string">"docs(auth): add swagger API documentation"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推送到远程</span></span><br><span class="line">git push -u origin feature/backend-auth</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发登录界面"><a href="#前端成员开发登录界面" class="headerlink" title="前端成员开发登录界面"></a>前端成员开发登录界面</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-login</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于后端Swagger生成TS类型</span></span><br><span class="line">npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api-types.d.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发登录组件</span></span><br><span class="line"><span class="comment"># ... 创建Login.vue ...</span></span><br><span class="line">git add frontend/src/views/Login.vue</span><br><span class="line">git commit -m <span class="string">"feat(login): implement login page UI"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证逻辑</span></span><br><span class="line"><span class="comment"># ... 实现axios拦截器 ...</span></span><br><span class="line">git add frontend/src/services/auth.ts</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement token management"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-login</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="代码审查与合并"><a href="#代码审查与合并" class="headerlink" title="代码审查与合并"></a>代码审查与合并</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员创建PR: feature/backend-auth → develop</span></span><br><span class="line"><span class="comment"># 前端成员创建PR: feature/frontend-login → develop</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审查过程：</span></span><br><span class="line"><span class="comment">## 1. 前端成员验证后端API文档</span></span><br><span class="line"><span class="comment">## 2. 后端成员检查前端token处理逻辑</span></span><br><span class="line"><span class="comment">## 3. 项目经理批准合并</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并后操作（项目经理）：</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="comment"># 如果不走网页PR，可在本地合并</span></span><br><span class="line">git merge --no-ff feature/backend-auth</span><br><span class="line">git merge --no-ff feature/frontend-login</span><br><span class="line">git push origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-2：数据分析看板"><a href="#迭代-2：数据分析看板" class="headerlink" title="迭代 2：数据分析看板"></a>迭代 2：数据分析看板</h3><h4 id="后端成员开发分析-API"><a href="#后端成员开发分析-API" class="headerlink" title="后端成员开发分析 API"></a>后端成员开发分析 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-analysis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据库迁移脚本</span></span><br><span class="line"><span class="comment"># ... 使用Liquibase/Flyway等 ...</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.1__analysis_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add analysis tables"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发分析算法</span></span><br><span class="line"><span class="comment"># ... 集成数据分析模型 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/AnalysisService.java</span><br><span class="line">git commit -m <span class="string">"feat(analysis): implement data analysis model"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/backend-analysis</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发可视化看板"><a href="#前端成员开发可视化看板" class="headerlink" title="前端成员开发可视化看板"></a>前端成员开发可视化看板</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-dashboard</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装可视化库</span></span><br><span class="line">npm install echarts vue-echarts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发看板组件</span></span><br><span class="line"><span class="comment"># ... 创建Dashboard.vue ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"feat(dashboard): implement analysis charts"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-dashboard</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到问题：API-变更冲突"><a href="#遇到问题：API-变更冲突" class="headerlink" title="遇到问题：API 变更冲突"></a>遇到问题：API 变更冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员修改了API响应格式</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/DataController.java</span><br><span class="line">git commit -m <span class="string">"refactor(api): update response format for frontend"</span></span><br><span class="line">git push origin feature/backend-analysis --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员需要同步变更</span></span><br><span class="line">git switch feature/frontend-dashboard</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop  <span class="comment"># 获取最新API变更</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决前端适配问题</span></span><br><span class="line"><span class="comment"># ... 更新数据处理逻辑 ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"fix(dashboard): adapt to new API response format"</span></span><br><span class="line">git push origin feature/frontend-dashboard --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-3：推荐系统"><a href="#迭代-3：推荐系统" class="headerlink" title="迭代 3：推荐系统"></a>迭代 3：推荐系统</h3><h4 id="多人协作开发"><a href="#多人协作开发" class="headerlink" title="多人协作开发"></a>多人协作开发</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A开发数据管理</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员开发推荐界面</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/frontend-recommendation</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B开发推荐算法</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-recommend-engine</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到数据库冲突"><a href="#遇到数据库冲突" class="headerlink" title="遇到数据库冲突"></a>遇到数据库冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A提交了数据表变更</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.2__data_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add data tables"</span></span><br><span class="line">git push origin feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B也需要修改数据库</span></span><br><span class="line">git switch feature/backend-recommend-engine</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遇到冲突：db/changelog/changelog-master.yaml</span></span><br><span class="line"><span class="comment"># 解决冲突后</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line">git push origin feature/backend-recommend-engine --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="测试与发布阶段"><a href="#测试与发布阶段" class="headerlink" title="测试与发布阶段"></a>测试与发布阶段</h2><h3 id="预发布准备"><a href="#预发布准备" class="headerlink" title="预发布准备"></a>预发布准备</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 创建发布分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c release/v1.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新版本号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"1.0.0"</span> &gt; VERSION</span><br><span class="line">git add VERSION</span><br><span class="line">git commit -m <span class="string">"chore: prepare release v1.0.0"</span></span><br><span class="line">git push -u origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试问题修复"><a href="#测试问题修复" class="headerlink" title="测试问题修复"></a>测试问题修复</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 发现权限问题</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git switch -c fix/permission-issue</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复后端权限验证</span></span><br><span class="line"><span class="comment"># ... 修改SecurityConfig等 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/config/SecurityConfig.java</span><br><span class="line">git commit -m <span class="string">"fix(auth): correct role permissions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并回发布分支</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git merge --no-ff fix/permission-issue</span><br><span class="line">git push origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="正式发布"><a href="#正式发布" class="headerlink" title="正式发布"></a>正式发布</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 合并到main分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git merge --no-ff release/v1.0.0</span><br><span class="line">git tag -a v1.0.0 -m <span class="string">"Initial release with core features"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新develop分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git merge release/v1.0.0</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除发布分支</span></span><br><span class="line">git branch -d release/v1.0.0</span><br><span class="line">git push origin --delete release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="生产环境问题处理"><a href="#生产环境问题处理" class="headerlink" title="生产环境问题处理"></a>生产环境问题处理</h2><h3 id="紧急修复示例"><a href="#紧急修复示例" class="headerlink" title="紧急修复示例"></a>紧急修复示例</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 从main创建热修复分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git switch -c hotfix/critical-bug-fix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复问题</span></span><br><span class="line"><span class="comment"># ... 修改相关服务 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/DataService.java</span><br><span class="line">git commit -m <span class="string">"fix(service): handle large dataset processing"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到main和develop</span></span><br><span class="line">git switch main</span><br><span class="line">git merge --no-ff hotfix/critical-bug-fix</span><br><span class="line">git tag -a v1.0.1 -m <span class="string">"Hotfix for critical bug"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line">git switch develop</span><br><span class="line">git merge hotfix/critical-bug-fix</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除热修复分支</span></span><br><span class="line">git branch -d hotfix/critical-bug-fix</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="checkout-和-switch-的区别"><a href="#checkout-和-switch-的区别" class="headerlink" title="checkout 和 switch 的区别"></a>checkout 和 switch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支切换</span></span><br><span class="line">git checkout existing-branch</span><br><span class="line">git switch existing-branch</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换分支</span></span><br><span class="line">git checkout -b feature/new-feature</span><br><span class="line">git switch -c feature/new-feature</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件恢复</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">核心场景：你还没提交，但把某个文件改坏了，想撤销所有未暂存的本地修改，让它立刻回到上一次提交时的样子（误删也用这个）</span></span><br><span class="line">git checkout -- src/components/Component.vue</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果已暂存，先用`git reset HEAD &lt;file&gt;`取消暂存，再用checkout</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看历史提交（只读模式）</span></span><br><span class="line">git checkout HEAD~3</span><br><span class="line">git switch --detach HEAD~3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安全机制</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当有未提交更改时尝试切换分支，switch会报错，而checkout会尝试自动合并，可能会导致数据丢失</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="pull-fetch-的区别"><a href="#pull-fetch-的区别" class="headerlink" title="pull &amp; fetch 的区别"></a>pull &amp; fetch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pull = fetch + merge</span></span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分步操作更安全</span></span><br><span class="line">git fetch origin           # 获取远程更新但不合并</span><br><span class="line">git log origin/develop..HEAD  # 查看差异</span><br><span class="line">git merge origin/develop    # 手动合并</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式拉取（保持线性历史）</span></span><br><span class="line">git pull --rebase origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="rebase-merge-的区别"><a href="#rebase-merge-的区别" class="headerlink" title="rebase &amp; merge 的区别"></a>rebase &amp; merge 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">merge方式：保留分支历史</span></span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login     # 创建合并提交</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式：线性历史更整洁</span></span><br><span class="line">git switch feature/login</span><br><span class="line">git rebase main            # 重新应用提交</span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login    # 快进合并</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看分支</td>
+<td><code>git branch -a</code></td>
+<td>显示所有分支</td>
+</tr>
+<tr>
+<td>切换分支</td>
+<td><code>git switch branch-name</code></td>
+<td>推荐用法</td>
+</tr>
+<tr>
+<td>创建切换</td>
+<td><code>git switch -c new-branch</code></td>
+<td>创建并切换到新分支</td>
+</tr>
+<tr>
+<td>删除分支</td>
+<td><code>git branch -d branch-name</code></td>
+<td>删除已合并分支</td>
+</tr>
+<tr>
+<td>强制删除</td>
+<td><code>git branch -D branch-name</code></td>
+<td>强制删除分支</td>
+</tr>
+</tbody></table>
+<h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>拉取更新</td>
+<td><code>git pull origin main</code></td>
+<td>拉取并合并</td>
+</tr>
+<tr>
+<td>获取更新</td>
+<td><code>git fetch origin</code></td>
+<td>只获取不合并</td>
+</tr>
+<tr>
+<td>推送分支</td>
+<td><code>git push -u origin HEAD</code></td>
+<td>推送当前分支</td>
+</tr>
+<tr>
+<td>强制推送</td>
+<td><code>git push --force-with-lease</code></td>
+<td>安全强推</td>
+</tr>
+</tbody></table>
+<h3 id="提交管理"><a href="#提交管理" class="headerlink" title="提交管理"></a>提交管理</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看状态</td>
+<td><code>git status</code></td>
+<td>检查工作区状态</td>
+</tr>
+<tr>
+<td>暂存文件</td>
+<td><code>git add .</code></td>
+<td>暂存所有变更</td>
+</tr>
+<tr>
+<td>提交变更</td>
+<td><code>git commit -m "message"</code></td>
+<td>提交暂存区</td>
+</tr>
+<tr>
+<td>修改提交</td>
+<td><code>git commit --amend</code></td>
+<td>修改最后一次提交</td>
+</tr>
+<tr>
+<td>撤销提交</td>
+<td><code>git reset --soft HEAD~1</code></td>
+<td>撤销但保留更改</td>
+</tr>
+</tbody></table>
+<h3 id="历史查看"><a href="#历史查看" class="headerlink" title="历史查看"></a>历史查看</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看历史</td>
+<td><code>git log --oneline</code></td>
+<td>简洁历史</td>
+</tr>
+<tr>
+<td>图形化历史</td>
+<td><code>git log --graph --all</code></td>
+<td>分支图</td>
+</tr>
+<tr>
+<td>文件历史</td>
+<td><code>git log -p filename</code></td>
+<td>文件变更历史</td>
+</tr>
+<tr>
+<td>查看差异</td>
+<td><code>git diff HEAD~1</code></td>
+<td>与上次提交比较</td>
+</tr>
+</tbody></table>
+<h2 id="关键-git-命令速查表"><a href="#关键-git-命令速查表" class="headerlink" title="关键 git 命令速查表"></a>关键 git 命令速查表</h2><table>
+<thead>
+<tr>
+<th align="center">场景</th>
+<th align="center">命令</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">开始新功能</td>
+<td align="center"> git switch develop &amp;&amp; git pull &amp;&amp; git switch -c feature/[name]</td>
+<td align="center"> 从 develop 创建新功能分支</td>
+</tr>
+<tr>
+<td align="center">每日同步</td>
+<td align="center"> git fetch origin &amp;&amp; git rebase origin/develop</td>
+<td align="center"> 保持与 develop 同步</td>
+</tr>
+<tr>
+<td align="center">提交变更</td>
+<td align="center"> git add . &amp;&amp; git commit -m “…” &amp;&amp; git push -u origin HEAD</td>
+<td align="center"> 推送当前分支</td>
+</tr>
+<tr>
+<td align="center">解决冲突</td>
+<td align="center"> git rebase –continue 或 git rebase –abort</td>
+<td align="center"> 变基操作控制</td>
+</tr>
+<tr>
+<td align="center">撤销错误提交</td>
+<td align="center"> git reset –soft HEAD~1</td>
+<td align="center"> 撤销最后一次提交</td>
+</tr>
+<tr>
+<td align="center">查看分支关系</td>
+<td align="center"> git log –all –graph –oneline</td>
+<td align="center"> 可视化分支历史</td>
+</tr>
+</tbody></table>
+<h2 id="git-提交规范"><a href="#git-提交规范" class="headerlink" title="git 提交规范"></a>git 提交规范</h2><figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">feat: 添加新功能</span><br><span class="line">fix: 修复 bug</span><br><span class="line">docs: 文档变更</span><br><span class="line">style: 代码格式/样式调整</span><br><span class="line">refactor: 代码重构</span><br><span class="line">test: 添加或修改测试</span><br><span class="line">chore: 构建过程或辅助工具变更</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用场景补充"><a href="#常用场景补充" class="headerlink" title="常用场景补充"></a>常用场景补充</h2><h3 id="储藏工作进度"><a href="#储藏工作进度" class="headerlink" title="储藏工作进度"></a>储藏工作进度</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时保存当前工作</span></span><br><span class="line">git stash push -m "work in progress"</span><br><span class="line">git stash list               # 查看储藏列表</span><br><span class="line">git stash pop               # 恢复最新储藏</span><br><span class="line">git stash apply stash@{1}   # 恢复指定储藏</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销已暂存的文件</span></span><br><span class="line">git reset HEAD filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销本地修改</span></span><br><span class="line">git checkout -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件修改者</span></span><br><span class="line">git blame filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">恢复已删除的文件</span></span><br><span class="line">git checkout HEAD~1 -- deleted-file.js</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="历史查看-1"><a href="#历史查看-1" class="headerlink" title="历史查看"></a>历史查看</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看简洁历史</span></span><br><span class="line">git log --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分支图</span></span><br><span class="line">git log --all --graph --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件变更历史</span></span><br><span class="line">git log -p -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搜索提交信息</span></span><br><span class="line">git log --grep="fix"</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>版本控制</tag>
+        <tag>命令笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Elementary Graph Algorithms</title>
     <url>/2024/04/21/Elementary-Graph-Algorithms/</url>
     <content><![CDATA[<h1 id="Elementary-Graph-Algorithms"><a href="#Elementary-Graph-Algorithms" class="headerlink" title="Elementary Graph Algorithms"></a>Elementary Graph Algorithms</h1><h2 id="Representations-of-graphs"><a href="#Representations-of-graphs" class="headerlink" title="Representations of graphs"></a>Representations of graphs</h2><p>$$<br>G = (V, E)<br>$$</p>
@@ -394,233 +621,6 @@ while Q $\not = \not 0$
       </tags>
   </entry>
   <entry>
-    <title>Git Command 自用</title>
-    <url>/2025/08/06/Git-Command/</url>
-    <content><![CDATA[<h2 id="项目模拟场景"><a href="#项目模拟场景" class="headerlink" title="项目模拟场景"></a>项目模拟场景</h2><h3 id="项目初始化阶段"><a href="#项目初始化阶段" class="headerlink" title="项目初始化阶段"></a>项目初始化阶段</h3><h4 id="1-创建远程仓库"><a href="#1-创建远程仓库" class="headerlink" title="1. 创建远程仓库"></a>1. 创建远程仓库</h4><ul>
-<li>在 GitHub 创建 private 仓库</li>
-<li>邀请协作者</li>
-</ul>
-<h4 id="2-初始化本地项目"><a href="#2-初始化本地项目" class="headerlink" title="2. 初始化本地项目"></a>2. 初始化本地项目</h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir ProjectName &amp;&amp; cd ProjectName</span><br><span class="line">echo "# ProjectName - 项目描述" &gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "chore: initial project setup"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建基础分支结构</span></span><br><span class="line">git switch -c develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建初始目录结构</span></span><br><span class="line">mkdir -p backend frontend docs</span><br><span class="line">echo "后端服务" &gt; backend/README.md</span><br><span class="line">echo "前端应用" &gt; frontend/README.md</span><br><span class="line">echo "项目文档" &gt; docs/README.md</span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: create project structure"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推送到远程</span></span><br><span class="line">git remote add origin https://github.com/username/ProjectName.git</span><br><span class="line">git push -u origin main develop</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="3-设置分支保护-仓库-settings"><a href="#3-设置分支保护-仓库-settings" class="headerlink" title="3. 设置分支保护(仓库 settings)"></a>3. 设置分支保护 (仓库 settings)</h4><ul>
-<li><code>main</code> 分支：Require pull request, Require 1 approval, Require status checks</li>
-<li><code>develop</code> 分支：Require pull request, Require status checks</li>
-</ul>
-<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有团队成员克隆仓库</span></span><br><span class="line">git clone https://github.com/username/ProjectName.git</span><br><span class="line">cd ProjectName</span><br><span class="line">git switch develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化后端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 后端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd backend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">spring init --dependencies=web,data-jpa,mysql,security --build=gradle -n BackendProject</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> BackendProject/* . &amp;&amp; <span class="built_in">rmdir</span> BackendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize backend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化前端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 前端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">npm init vue@latest -- --projectName=<span class="string">"FrontendProject"</span> --typescript --pinia --vitest</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> FrontendProject/* . &amp;&amp; <span class="built_in">rmdir</span> FrontendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果develop设置了分支保护，该push会失败，可以采用以下方法：</span></span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/init-frontend</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行前端初始化命令</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push -u origin feature/init-frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端成员去github网页创建PR，reviewer在网页处理PR，接着前端成员同步最新的develop</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git branch -d feature/init-frontend   # 删掉本地功能分支</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="项目开发阶段"><a href="#项目开发阶段" class="headerlink" title="项目开发阶段"></a>项目开发阶段</h2><h3 id="迭代-1：用户认证系统"><a href="#迭代-1：用户认证系统" class="headerlink" title="迭代 1：用户认证系统"></a>迭代 1：用户认证系统</h3><h4 id="后端成员开发认证-API"><a href="#后端成员开发认证-API" class="headerlink" title="后端成员开发认证 API"></a>后端成员开发认证 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-auth</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证功能</span></span><br><span class="line"><span class="comment"># ... 编写JWT认证逻辑 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/auth/**</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement JWT authentication"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发API文档</span></span><br><span class="line"><span class="comment"># ... 添加Swagger注解 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/AuthController.java</span><br><span class="line">git commit -m <span class="string">"docs(auth): add swagger API documentation"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推送到远程</span></span><br><span class="line">git push -u origin feature/backend-auth</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="前端成员开发登录界面"><a href="#前端成员开发登录界面" class="headerlink" title="前端成员开发登录界面"></a>前端成员开发登录界面</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-login</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于后端Swagger生成TS类型</span></span><br><span class="line">npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api-types.d.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发登录组件</span></span><br><span class="line"><span class="comment"># ... 创建Login.vue ...</span></span><br><span class="line">git add frontend/src/views/Login.vue</span><br><span class="line">git commit -m <span class="string">"feat(login): implement login page UI"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证逻辑</span></span><br><span class="line"><span class="comment"># ... 实现axios拦截器 ...</span></span><br><span class="line">git add frontend/src/services/auth.ts</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement token management"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-login</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="代码审查与合并"><a href="#代码审查与合并" class="headerlink" title="代码审查与合并"></a>代码审查与合并</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员创建PR: feature/backend-auth → develop</span></span><br><span class="line"><span class="comment"># 前端成员创建PR: feature/frontend-login → develop</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审查过程：</span></span><br><span class="line"><span class="comment">## 1. 前端成员验证后端API文档</span></span><br><span class="line"><span class="comment">## 2. 后端成员检查前端token处理逻辑</span></span><br><span class="line"><span class="comment">## 3. 项目经理批准合并</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并后操作（项目经理）：</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="comment"># 如果不走网页PR，可在本地合并</span></span><br><span class="line">git merge --no-ff feature/backend-auth</span><br><span class="line">git merge --no-ff feature/frontend-login</span><br><span class="line">git push origin develop</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="迭代-2：数据分析看板"><a href="#迭代-2：数据分析看板" class="headerlink" title="迭代 2：数据分析看板"></a>迭代 2：数据分析看板</h3><h4 id="后端成员开发分析-API"><a href="#后端成员开发分析-API" class="headerlink" title="后端成员开发分析 API"></a>后端成员开发分析 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-analysis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据库迁移脚本</span></span><br><span class="line"><span class="comment"># ... 使用Liquibase/Flyway等 ...</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.1__analysis_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add analysis tables"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发分析算法</span></span><br><span class="line"><span class="comment"># ... 集成数据分析模型 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/AnalysisService.java</span><br><span class="line">git commit -m <span class="string">"feat(analysis): implement data analysis model"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/backend-analysis</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="前端成员开发可视化看板"><a href="#前端成员开发可视化看板" class="headerlink" title="前端成员开发可视化看板"></a>前端成员开发可视化看板</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-dashboard</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装可视化库</span></span><br><span class="line">npm install echarts vue-echarts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发看板组件</span></span><br><span class="line"><span class="comment"># ... 创建Dashboard.vue ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"feat(dashboard): implement analysis charts"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-dashboard</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="遇到问题：API-变更冲突"><a href="#遇到问题：API-变更冲突" class="headerlink" title="遇到问题：API 变更冲突"></a>遇到问题：API 变更冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员修改了API响应格式</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/DataController.java</span><br><span class="line">git commit -m <span class="string">"refactor(api): update response format for frontend"</span></span><br><span class="line">git push origin feature/backend-analysis --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员需要同步变更</span></span><br><span class="line">git switch feature/frontend-dashboard</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop  <span class="comment"># 获取最新API变更</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决前端适配问题</span></span><br><span class="line"><span class="comment"># ... 更新数据处理逻辑 ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"fix(dashboard): adapt to new API response format"</span></span><br><span class="line">git push origin feature/frontend-dashboard --force</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="迭代-3：推荐系统"><a href="#迭代-3：推荐系统" class="headerlink" title="迭代 3：推荐系统"></a>迭代 3：推荐系统</h3><h4 id="多人协作开发"><a href="#多人协作开发" class="headerlink" title="多人协作开发"></a>多人协作开发</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A开发数据管理</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员开发推荐界面</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/frontend-recommendation</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B开发推荐算法</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-recommend-engine</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="遇到数据库冲突"><a href="#遇到数据库冲突" class="headerlink" title="遇到数据库冲突"></a>遇到数据库冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A提交了数据表变更</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.2__data_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add data tables"</span></span><br><span class="line">git push origin feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B也需要修改数据库</span></span><br><span class="line">git switch feature/backend-recommend-engine</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遇到冲突：db/changelog/changelog-master.yaml</span></span><br><span class="line"><span class="comment"># 解决冲突后</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line">git push origin feature/backend-recommend-engine --force</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="测试与发布阶段"><a href="#测试与发布阶段" class="headerlink" title="测试与发布阶段"></a>测试与发布阶段</h2><h3 id="预发布准备"><a href="#预发布准备" class="headerlink" title="预发布准备"></a>预发布准备</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 创建发布分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c release/v1.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新版本号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"1.0.0"</span> &gt; VERSION</span><br><span class="line">git add VERSION</span><br><span class="line">git commit -m <span class="string">"chore: prepare release v1.0.0"</span></span><br><span class="line">git push -u origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="测试问题修复"><a href="#测试问题修复" class="headerlink" title="测试问题修复"></a>测试问题修复</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 发现权限问题</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git switch -c fix/permission-issue</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复后端权限验证</span></span><br><span class="line"><span class="comment"># ... 修改SecurityConfig等 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/config/SecurityConfig.java</span><br><span class="line">git commit -m <span class="string">"fix(auth): correct role permissions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并回发布分支</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git merge --no-ff fix/permission-issue</span><br><span class="line">git push origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="正式发布"><a href="#正式发布" class="headerlink" title="正式发布"></a>正式发布</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 合并到main分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git merge --no-ff release/v1.0.0</span><br><span class="line">git tag -a v1.0.0 -m <span class="string">"Initial release with core features"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新develop分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git merge release/v1.0.0</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除发布分支</span></span><br><span class="line">git branch -d release/v1.0.0</span><br><span class="line">git push origin --delete release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="生产环境问题处理"><a href="#生产环境问题处理" class="headerlink" title="生产环境问题处理"></a>生产环境问题处理</h2><h3 id="紧急修复示例"><a href="#紧急修复示例" class="headerlink" title="紧急修复示例"></a>紧急修复示例</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 从main创建热修复分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git switch -c hotfix/critical-bug-fix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复问题</span></span><br><span class="line"><span class="comment"># ... 修改相关服务 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/DataService.java</span><br><span class="line">git commit -m <span class="string">"fix(service): handle large dataset processing"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到main和develop</span></span><br><span class="line">git switch main</span><br><span class="line">git merge --no-ff hotfix/critical-bug-fix</span><br><span class="line">git tag -a v1.0.1 -m <span class="string">"Hotfix for critical bug"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line">git switch develop</span><br><span class="line">git merge hotfix/critical-bug-fix</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除热修复分支</span></span><br><span class="line">git branch -d hotfix/critical-bug-fix</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="checkout-和-switch-的区别"><a href="#checkout-和-switch-的区别" class="headerlink" title="checkout 和 switch 的区别"></a>checkout 和 switch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支切换</span></span><br><span class="line">git checkout existing-branch</span><br><span class="line">git switch existing-branch</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换分支</span></span><br><span class="line">git checkout -b feature/new-feature</span><br><span class="line">git switch -c feature/new-feature</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件恢复</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">核心场景：你还没提交，但把某个文件改坏了，想撤销所有未暂存的本地修改，让它立刻回到上一次提交时的样子（误删也用这个）</span></span><br><span class="line">git checkout -- src/components/Component.vue</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果已暂存，先用`git reset HEAD &lt;file&gt;`取消暂存，再用checkout</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看历史提交（只读模式）</span></span><br><span class="line">git checkout HEAD~3</span><br><span class="line">git switch --detach HEAD~3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安全机制</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当有未提交更改时尝试切换分支，switch会报错，而checkout会尝试自动合并，可能会导致数据丢失</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="pull-fetch-的区别"><a href="#pull-fetch-的区别" class="headerlink" title="pull &amp; fetch 的区别"></a>pull &amp; fetch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pull = fetch + merge</span></span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分步操作更安全</span></span><br><span class="line">git fetch origin           # 获取远程更新但不合并</span><br><span class="line">git log origin/develop..HEAD  # 查看差异</span><br><span class="line">git merge origin/develop    # 手动合并</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式拉取（保持线性历史）</span></span><br><span class="line">git pull --rebase origin develop</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="rebase-merge-的区别"><a href="#rebase-merge-的区别" class="headerlink" title="rebase &amp; merge 的区别"></a>rebase &amp; merge 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">merge方式：保留分支历史</span></span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login     # 创建合并提交</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式：线性历史更整洁</span></span><br><span class="line">git switch feature/login</span><br><span class="line">git rebase main            # 重新应用提交</span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login    # 快进合并</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查看分支</td>
-<td><code>git branch -a</code></td>
-<td>显示所有分支</td>
-</tr>
-<tr>
-<td>切换分支</td>
-<td><code>git switch branch-name</code></td>
-<td>推荐用法</td>
-</tr>
-<tr>
-<td>创建切换</td>
-<td><code>git switch -c new-branch</code></td>
-<td>创建并切换到新分支</td>
-</tr>
-<tr>
-<td>删除分支</td>
-<td><code>git branch -d branch-name</code></td>
-<td>删除已合并分支</td>
-</tr>
-<tr>
-<td>强制删除</td>
-<td><code>git branch -D branch-name</code></td>
-<td>强制删除分支</td>
-</tr>
-</tbody></table>
-<h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>拉取更新</td>
-<td><code>git pull origin main</code></td>
-<td>拉取并合并</td>
-</tr>
-<tr>
-<td>获取更新</td>
-<td><code>git fetch origin</code></td>
-<td>只获取不合并</td>
-</tr>
-<tr>
-<td>推送分支</td>
-<td><code>git push -u origin HEAD</code></td>
-<td>推送当前分支</td>
-</tr>
-<tr>
-<td>强制推送</td>
-<td><code>git push --force-with-lease</code></td>
-<td>安全强推</td>
-</tr>
-</tbody></table>
-<h3 id="提交管理"><a href="#提交管理" class="headerlink" title="提交管理"></a>提交管理</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查看状态</td>
-<td><code>git status</code></td>
-<td>检查工作区状态</td>
-</tr>
-<tr>
-<td>暂存文件</td>
-<td><code>git add .</code></td>
-<td>暂存所有变更</td>
-</tr>
-<tr>
-<td>提交变更</td>
-<td><code>git commit -m "message"</code></td>
-<td>提交暂存区</td>
-</tr>
-<tr>
-<td>修改提交</td>
-<td><code>git commit --amend</code></td>
-<td>修改最后一次提交</td>
-</tr>
-<tr>
-<td>撤销提交</td>
-<td><code>git reset --soft HEAD~1</code></td>
-<td>撤销但保留更改</td>
-</tr>
-</tbody></table>
-<h3 id="历史查看"><a href="#历史查看" class="headerlink" title="历史查看"></a>历史查看</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查看历史</td>
-<td><code>git log --oneline</code></td>
-<td>简洁历史</td>
-</tr>
-<tr>
-<td>图形化历史</td>
-<td><code>git log --graph --all</code></td>
-<td>分支图</td>
-</tr>
-<tr>
-<td>文件历史</td>
-<td><code>git log -p filename</code></td>
-<td>文件变更历史</td>
-</tr>
-<tr>
-<td>查看差异</td>
-<td><code>git diff HEAD~1</code></td>
-<td>与上次提交比较</td>
-</tr>
-</tbody></table>
-<h2 id="关键-git-命令速查表"><a href="#关键-git-命令速查表" class="headerlink" title="关键 git 命令速查表"></a>关键 git 命令速查表</h2><table>
-<thead>
-<tr>
-<th align="center">场景</th>
-<th align="center">命令</th>
-<th align="center">说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">开始新功能</td>
-<td align="center"> git switch develop &amp;&amp; git pull &amp;&amp; git switch -c feature/[name]</td>
-<td align="center"> 从 develop 创建新功能分支</td>
-</tr>
-<tr>
-<td align="center">每日同步</td>
-<td align="center"> git fetch origin &amp;&amp; git rebase origin/develop</td>
-<td align="center"> 保持与 develop 同步</td>
-</tr>
-<tr>
-<td align="center">提交变更</td>
-<td align="center"> git add . &amp;&amp; git commit -m “…” &amp;&amp; git push -u origin HEAD</td>
-<td align="center"> 推送当前分支</td>
-</tr>
-<tr>
-<td align="center">解决冲突</td>
-<td align="center"> git rebase –continue 或 git rebase –abort</td>
-<td align="center"> 变基操作控制</td>
-</tr>
-<tr>
-<td align="center">撤销错误提交</td>
-<td align="center"> git reset –soft HEAD~1</td>
-<td align="center"> 撤销最后一次提交</td>
-</tr>
-<tr>
-<td align="center">查看分支关系</td>
-<td align="center"> git log –all –graph –oneline</td>
-<td align="center"> 可视化分支历史</td>
-</tr>
-</tbody></table>
-<h2 id="git-提交规范"><a href="#git-提交规范" class="headerlink" title="git 提交规范"></a>git 提交规范</h2><figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">feat: 添加新功能</span><br><span class="line">fix: 修复 bug</span><br><span class="line">docs: 文档变更</span><br><span class="line">style: 代码格式/样式调整</span><br><span class="line">refactor: 代码重构</span><br><span class="line">test: 添加或修改测试</span><br><span class="line">chore: 构建过程或辅助工具变更</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="常用场景补充"><a href="#常用场景补充" class="headerlink" title="常用场景补充"></a>常用场景补充</h2><h3 id="储藏工作进度"><a href="#储藏工作进度" class="headerlink" title="储藏工作进度"></a>储藏工作进度</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时保存当前工作</span></span><br><span class="line">git stash push -m "work in progress"</span><br><span class="line">git stash list               # 查看储藏列表</span><br><span class="line">git stash pop               # 恢复最新储藏</span><br><span class="line">git stash apply stash@{1}   # 恢复指定储藏</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销已暂存的文件</span></span><br><span class="line">git reset HEAD filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销本地修改</span></span><br><span class="line">git checkout -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件修改者</span></span><br><span class="line">git blame filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">恢复已删除的文件</span></span><br><span class="line">git checkout HEAD~1 -- deleted-file.js</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="历史查看-1"><a href="#历史查看-1" class="headerlink" title="历史查看"></a>历史查看</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看简洁历史</span></span><br><span class="line">git log --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分支图</span></span><br><span class="line">git log --all --graph --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件变更历史</span></span><br><span class="line">git log -p -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搜索提交信息</span></span><br><span class="line">git log --grep="fix"</span><br></pre></td></tr></tbody></table></figure>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-        <tag>版本控制</tag>
-        <tag>命令笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Minimum Spanning Trees</title>
     <url>/2024/04/25/Minimum%20Spanning%20Trees/</url>
     <content><![CDATA[<h1 id="Minimum-Spanning-Trees"><a href="#Minimum-Spanning-Trees" class="headerlink" title="Minimum Spanning Trees"></a>Minimum Spanning Trees</h1><p>对于无向图 $𝐺=(𝑉,𝐸)$，存在一个能够连接所有顶点的无环子集 $𝑇⊆𝐸$，由于 &nbsp;𝑇&nbsp; 无环且连接所有顶点，因此 &nbsp;𝑇&nbsp; 一定为一棵树 (树是特殊的图，为无环连通图)，被称为生成树 (spanning tree)。无向图 $𝐺=(𝑉,𝐸)$ 的所有生成树都恰有 $|𝑉|−1$ 条边。</p>
@@ -710,7 +710,7 @@ while Q $\not = \not 0$
   <entry>
     <title>fusc 函数与尾递归优化</title>
     <url>/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/</url>
-    <content><![CDATA[<h1 id="codewars-fusc-函数"><a href="#codewars-fusc-函数" class="headerlink" title="codewars-fusc 函数"></a>codewars-fusc 函数</h1><p>[(codewars 传送门)](<a href="https://www.codewars.com/kata/the-fusc-function-part-2">The fusc function – Part 2 | Codewars</a>)</p>
+    <content><![CDATA[<h1 id="codewars-fusc-函数"><a href="#codewars-fusc-函数" class="headerlink" title="codewars-fusc 函数"></a>codewars-fusc 函数</h1><p><a href="https://www.codewars.com/kata/the-fusc-function-part-2">codewars 传送门</a></p>
 <h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># fusc函数定义如下：</span><br><span class="line">fusc(0) = 0</span><br><span class="line">fusc(1) = 1</span><br><span class="line">fusc(2n) = fusc(n)</span><br><span class="line">fusc(2n + 1) = fusc(n) + fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
 
 <p>在这里你需要考虑栈溢出和超时问题，因为测试集是大数。<br>在题目描述中，给出了 fib 函数的优化方法以供参考：</p>
@@ -785,7 +785,7 @@ while Q $\not = \not 0$
   <entry>
     <title>汉明数 (Hamming Numbers)</title>
     <url>/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/</url>
-    <content><![CDATA[<h1 id="codewars-汉明数"><a href="#codewars-汉明数" class="headerlink" title="codewars-汉明数"></a>codewars - 汉明数</h1><p>[(codewars 传送门)](<a href="https://www.codewars.com/kata/526d84b98f428f14a60008da/">Hamming Numbers | Codewars</a>)</p>
+    <content><![CDATA[<h1 id="codewars-汉明数"><a href="#codewars-汉明数" class="headerlink" title="codewars-汉明数"></a>codewars - 汉明数</h1><p><a href="https://www.codewars.com/kata/526d84b98f428f14a60008da/">codewars 传送门</a></p>
 <h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>汉明数是形如 $2^i3^j5^k$ 的正整数，<code>i, j, k</code> 是非负整数，题目要求写一个函数计算出第 n 个最小汉明数<br>特别地：</p>
 <ul>
 <li>第一个最小汉明数是 $1 = 2^03^05^0$</li>
