@@ -1,8 +1,8 @@
 ---
-title: Cpp智能指针与lambda表达式
+title: Cpp智能指针
 date: 2024-09-28 10:00:00
 tags: [C++, 智能指针, lambda, 编程, 内存管理]
-categories: [工具]
+categories: [cpp]
 description: C++智能指针与lambda表达式的用法总结，包括shared_ptr、unique_ptr、lambda捕获等内容。
 mathjax: true
 ---
@@ -34,7 +34,7 @@ auto f = [](int a, int b) -> int {
 
 ### 创建
 
-```
+```cpp
 shared_ptr<int> p {new int(100)};
 shared_ptr<int> p {make_shared<int>(100)};//效率更高更安全
 ```
