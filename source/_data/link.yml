@@ -20,8 +20,8 @@
       avatar: https://developer.mozilla.org/static/img/favicon57.e7e21ca263ca.png
       descr: Web 标准与文档
 
-- class_name: 申请入口
-  class_desc: 想交换友链？点这里提交
+- class_name: 交换友链
+  class_desc:
   link_list:
     - name: 提交友链（GitHub Issue）
       link: https://github.com/Szj510/ius-blog/issues/new?title=%5Bfriend-link%5D+%E7%94%B3%E8%AF%B7&body=name%3A%20%E4%BD%A0%E7%9A%84%E7%AB%99%E7%82%B9%E5%90%8D%E7%A7%B0%0Alink%3A%20https%3A%2F%2Fyour.site%0Aavatar%3A%20https%3A%2F%2Fyour.site%2Favatar.png%0Adescr%3A%20%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0%E4%BD%A0%E7%9A%84%E7%AB%99%E7%82%B9
