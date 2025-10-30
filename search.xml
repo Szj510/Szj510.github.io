@@ -172,6 +172,233 @@
       </tags>
   </entry>
   <entry>
+    <title>Git Command 自用</title>
+    <url>/2025/08/06/Git-Command/</url>
+    <content><![CDATA[<h2 id="项目模拟场景"><a href="#项目模拟场景" class="headerlink" title="项目模拟场景"></a>项目模拟场景</h2><h3 id="项目初始化阶段"><a href="#项目初始化阶段" class="headerlink" title="项目初始化阶段"></a>项目初始化阶段</h3><h4 id="1-创建远程仓库"><a href="#1-创建远程仓库" class="headerlink" title="1. 创建远程仓库"></a>1. 创建远程仓库</h4><ul>
+<li>在 GitHub 创建 private 仓库</li>
+<li>邀请协作者</li>
+</ul>
+<h4 id="2-初始化本地项目"><a href="#2-初始化本地项目" class="headerlink" title="2. 初始化本地项目"></a>2. 初始化本地项目</h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir ProjectName &amp;&amp; cd ProjectName</span><br><span class="line">echo "# ProjectName - 项目描述" &gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "chore: initial project setup"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建基础分支结构</span></span><br><span class="line">git switch -c develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建初始目录结构</span></span><br><span class="line">mkdir -p backend frontend docs</span><br><span class="line">echo "后端服务" &gt; backend/README.md</span><br><span class="line">echo "前端应用" &gt; frontend/README.md</span><br><span class="line">echo "项目文档" &gt; docs/README.md</span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: create project structure"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推送到远程</span></span><br><span class="line">git remote add origin https://github.com/username/ProjectName.git</span><br><span class="line">git push -u origin main develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-设置分支保护-仓库-settings"><a href="#3-设置分支保护-仓库-settings" class="headerlink" title="3. 设置分支保护(仓库 settings)"></a>3. 设置分支保护 (仓库 settings)</h4><ul>
+<li><code>main</code> 分支：Require pull request, Require 1 approval, Require status checks</li>
+<li><code>develop</code> 分支：Require pull request, Require status checks</li>
+</ul>
+<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有团队成员克隆仓库</span></span><br><span class="line">git clone https://github.com/username/ProjectName.git</span><br><span class="line">cd ProjectName</span><br><span class="line">git switch develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化后端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 后端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd backend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">spring init --dependencies=web,data-jpa,mysql,security --build=gradle -n BackendProject</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> BackendProject/* . &amp;&amp; <span class="built_in">rmdir</span> BackendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize backend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化前端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 前端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">npm init vue@latest -- --projectName=<span class="string">"FrontendProject"</span> --typescript --pinia --vitest</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> FrontendProject/* . &amp;&amp; <span class="built_in">rmdir</span> FrontendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果develop设置了分支保护，该push会失败，可以采用以下方法：</span></span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/init-frontend</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行前端初始化命令</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push -u origin feature/init-frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端成员去github网页创建PR，reviewer在网页处理PR，接着前端成员同步最新的develop</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git branch -d feature/init-frontend   # 删掉本地功能分支</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="项目开发阶段"><a href="#项目开发阶段" class="headerlink" title="项目开发阶段"></a>项目开发阶段</h2><h3 id="迭代-1：用户认证系统"><a href="#迭代-1：用户认证系统" class="headerlink" title="迭代 1：用户认证系统"></a>迭代 1：用户认证系统</h3><h4 id="后端成员开发认证-API"><a href="#后端成员开发认证-API" class="headerlink" title="后端成员开发认证 API"></a>后端成员开发认证 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-auth</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证功能</span></span><br><span class="line"><span class="comment"># ... 编写JWT认证逻辑 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/auth/**</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement JWT authentication"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发API文档</span></span><br><span class="line"><span class="comment"># ... 添加Swagger注解 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/AuthController.java</span><br><span class="line">git commit -m <span class="string">"docs(auth): add swagger API documentation"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推送到远程</span></span><br><span class="line">git push -u origin feature/backend-auth</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发登录界面"><a href="#前端成员开发登录界面" class="headerlink" title="前端成员开发登录界面"></a>前端成员开发登录界面</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-login</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于后端Swagger生成TS类型</span></span><br><span class="line">npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api-types.d.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发登录组件</span></span><br><span class="line"><span class="comment"># ... 创建Login.vue ...</span></span><br><span class="line">git add frontend/src/views/Login.vue</span><br><span class="line">git commit -m <span class="string">"feat(login): implement login page UI"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证逻辑</span></span><br><span class="line"><span class="comment"># ... 实现axios拦截器 ...</span></span><br><span class="line">git add frontend/src/services/auth.ts</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement token management"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-login</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="代码审查与合并"><a href="#代码审查与合并" class="headerlink" title="代码审查与合并"></a>代码审查与合并</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员创建PR: feature/backend-auth → develop</span></span><br><span class="line"><span class="comment"># 前端成员创建PR: feature/frontend-login → develop</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审查过程：</span></span><br><span class="line"><span class="comment">## 1. 前端成员验证后端API文档</span></span><br><span class="line"><span class="comment">## 2. 后端成员检查前端token处理逻辑</span></span><br><span class="line"><span class="comment">## 3. 项目经理批准合并</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并后操作（项目经理）：</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="comment"># 如果不走网页PR，可在本地合并</span></span><br><span class="line">git merge --no-ff feature/backend-auth</span><br><span class="line">git merge --no-ff feature/frontend-login</span><br><span class="line">git push origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-2：数据分析看板"><a href="#迭代-2：数据分析看板" class="headerlink" title="迭代 2：数据分析看板"></a>迭代 2：数据分析看板</h3><h4 id="后端成员开发分析-API"><a href="#后端成员开发分析-API" class="headerlink" title="后端成员开发分析 API"></a>后端成员开发分析 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-analysis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据库迁移脚本</span></span><br><span class="line"><span class="comment"># ... 使用Liquibase/Flyway等 ...</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.1__analysis_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add analysis tables"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发分析算法</span></span><br><span class="line"><span class="comment"># ... 集成数据分析模型 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/AnalysisService.java</span><br><span class="line">git commit -m <span class="string">"feat(analysis): implement data analysis model"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/backend-analysis</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="前端成员开发可视化看板"><a href="#前端成员开发可视化看板" class="headerlink" title="前端成员开发可视化看板"></a>前端成员开发可视化看板</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-dashboard</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装可视化库</span></span><br><span class="line">npm install echarts vue-echarts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发看板组件</span></span><br><span class="line"><span class="comment"># ... 创建Dashboard.vue ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"feat(dashboard): implement analysis charts"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-dashboard</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到问题：API-变更冲突"><a href="#遇到问题：API-变更冲突" class="headerlink" title="遇到问题：API 变更冲突"></a>遇到问题：API 变更冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员修改了API响应格式</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/DataController.java</span><br><span class="line">git commit -m <span class="string">"refactor(api): update response format for frontend"</span></span><br><span class="line">git push origin feature/backend-analysis --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员需要同步变更</span></span><br><span class="line">git switch feature/frontend-dashboard</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop  <span class="comment"># 获取最新API变更</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决前端适配问题</span></span><br><span class="line"><span class="comment"># ... 更新数据处理逻辑 ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"fix(dashboard): adapt to new API response format"</span></span><br><span class="line">git push origin feature/frontend-dashboard --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="迭代-3：推荐系统"><a href="#迭代-3：推荐系统" class="headerlink" title="迭代 3：推荐系统"></a>迭代 3：推荐系统</h3><h4 id="多人协作开发"><a href="#多人协作开发" class="headerlink" title="多人协作开发"></a>多人协作开发</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A开发数据管理</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员开发推荐界面</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/frontend-recommendation</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B开发推荐算法</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-recommend-engine</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="遇到数据库冲突"><a href="#遇到数据库冲突" class="headerlink" title="遇到数据库冲突"></a>遇到数据库冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A提交了数据表变更</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.2__data_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add data tables"</span></span><br><span class="line">git push origin feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B也需要修改数据库</span></span><br><span class="line">git switch feature/backend-recommend-engine</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遇到冲突：db/changelog/changelog-master.yaml</span></span><br><span class="line"><span class="comment"># 解决冲突后</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line">git push origin feature/backend-recommend-engine --force</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="测试与发布阶段"><a href="#测试与发布阶段" class="headerlink" title="测试与发布阶段"></a>测试与发布阶段</h2><h3 id="预发布准备"><a href="#预发布准备" class="headerlink" title="预发布准备"></a>预发布准备</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 创建发布分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c release/v1.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新版本号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"1.0.0"</span> &gt; VERSION</span><br><span class="line">git add VERSION</span><br><span class="line">git commit -m <span class="string">"chore: prepare release v1.0.0"</span></span><br><span class="line">git push -u origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试问题修复"><a href="#测试问题修复" class="headerlink" title="测试问题修复"></a>测试问题修复</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 发现权限问题</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git switch -c fix/permission-issue</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复后端权限验证</span></span><br><span class="line"><span class="comment"># ... 修改SecurityConfig等 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/config/SecurityConfig.java</span><br><span class="line">git commit -m <span class="string">"fix(auth): correct role permissions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并回发布分支</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git merge --no-ff fix/permission-issue</span><br><span class="line">git push origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="正式发布"><a href="#正式发布" class="headerlink" title="正式发布"></a>正式发布</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 合并到main分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git merge --no-ff release/v1.0.0</span><br><span class="line">git tag -a v1.0.0 -m <span class="string">"Initial release with core features"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新develop分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git merge release/v1.0.0</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除发布分支</span></span><br><span class="line">git branch -d release/v1.0.0</span><br><span class="line">git push origin --delete release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="生产环境问题处理"><a href="#生产环境问题处理" class="headerlink" title="生产环境问题处理"></a>生产环境问题处理</h2><h3 id="紧急修复示例"><a href="#紧急修复示例" class="headerlink" title="紧急修复示例"></a>紧急修复示例</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 从main创建热修复分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git switch -c hotfix/critical-bug-fix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复问题</span></span><br><span class="line"><span class="comment"># ... 修改相关服务 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/DataService.java</span><br><span class="line">git commit -m <span class="string">"fix(service): handle large dataset processing"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到main和develop</span></span><br><span class="line">git switch main</span><br><span class="line">git merge --no-ff hotfix/critical-bug-fix</span><br><span class="line">git tag -a v1.0.1 -m <span class="string">"Hotfix for critical bug"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line">git switch develop</span><br><span class="line">git merge hotfix/critical-bug-fix</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除热修复分支</span></span><br><span class="line">git branch -d hotfix/critical-bug-fix</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="checkout-和-switch-的区别"><a href="#checkout-和-switch-的区别" class="headerlink" title="checkout 和 switch 的区别"></a>checkout 和 switch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支切换</span></span><br><span class="line">git checkout existing-branch</span><br><span class="line">git switch existing-branch</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换分支</span></span><br><span class="line">git checkout -b feature/new-feature</span><br><span class="line">git switch -c feature/new-feature</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件恢复</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">核心场景：你还没提交，但把某个文件改坏了，想撤销所有未暂存的本地修改，让它立刻回到上一次提交时的样子（误删也用这个）</span></span><br><span class="line">git checkout -- src/components/Component.vue</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果已暂存，先用`git reset HEAD &lt;file&gt;`取消暂存，再用checkout</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看历史提交（只读模式）</span></span><br><span class="line">git checkout HEAD~3</span><br><span class="line">git switch --detach HEAD~3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安全机制</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当有未提交更改时尝试切换分支，switch会报错，而checkout会尝试自动合并，可能会导致数据丢失</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="pull-fetch-的区别"><a href="#pull-fetch-的区别" class="headerlink" title="pull &amp; fetch 的区别"></a>pull &amp; fetch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pull = fetch + merge</span></span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分步操作更安全</span></span><br><span class="line">git fetch origin           # 获取远程更新但不合并</span><br><span class="line">git log origin/develop..HEAD  # 查看差异</span><br><span class="line">git merge origin/develop    # 手动合并</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式拉取（保持线性历史）</span></span><br><span class="line">git pull --rebase origin develop</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="rebase-merge-的区别"><a href="#rebase-merge-的区别" class="headerlink" title="rebase &amp; merge 的区别"></a>rebase &amp; merge 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">merge方式：保留分支历史</span></span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login     # 创建合并提交</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式：线性历史更整洁</span></span><br><span class="line">git switch feature/login</span><br><span class="line">git rebase main            # 重新应用提交</span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login    # 快进合并</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看分支</td>
+<td><code>git branch -a</code></td>
+<td>显示所有分支</td>
+</tr>
+<tr>
+<td>切换分支</td>
+<td><code>git switch branch-name</code></td>
+<td>推荐用法</td>
+</tr>
+<tr>
+<td>创建切换</td>
+<td><code>git switch -c new-branch</code></td>
+<td>创建并切换到新分支</td>
+</tr>
+<tr>
+<td>删除分支</td>
+<td><code>git branch -d branch-name</code></td>
+<td>删除已合并分支</td>
+</tr>
+<tr>
+<td>强制删除</td>
+<td><code>git branch -D branch-name</code></td>
+<td>强制删除分支</td>
+</tr>
+</tbody></table>
+<h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>拉取更新</td>
+<td><code>git pull origin main</code></td>
+<td>拉取并合并</td>
+</tr>
+<tr>
+<td>获取更新</td>
+<td><code>git fetch origin</code></td>
+<td>只获取不合并</td>
+</tr>
+<tr>
+<td>推送分支</td>
+<td><code>git push -u origin HEAD</code></td>
+<td>推送当前分支</td>
+</tr>
+<tr>
+<td>强制推送</td>
+<td><code>git push --force-with-lease</code></td>
+<td>安全强推</td>
+</tr>
+</tbody></table>
+<h3 id="提交管理"><a href="#提交管理" class="headerlink" title="提交管理"></a>提交管理</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看状态</td>
+<td><code>git status</code></td>
+<td>检查工作区状态</td>
+</tr>
+<tr>
+<td>暂存文件</td>
+<td><code>git add .</code></td>
+<td>暂存所有变更</td>
+</tr>
+<tr>
+<td>提交变更</td>
+<td><code>git commit -m "message"</code></td>
+<td>提交暂存区</td>
+</tr>
+<tr>
+<td>修改提交</td>
+<td><code>git commit --amend</code></td>
+<td>修改最后一次提交</td>
+</tr>
+<tr>
+<td>撤销提交</td>
+<td><code>git reset --soft HEAD~1</code></td>
+<td>撤销但保留更改</td>
+</tr>
+</tbody></table>
+<h3 id="历史查看"><a href="#历史查看" class="headerlink" title="历史查看"></a>历史查看</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看历史</td>
+<td><code>git log --oneline</code></td>
+<td>简洁历史</td>
+</tr>
+<tr>
+<td>图形化历史</td>
+<td><code>git log --graph --all</code></td>
+<td>分支图</td>
+</tr>
+<tr>
+<td>文件历史</td>
+<td><code>git log -p filename</code></td>
+<td>文件变更历史</td>
+</tr>
+<tr>
+<td>查看差异</td>
+<td><code>git diff HEAD~1</code></td>
+<td>与上次提交比较</td>
+</tr>
+</tbody></table>
+<h2 id="关键-git-命令速查表"><a href="#关键-git-命令速查表" class="headerlink" title="关键 git 命令速查表"></a>关键 git 命令速查表</h2><table>
+<thead>
+<tr>
+<th align="center">场景</th>
+<th align="center">命令</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">开始新功能</td>
+<td align="center"> git switch develop &amp;&amp; git pull &amp;&amp; git switch -c feature/[name]</td>
+<td align="center"> 从 develop 创建新功能分支</td>
+</tr>
+<tr>
+<td align="center">每日同步</td>
+<td align="center"> git fetch origin &amp;&amp; git rebase origin/develop</td>
+<td align="center"> 保持与 develop 同步</td>
+</tr>
+<tr>
+<td align="center">提交变更</td>
+<td align="center"> git add . &amp;&amp; git commit -m “…” &amp;&amp; git push -u origin HEAD</td>
+<td align="center"> 推送当前分支</td>
+</tr>
+<tr>
+<td align="center">解决冲突</td>
+<td align="center"> git rebase –continue 或 git rebase –abort</td>
+<td align="center"> 变基操作控制</td>
+</tr>
+<tr>
+<td align="center">撤销错误提交</td>
+<td align="center"> git reset –soft HEAD~1</td>
+<td align="center"> 撤销最后一次提交</td>
+</tr>
+<tr>
+<td align="center">查看分支关系</td>
+<td align="center"> git log –all –graph –oneline</td>
+<td align="center"> 可视化分支历史</td>
+</tr>
+</tbody></table>
+<h2 id="git-提交规范"><a href="#git-提交规范" class="headerlink" title="git 提交规范"></a>git 提交规范</h2><figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">feat: 添加新功能</span><br><span class="line">fix: 修复 bug</span><br><span class="line">docs: 文档变更</span><br><span class="line">style: 代码格式/样式调整</span><br><span class="line">refactor: 代码重构</span><br><span class="line">test: 添加或修改测试</span><br><span class="line">chore: 构建过程或辅助工具变更</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="常用场景补充"><a href="#常用场景补充" class="headerlink" title="常用场景补充"></a>常用场景补充</h2><h3 id="储藏工作进度"><a href="#储藏工作进度" class="headerlink" title="储藏工作进度"></a>储藏工作进度</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时保存当前工作</span></span><br><span class="line">git stash push -m "work in progress"</span><br><span class="line">git stash list               # 查看储藏列表</span><br><span class="line">git stash pop               # 恢复最新储藏</span><br><span class="line">git stash apply stash@{1}   # 恢复指定储藏</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销已暂存的文件</span></span><br><span class="line">git reset HEAD filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销本地修改</span></span><br><span class="line">git checkout -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件修改者</span></span><br><span class="line">git blame filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">恢复已删除的文件</span></span><br><span class="line">git checkout HEAD~1 -- deleted-file.js</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="历史查看-1"><a href="#历史查看-1" class="headerlink" title="历史查看"></a>历史查看</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看简洁历史</span></span><br><span class="line">git log --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分支图</span></span><br><span class="line">git log --all --graph --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件变更历史</span></span><br><span class="line">git log -p -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搜索提交信息</span></span><br><span class="line">git log --grep="fix"</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>版本控制</tag>
+        <tag>命令笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Elementary Graph Algorithms</title>
     <url>/2024/04/21/Elementary-Graph-Algorithms/</url>
     <content><![CDATA[<h1 id="Elementary-Graph-Algorithms"><a href="#Elementary-Graph-Algorithms" class="headerlink" title="Elementary Graph Algorithms"></a>Elementary Graph Algorithms</h1><h2 id="Representations-of-graphs"><a href="#Representations-of-graphs" class="headerlink" title="Representations of graphs"></a>Representations of graphs</h2><p>$$<br>G = (V, E)<br>$$</p>
@@ -472,233 +699,6 @@ while Q $\not = \not 0$
       </tags>
   </entry>
   <entry>
-    <title>Git Command 自用</title>
-    <url>/2025/08/06/Git-Command/</url>
-    <content><![CDATA[<h2 id="项目模拟场景"><a href="#项目模拟场景" class="headerlink" title="项目模拟场景"></a>项目模拟场景</h2><h3 id="项目初始化阶段"><a href="#项目初始化阶段" class="headerlink" title="项目初始化阶段"></a>项目初始化阶段</h3><h4 id="1-创建远程仓库"><a href="#1-创建远程仓库" class="headerlink" title="1. 创建远程仓库"></a>1. 创建远程仓库</h4><ul>
-<li>在 GitHub 创建 private 仓库</li>
-<li>邀请协作者</li>
-</ul>
-<h4 id="2-初始化本地项目"><a href="#2-初始化本地项目" class="headerlink" title="2. 初始化本地项目"></a>2. 初始化本地项目</h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir ProjectName &amp;&amp; cd ProjectName</span><br><span class="line">echo "# ProjectName - 项目描述" &gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "chore: initial project setup"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建基础分支结构</span></span><br><span class="line">git switch -c develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建初始目录结构</span></span><br><span class="line">mkdir -p backend frontend docs</span><br><span class="line">echo "后端服务" &gt; backend/README.md</span><br><span class="line">echo "前端应用" &gt; frontend/README.md</span><br><span class="line">echo "项目文档" &gt; docs/README.md</span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: create project structure"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推送到远程</span></span><br><span class="line">git remote add origin https://github.com/username/ProjectName.git</span><br><span class="line">git push -u origin main develop</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="3-设置分支保护-仓库-settings"><a href="#3-设置分支保护-仓库-settings" class="headerlink" title="3. 设置分支保护(仓库 settings)"></a>3. 设置分支保护 (仓库 settings)</h4><ul>
-<li><code>main</code> 分支：Require pull request, Require 1 approval, Require status checks</li>
-<li><code>develop</code> 分支：Require pull request, Require status checks</li>
-</ul>
-<h3 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有团队成员克隆仓库</span></span><br><span class="line">git clone https://github.com/username/ProjectName.git</span><br><span class="line">cd ProjectName</span><br><span class="line">git switch develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化后端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 后端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd backend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">spring init --dependencies=web,data-jpa,mysql,security --build=gradle -n BackendProject</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> BackendProject/* . &amp;&amp; <span class="built_in">rmdir</span> BackendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize backend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">初始化前端项目</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 前端成员操作</span></span></span><br><span class="line">git pull origin develop</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">具体技术栈初始化命令示例:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">npm init vue@latest -- --projectName=<span class="string">"FrontendProject"</span> --typescript --pinia --vitest</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> FrontendProject/* . &amp;&amp; <span class="built_in">rmdir</span> FrontendProject</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果develop设置了分支保护，该push会失败，可以采用以下方法：</span></span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/init-frontend</span><br><span class="line">cd frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行前端初始化命令</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m "build: initialize frontend"</span><br><span class="line">git push -u origin feature/init-frontend</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端成员去github网页创建PR，reviewer在网页处理PR，接着前端成员同步最新的develop</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git branch -d feature/init-frontend   # 删掉本地功能分支</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="项目开发阶段"><a href="#项目开发阶段" class="headerlink" title="项目开发阶段"></a>项目开发阶段</h2><h3 id="迭代-1：用户认证系统"><a href="#迭代-1：用户认证系统" class="headerlink" title="迭代 1：用户认证系统"></a>迭代 1：用户认证系统</h3><h4 id="后端成员开发认证-API"><a href="#后端成员开发认证-API" class="headerlink" title="后端成员开发认证 API"></a>后端成员开发认证 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-auth</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证功能</span></span><br><span class="line"><span class="comment"># ... 编写JWT认证逻辑 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/auth/**</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement JWT authentication"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发API文档</span></span><br><span class="line"><span class="comment"># ... 添加Swagger注解 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/AuthController.java</span><br><span class="line">git commit -m <span class="string">"docs(auth): add swagger API documentation"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推送到远程</span></span><br><span class="line">git push -u origin feature/backend-auth</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="前端成员开发登录界面"><a href="#前端成员开发登录界面" class="headerlink" title="前端成员开发登录界面"></a>前端成员开发登录界面</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-login</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于后端Swagger生成TS类型</span></span><br><span class="line">npx openapi-typescript http://localhost:8080/v3/api-docs -o src/api-types.d.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发登录组件</span></span><br><span class="line"><span class="comment"># ... 创建Login.vue ...</span></span><br><span class="line">git add frontend/src/views/Login.vue</span><br><span class="line">git commit -m <span class="string">"feat(login): implement login page UI"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发认证逻辑</span></span><br><span class="line"><span class="comment"># ... 实现axios拦截器 ...</span></span><br><span class="line">git add frontend/src/services/auth.ts</span><br><span class="line">git commit -m <span class="string">"feat(auth): implement token management"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-login</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="代码审查与合并"><a href="#代码审查与合并" class="headerlink" title="代码审查与合并"></a>代码审查与合并</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员创建PR: feature/backend-auth → develop</span></span><br><span class="line"><span class="comment"># 前端成员创建PR: feature/frontend-login → develop</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审查过程：</span></span><br><span class="line"><span class="comment">## 1. 前端成员验证后端API文档</span></span><br><span class="line"><span class="comment">## 2. 后端成员检查前端token处理逻辑</span></span><br><span class="line"><span class="comment">## 3. 项目经理批准合并</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并后操作（项目经理）：</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="comment"># 如果不走网页PR，可在本地合并</span></span><br><span class="line">git merge --no-ff feature/backend-auth</span><br><span class="line">git merge --no-ff feature/frontend-login</span><br><span class="line">git push origin develop</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="迭代-2：数据分析看板"><a href="#迭代-2：数据分析看板" class="headerlink" title="迭代 2：数据分析看板"></a>迭代 2：数据分析看板</h3><h4 id="后端成员开发分析-API"><a href="#后端成员开发分析-API" class="headerlink" title="后端成员开发分析 API"></a>后端成员开发分析 API</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/backend-analysis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据库迁移脚本</span></span><br><span class="line"><span class="comment"># ... 使用Liquibase/Flyway等 ...</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.1__analysis_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add analysis tables"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发分析算法</span></span><br><span class="line"><span class="comment"># ... 集成数据分析模型 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/AnalysisService.java</span><br><span class="line">git commit -m <span class="string">"feat(analysis): implement data analysis model"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/backend-analysis</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="前端成员开发可视化看板"><a href="#前端成员开发可视化看板" class="headerlink" title="前端成员开发可视化看板"></a>前端成员开发可视化看板</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c feature/frontend-dashboard</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装可视化库</span></span><br><span class="line">npm install echarts vue-echarts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发看板组件</span></span><br><span class="line"><span class="comment"># ... 创建Dashboard.vue ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"feat(dashboard): implement analysis charts"</span></span><br><span class="line"></span><br><span class="line">git push -u origin feature/frontend-dashboard</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="遇到问题：API-变更冲突"><a href="#遇到问题：API-变更冲突" class="headerlink" title="遇到问题：API 变更冲突"></a>遇到问题：API 变更冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员修改了API响应格式</span></span><br><span class="line">git add backend/src/main/java/com/project/controller/DataController.java</span><br><span class="line">git commit -m <span class="string">"refactor(api): update response format for frontend"</span></span><br><span class="line">git push origin feature/backend-analysis --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员需要同步变更</span></span><br><span class="line">git switch feature/frontend-dashboard</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop  <span class="comment"># 获取最新API变更</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决前端适配问题</span></span><br><span class="line"><span class="comment"># ... 更新数据处理逻辑 ...</span></span><br><span class="line">git add frontend/src/views/Dashboard.vue</span><br><span class="line">git commit -m <span class="string">"fix(dashboard): adapt to new API response format"</span></span><br><span class="line">git push origin feature/frontend-dashboard --force</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="迭代-3：推荐系统"><a href="#迭代-3：推荐系统" class="headerlink" title="迭代 3：推荐系统"></a>迭代 3：推荐系统</h3><h4 id="多人协作开发"><a href="#多人协作开发" class="headerlink" title="多人协作开发"></a>多人协作开发</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A开发数据管理</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端成员开发推荐界面</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/frontend-recommendation</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B开发推荐算法</span></span><br><span class="line">git switch develop</span><br><span class="line">git switch -c feature/backend-recommend-engine</span><br></pre></td></tr></tbody></table></figure>
-
-<h4 id="遇到数据库冲突"><a href="#遇到数据库冲突" class="headerlink" title="遇到数据库冲突"></a>遇到数据库冲突</h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 后端成员A提交了数据表变更</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/v1.2__data_tables.xml</span><br><span class="line">git commit -m <span class="string">"db: add data tables"</span></span><br><span class="line">git push origin feature/backend-data-mgmt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后端成员B也需要修改数据库</span></span><br><span class="line">git switch feature/backend-recommend-engine</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遇到冲突：db/changelog/changelog-master.yaml</span></span><br><span class="line"><span class="comment"># 解决冲突后</span></span><br><span class="line">git add backend/src/main/resources/db/changelog/</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line">git push origin feature/backend-recommend-engine --force</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="测试与发布阶段"><a href="#测试与发布阶段" class="headerlink" title="测试与发布阶段"></a>测试与发布阶段</h2><h3 id="预发布准备"><a href="#预发布准备" class="headerlink" title="预发布准备"></a>预发布准备</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 创建发布分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git pull origin develop</span><br><span class="line">git switch -c release/v1.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新版本号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"1.0.0"</span> &gt; VERSION</span><br><span class="line">git add VERSION</span><br><span class="line">git commit -m <span class="string">"chore: prepare release v1.0.0"</span></span><br><span class="line">git push -u origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="测试问题修复"><a href="#测试问题修复" class="headerlink" title="测试问题修复"></a>测试问题修复</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 发现权限问题</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git switch -c fix/permission-issue</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复后端权限验证</span></span><br><span class="line"><span class="comment"># ... 修改SecurityConfig等 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/config/SecurityConfig.java</span><br><span class="line">git commit -m <span class="string">"fix(auth): correct role permissions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并回发布分支</span></span><br><span class="line">git switch release/v1.0.0</span><br><span class="line">git merge --no-ff fix/permission-issue</span><br><span class="line">git push origin release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="正式发布"><a href="#正式发布" class="headerlink" title="正式发布"></a>正式发布</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 合并到main分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git merge --no-ff release/v1.0.0</span><br><span class="line">git tag -a v1.0.0 -m <span class="string">"Initial release with core features"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新develop分支</span></span><br><span class="line">git switch develop</span><br><span class="line">git merge release/v1.0.0</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除发布分支</span></span><br><span class="line">git branch -d release/v1.0.0</span><br><span class="line">git push origin --delete release/v1.0.0</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="生产环境问题处理"><a href="#生产环境问题处理" class="headerlink" title="生产环境问题处理"></a>生产环境问题处理</h2><h3 id="紧急修复示例"><a href="#紧急修复示例" class="headerlink" title="紧急修复示例"></a>紧急修复示例</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 从main创建热修复分支</span></span><br><span class="line">git switch main</span><br><span class="line">git pull origin main</span><br><span class="line">git switch -c hotfix/critical-bug-fix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复问题</span></span><br><span class="line"><span class="comment"># ... 修改相关服务 ...</span></span><br><span class="line">git add backend/src/main/java/com/project/service/DataService.java</span><br><span class="line">git commit -m <span class="string">"fix(service): handle large dataset processing"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到main和develop</span></span><br><span class="line">git switch main</span><br><span class="line">git merge --no-ff hotfix/critical-bug-fix</span><br><span class="line">git tag -a v1.0.1 -m <span class="string">"Hotfix for critical bug"</span></span><br><span class="line">git push origin main --tags</span><br><span class="line"></span><br><span class="line">git switch develop</span><br><span class="line">git merge hotfix/critical-bug-fix</span><br><span class="line">git push origin develop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除热修复分支</span></span><br><span class="line">git branch -d hotfix/critical-bug-fix</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="checkout-和-switch-的区别"><a href="#checkout-和-switch-的区别" class="headerlink" title="checkout 和 switch 的区别"></a>checkout 和 switch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支切换</span></span><br><span class="line">git checkout existing-branch</span><br><span class="line">git switch existing-branch</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建并切换分支</span></span><br><span class="line">git checkout -b feature/new-feature</span><br><span class="line">git switch -c feature/new-feature</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">文件恢复</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">核心场景：你还没提交，但把某个文件改坏了，想撤销所有未暂存的本地修改，让它立刻回到上一次提交时的样子（误删也用这个）</span></span><br><span class="line">git checkout -- src/components/Component.vue</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果已暂存，先用`git reset HEAD &lt;file&gt;`取消暂存，再用checkout</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看历史提交（只读模式）</span></span><br><span class="line">git checkout HEAD~3</span><br><span class="line">git switch --detach HEAD~3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安全机制</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当有未提交更改时尝试切换分支，switch会报错，而checkout会尝试自动合并，可能会导致数据丢失</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="pull-fetch-的区别"><a href="#pull-fetch-的区别" class="headerlink" title="pull &amp; fetch 的区别"></a>pull &amp; fetch 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pull = fetch + merge</span></span><br><span class="line">git pull origin develop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分步操作更安全</span></span><br><span class="line">git fetch origin           # 获取远程更新但不合并</span><br><span class="line">git log origin/develop..HEAD  # 查看差异</span><br><span class="line">git merge origin/develop    # 手动合并</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式拉取（保持线性历史）</span></span><br><span class="line">git pull --rebase origin develop</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="rebase-merge-的区别"><a href="#rebase-merge-的区别" class="headerlink" title="rebase &amp; merge 的区别"></a>rebase &amp; merge 的区别</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">merge方式：保留分支历史</span></span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login     # 创建合并提交</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rebase方式：线性历史更整洁</span></span><br><span class="line">git switch feature/login</span><br><span class="line">git rebase main            # 重新应用提交</span><br><span class="line">git switch main</span><br><span class="line">git merge feature/login    # 快进合并</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查看分支</td>
-<td><code>git branch -a</code></td>
-<td>显示所有分支</td>
-</tr>
-<tr>
-<td>切换分支</td>
-<td><code>git switch branch-name</code></td>
-<td>推荐用法</td>
-</tr>
-<tr>
-<td>创建切换</td>
-<td><code>git switch -c new-branch</code></td>
-<td>创建并切换到新分支</td>
-</tr>
-<tr>
-<td>删除分支</td>
-<td><code>git branch -d branch-name</code></td>
-<td>删除已合并分支</td>
-</tr>
-<tr>
-<td>强制删除</td>
-<td><code>git branch -D branch-name</code></td>
-<td>强制删除分支</td>
-</tr>
-</tbody></table>
-<h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>拉取更新</td>
-<td><code>git pull origin main</code></td>
-<td>拉取并合并</td>
-</tr>
-<tr>
-<td>获取更新</td>
-<td><code>git fetch origin</code></td>
-<td>只获取不合并</td>
-</tr>
-<tr>
-<td>推送分支</td>
-<td><code>git push -u origin HEAD</code></td>
-<td>推送当前分支</td>
-</tr>
-<tr>
-<td>强制推送</td>
-<td><code>git push --force-with-lease</code></td>
-<td>安全强推</td>
-</tr>
-</tbody></table>
-<h3 id="提交管理"><a href="#提交管理" class="headerlink" title="提交管理"></a>提交管理</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查看状态</td>
-<td><code>git status</code></td>
-<td>检查工作区状态</td>
-</tr>
-<tr>
-<td>暂存文件</td>
-<td><code>git add .</code></td>
-<td>暂存所有变更</td>
-</tr>
-<tr>
-<td>提交变更</td>
-<td><code>git commit -m "message"</code></td>
-<td>提交暂存区</td>
-</tr>
-<tr>
-<td>修改提交</td>
-<td><code>git commit --amend</code></td>
-<td>修改最后一次提交</td>
-</tr>
-<tr>
-<td>撤销提交</td>
-<td><code>git reset --soft HEAD~1</code></td>
-<td>撤销但保留更改</td>
-</tr>
-</tbody></table>
-<h3 id="历史查看"><a href="#历史查看" class="headerlink" title="历史查看"></a>历史查看</h3><table>
-<thead>
-<tr>
-<th>操作</th>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查看历史</td>
-<td><code>git log --oneline</code></td>
-<td>简洁历史</td>
-</tr>
-<tr>
-<td>图形化历史</td>
-<td><code>git log --graph --all</code></td>
-<td>分支图</td>
-</tr>
-<tr>
-<td>文件历史</td>
-<td><code>git log -p filename</code></td>
-<td>文件变更历史</td>
-</tr>
-<tr>
-<td>查看差异</td>
-<td><code>git diff HEAD~1</code></td>
-<td>与上次提交比较</td>
-</tr>
-</tbody></table>
-<h2 id="关键-git-命令速查表"><a href="#关键-git-命令速查表" class="headerlink" title="关键 git 命令速查表"></a>关键 git 命令速查表</h2><table>
-<thead>
-<tr>
-<th align="center">场景</th>
-<th align="center">命令</th>
-<th align="center">说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">开始新功能</td>
-<td align="center"> git switch develop &amp;&amp; git pull &amp;&amp; git switch -c feature/[name]</td>
-<td align="center"> 从 develop 创建新功能分支</td>
-</tr>
-<tr>
-<td align="center">每日同步</td>
-<td align="center"> git fetch origin &amp;&amp; git rebase origin/develop</td>
-<td align="center"> 保持与 develop 同步</td>
-</tr>
-<tr>
-<td align="center">提交变更</td>
-<td align="center"> git add . &amp;&amp; git commit -m “…” &amp;&amp; git push -u origin HEAD</td>
-<td align="center"> 推送当前分支</td>
-</tr>
-<tr>
-<td align="center">解决冲突</td>
-<td align="center"> git rebase –continue 或 git rebase –abort</td>
-<td align="center"> 变基操作控制</td>
-</tr>
-<tr>
-<td align="center">撤销错误提交</td>
-<td align="center"> git reset –soft HEAD~1</td>
-<td align="center"> 撤销最后一次提交</td>
-</tr>
-<tr>
-<td align="center">查看分支关系</td>
-<td align="center"> git log –all –graph –oneline</td>
-<td align="center"> 可视化分支历史</td>
-</tr>
-</tbody></table>
-<h2 id="git-提交规范"><a href="#git-提交规范" class="headerlink" title="git 提交规范"></a>git 提交规范</h2><figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">feat: 添加新功能</span><br><span class="line">fix: 修复 bug</span><br><span class="line">docs: 文档变更</span><br><span class="line">style: 代码格式/样式调整</span><br><span class="line">refactor: 代码重构</span><br><span class="line">test: 添加或修改测试</span><br><span class="line">chore: 构建过程或辅助工具变更</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="常用场景补充"><a href="#常用场景补充" class="headerlink" title="常用场景补充"></a>常用场景补充</h2><h3 id="储藏工作进度"><a href="#储藏工作进度" class="headerlink" title="储藏工作进度"></a>储藏工作进度</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时保存当前工作</span></span><br><span class="line">git stash push -m "work in progress"</span><br><span class="line">git stash list               # 查看储藏列表</span><br><span class="line">git stash pop               # 恢复最新储藏</span><br><span class="line">git stash apply stash@{1}   # 恢复指定储藏</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销已暂存的文件</span></span><br><span class="line">git reset HEAD filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">撤销本地修改</span></span><br><span class="line">git checkout -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件修改者</span></span><br><span class="line">git blame filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">恢复已删除的文件</span></span><br><span class="line">git checkout HEAD~1 -- deleted-file.js</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="历史查看-1"><a href="#历史查看-1" class="headerlink" title="历史查看"></a>历史查看</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看简洁历史</span></span><br><span class="line">git log --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分支图</span></span><br><span class="line">git log --all --graph --oneline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件变更历史</span></span><br><span class="line">git log -p -- filename</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搜索提交信息</span></span><br><span class="line">git log --grep="fix"</span><br></pre></td></tr></tbody></table></figure>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-        <tag>版本控制</tag>
-        <tag>命令笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>KMP 字符串匹配算法</title>
     <url>/2024/06/11/Kmp%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h1 id="字符串匹配问题"><a href="#字符串匹配问题" class="headerlink" title="字符串匹配问题"></a>字符串匹配问题</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>首先字符串匹配问题是什么很容易知道，如下图<br><img src="https://telegraph-image-eja.pages.dev/file/f6379e3c35441555f747d.png" alt="image"><br>这在搜索引擎，文本编辑器等都有其身影。</p>
@@ -753,84 +753,6 @@ while Q $\not = \not 0$
         <tag>字符串</tag>
         <tag>KMP</tag>
         <tag>模式匹配</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Missing Semester Lecture 1 - Shell 基础</title>
-    <url>/2023/12/17/Missing-Semester-lecture-1/</url>
-    <content><![CDATA[<p><a href="https://missing.csail.mit.edu/2020/course-shell/">missing semester lecture 1</a><br>In my first jump in missing semester – lecture 1, I learned something new(like a new language for me) about shell and had a try on ubuntu terminal. If there are any errors or missing things, please forgive me, as I haven’t really stepped into the Linux operating system yet.</p>
-<p>During my study, there are something what I have learned as follow.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">date</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can display current date and time.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can print out something you want.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">which</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can find the system command position and return it. For example, the result of <code>which echo</code> is <code>/bin/echo</code> or <code>/usr/bin/echo</code>.So, using <code>echo</code> or using <code>/bin/echo</code> have the same effect(the next is an example).</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo $PATH</span><br><span class="line">/bin/echo $PATH</span><br><span class="line">/usr/bin/echo $PATH</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>$PATH</code>&nbsp;lists which directories the shell should search for programs when it is given a command. The result of the three line above is the same.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir</span><br><span class="line">touch</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The first can make a new directory in current directory.<br>The second can make a new file in current directory.(They’re not the same.<code>touch</code>can not make a new directory.)</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm [file_name]</span><br><span class="line">rm -f</span><br><span class="line">rm -i</span><br><span class="line">rm -r(or R)</span><br><span class="line">rm -v</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Using <code>rm --help</code> can find the function of <code>-f</code> and etc.<br>Notice: <code>rm</code> will prompt you that the file is not exist while <code>rm -f</code> ignores whether the file is exist or not.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm -r [directory_name]</span><br><span class="line">rm -rf []</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>rm [directory_name]</code> can not succeed to remove directory. The two above can both remove directory.(But the second is dangerous in some case.)</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rmdir</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can just remove blank directory.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">pwd</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can display current directory.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd</span><br><span class="line">cd ~</span><br></pre></td></tr></tbody></table></figure>
-
-<p>They can return to current user’s home directory like <code>/home/user_name</code> .</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd -</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It will return to the last directory that you have been accessed.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd .</span><br><span class="line">cd ..</span><br><span class="line">cd ../../</span><br></pre></td></tr></tbody></table></figure>
-
-<p>In a path,&nbsp;<code>.</code>&nbsp;refers to the current directory, and&nbsp;<code>..</code>&nbsp;to its parent directory. And the <code>..</code> can be used for several times. (Hint: you can examine with <code>pwd</code> every time you use the <code>cd</code> .)<br>Notice: <code>cd ../../</code> must be the complete path. But when you are in a subdirectory, you don’t need to type complete path if you want to back to the parent directory or the parent directory of the parent directory and etc.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls</span><br><span class="line">ls -l</span><br><span class="line">ls /[directory_name]</span><br><span class="line">ls -l /[directory_name]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The first will print the contents of the current directory to see what lives in a given directory.<br>The second will print the contents of the current directory by using a long listing format, which means more detailed. The third and the fourth can print the contents of directory that you point so that you don’t need to switch your current directory.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">man</span><br></pre></td></tr></tbody></table></figure>
-
-<p>For example, <code>man ls</code> will let you read the manual page about <code>ls</code> . That is its function.<br>And it is the last line in manual page: Manual page man(1) line 1 (press h for help or q to quit).</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>cat</code> stands for concatenate. You can also type <code>cat --help</code> to find some functions of options. For example, <code>-n</code> can number all output lines.<br><code>cat [file_name]</code> can print the whole text file.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat &gt; file_name</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It is better than <code>touch</code> for which it can make a new file and add content to it. What’s more, you can use <code>Ctrl + d</code> to save it.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt; file_B</span><br><span class="line">cat file_A file_C &gt;file_B</span><br><span class="line">cat &lt; file_A &gt; file_B</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It will delete the file_B’s data, and copy the file_A’s content to file_B. Copy several files is ok as well.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt;&gt; file_B</span><br></pre></td></tr></tbody></table></figure>
-
-<p>When you don’t want to delete file_b’s content, you can use <code>&gt;&gt;</code> instead of <code>&gt;</code> .</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_name | grep -v '^$'</span><br><span class="line">cat file_name1 | grep -v '^$' &gt; file_name2</span><br></pre></td></tr></tbody></table></figure>
-
-<p>They can delete blank line in the file. The first will print the changed content. The second will not output anything. And the file_name1’s content keep the same as before. The changed content is saved in file_name2.</p>
-<p>When it comes to pipe <code>|</code> , let me introduce detailed usage about it.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">command1 | command2</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The output of command1 will become the input of command2.<br>For example:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls | sort</span><br></pre></td></tr></tbody></table></figure>
-]]></content>
-      <categories>
-        <category>Missing Semester</category>
-      </categories>
-      <tags>
-        <tag>工具</tag>
-        <tag>命令笔记</tag>
-        <tag>Shell</tag>
-        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -1003,78 +925,81 @@ while Q $\not = \not 0$
       </tags>
   </entry>
   <entry>
-    <title>fusc 函数与尾递归优化</title>
-    <url>/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/</url>
-    <content><![CDATA[<h1 id="codewars-fusc-函数"><a href="#codewars-fusc-函数" class="headerlink" title="codewars-fusc 函数"></a>codewars-fusc 函数</h1><p><a href="https://www.codewars.com/kata/the-fusc-function-part-2">codewars 传送门</a></p>
-<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># fusc函数定义如下：</span><br><span class="line">fusc(0) = 0</span><br><span class="line">fusc(1) = 1</span><br><span class="line">fusc(2n) = fusc(n)</span><br><span class="line">fusc(2n + 1) = fusc(n) + fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
+    <title>Missing Semester Lecture 1 - Shell 基础</title>
+    <url>/2023/12/17/Missing-Semester-lecture-1/</url>
+    <content><![CDATA[<p><a href="https://missing.csail.mit.edu/2020/course-shell/">missing semester lecture 1</a><br>In my first jump in missing semester – lecture 1, I learned something new(like a new language for me) about shell and had a try on ubuntu terminal. If there are any errors or missing things, please forgive me, as I haven’t really stepped into the Linux operating system yet.</p>
+<p>During my study, there are something what I have learned as follow.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">date</span><br></pre></td></tr></tbody></table></figure>
 
-<p>在这里你需要考虑栈溢出和超时问题，因为测试集是大数。<br>在题目描述中，给出了 fib 函数的优化方法以供参考：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># Fibonacci数定义如下：</span><br><span class="line">fib(0) = 1</span><br><span class="line">fib(1) = 1</span><br><span class="line">fib(n) = fib(n - 1) + fib(n - 2), if n &gt; 1       (1)</span><br></pre></td></tr></tbody></table></figure>
+<p>It can display current date and time.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo</span><br></pre></td></tr></tbody></table></figure>
 
-<p>第一步就是先尝试并找到一个尾递归定义，我们可以对等式 (1) 做处理，使得等式 (1) 两边具有相同形式，现在，等式右边有两项，而左边只有一项，所以容易想到的尝试是把左边也变成两项：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">fib(n) + fib(n - 1) = 2 * fib(n - 1) + fib(n - 2)      (2)</span><br></pre></td></tr></tbody></table></figure>
+<p>It can print out something you want.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">which</span><br></pre></td></tr></tbody></table></figure>
 
-<p>等式 (2) 看起来是那么一回事了，但我们要做的是抽象出尾递归定义，等式中系数都为常数，因此我们可以从 (1) 式开始就将系数变量化：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">a * fib(n) = a * fib(n - 1) + a * fib(n - 2)</span><br><span class="line"># 接着两边加上b * fib(n - 1)</span><br><span class="line">a * fib(n) + b * fib(n - 1) = (a + b) * fib(n - 1) + a * fib(n - 2)   (3)</span><br></pre></td></tr></tbody></table></figure>
+<p>It can find the system command position and return it. For example, the result of <code>which echo</code> is <code>/bin/echo</code> or <code>/usr/bin/echo</code>.So, using <code>echo</code> or using <code>/bin/echo</code> have the same effect(the next is an example).</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo $PATH</span><br><span class="line">/bin/echo $PATH</span><br><span class="line">/usr/bin/echo $PATH</span><br></pre></td></tr></tbody></table></figure>
 
-<p>现在等式 (3) 两边已有相同的形式，我们可以定义<br><code>F(a, b, n) = a * fib(n) + b * fib(n - 1)</code><br>那么等式 (3) 就可转换如下：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">F(a, b, n) = F(a + b, a, n - 1)</span><br></pre></td></tr></tbody></table></figure>
+<p><code>$PATH</code>&nbsp;lists which directories the shell should search for programs when it is given a command. The result of the three line above is the same.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir</span><br><span class="line">touch</span><br></pre></td></tr></tbody></table></figure>
 
-<p>那么这个定义运行到什么时候结束呢？因为前面 fib 公式定义在 <code>n &gt; 1</code> ，所以在 <code>n == 1</code> 时停止运行，那时有</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">F(a, b, 1) = a * fib(1) + b * fib(0) = a + b          末</span><br></pre></td></tr></tbody></table></figure>
+<p>The first can make a new directory in current directory.<br>The second can make a new file in current directory.(They’re not the same.<code>touch</code>can not make a new directory.)</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm [file_name]</span><br><span class="line">rm -f</span><br><span class="line">rm -i</span><br><span class="line">rm -r(or R)</span><br><span class="line">rm -v</span><br></pre></td></tr></tbody></table></figure>
 
-<p>同时根据 F 的定义我们可以得到 fib (n) 在 F 上的定义</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">fib(n) = F(1, 0, n)                                   初</span><br></pre></td></tr></tbody></table></figure>
+<p>Using <code>rm --help</code> can find the function of <code>-f</code> and etc.<br>Notice: <code>rm</code> will prompt you that the file is not exist while <code>rm -f</code> ignores whether the file is exist or not.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm -r [directory_name]</span><br><span class="line">rm -rf []</span><br></pre></td></tr></tbody></table></figure>
 
-<p>综上所述，转换成代码即是：</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">F</span>(<span class="params">a, b, n</span>):</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">or</span> n == <span class="number">0</span>: <span class="keyword">return</span> a + b</span><br><span class="line">        <span class="keyword">return</span> F(a + b, a, n - <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> F(<span class="number">1</span>, <span class="number">0</span>, n)</span><br></pre></td></tr></tbody></table></figure>
+<p><code>rm [directory_name]</code> can not succeed to remove directory. The two above can both remove directory.(But the second is dangerous in some case.)</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rmdir</span><br></pre></td></tr></tbody></table></figure>
 
-<p>对于某些支持尾递归优化的语言来说，做到这里就结束了<br>Python 语言本身并不支持尾递归优化，因此需要转换成迭代形式</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">n</span>):</span><br><span class="line">    a, b = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">1</span>:</span><br><span class="line">        a, b, n = a + b, a, n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> a + b</span><br></pre></td></tr></tbody></table></figure>
+<p>It can just remove blank directory.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">pwd</span><br></pre></td></tr></tbody></table></figure>
 
-<p>到这里的代码是没问题的，但是感觉总是有点不太对，所以建议还是看 codewar 里面的 description 吧，它是 <code>fib(n + 2) = fib(n) + fib(n + 1), if n + 2 &gt; 1</code> 定义的，这里的 <code>n &gt;= 0</code> 更直观。</p>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>有了上面的 fib 例子，我们也可以按照同样的步骤设计 fusc 函数的尾递归优化</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">fusc(0) = 0</span><br><span class="line">fusc(1) = 1</span><br><span class="line">fusc(2n) = fusc(n)</span><br><span class="line">fusc(2n + 1) = fusc(n) + fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
+<p>It can display current directory.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd</span><br><span class="line">cd ~</span><br></pre></td></tr></tbody></table></figure>
 
-<p>从上面式子可以观察到是分奇偶的，所以在推导优化式子时也要分奇偶。</p>
-<ul>
-<li>偶数<br>为了统一一下，在系数方面我选择 a 在前面，b 在后面<br>按照上面例子，第一步是系数抽象：</li>
-</ul>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">b * fusc(2n + 1) = b * fusc(n) + b * fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
+<p>They can return to current user’s home directory like <code>/home/user_name</code> .</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd -</span><br></pre></td></tr></tbody></table></figure>
 
-<p>第二步是格式统一：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">a * fusc(2n) + b * fusc(2n + 1) = b * fusc(n) + b * fusc(n + 1) + a * fusc(2n)</span><br><span class="line"># 因为 fusc(2n) = fusc(n)，所以上式等于：</span><br><span class="line">a * fusc(2n) + b * fusc(2n + 1) = (a + b) * fusc(n) + b * fusc(n + 1)       (1)</span><br></pre></td></tr></tbody></table></figure>
+<p>It will return to the last directory that you have been accessed.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd .</span><br><span class="line">cd ..</span><br><span class="line">cd ../../</span><br></pre></td></tr></tbody></table></figure>
 
-<p>第三步是定义抽象函数 F：<br><code>F(a, b, n) = a * fib(n) + b * fib(n + 1)</code><br>第四步是回代 (1) 式：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">F(a, b, 2n) = F(a + b, b, n)</span><br><span class="line"># 所以当n是偶数时，有：</span><br><span class="line">F(a, b, n) = F(a + b, b, n // 2)</span><br></pre></td></tr></tbody></table></figure>
+<p>In a path,&nbsp;<code>.</code>&nbsp;refers to the current directory, and&nbsp;<code>..</code>&nbsp;to its parent directory. And the <code>..</code> can be used for several times. (Hint: you can examine with <code>pwd</code> every time you use the <code>cd</code> .)<br>Notice: <code>cd ../../</code> must be the complete path. But when you are in a subdirectory, you don’t need to type complete path if you want to back to the parent directory or the parent directory of the parent directory and etc.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls</span><br><span class="line">ls -l</span><br><span class="line">ls /[directory_name]</span><br><span class="line">ls -l /[directory_name]</span><br></pre></td></tr></tbody></table></figure>
 
-<ul>
-<li>奇数<br>在看之前可以先自己推一下奇数的，再看我的想法。<br>同样的，这里就简写了：</li>
-</ul>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">1    a * fusc(2n + 1) = a * fusc(n) + a * fusc(n + 1)</span><br><span class="line"></span><br><span class="line">2    a * fusc(2n + 1) + b * fusc(2n + 2) = a * fusc(n) + (a + b) * fusc(n + 1)</span><br><span class="line">     # 2式运用了 fusc(2n + 2) = fusc(n + 1)</span><br><span class="line"></span><br><span class="line">3    F(a, b, n) = a * fusc(n) + b * fusc(n + 1)</span><br><span class="line">     # 这里还是一样的定义，这就是前面为什么我要说(在系数方面我选择a在前面，b在后面)的原因了</span><br><span class="line"></span><br><span class="line">4    F(a, b, 2n + 1) = F(a, a + b, n)</span><br><span class="line">     # 所以当n是奇数时，有：</span><br><span class="line">     F(a, b, n) = F(a, a + b, (n - 1) // 2)</span><br></pre></td></tr></tbody></table></figure>
+<p>The first will print the contents of the current directory to see what lives in a given directory.<br>The second will print the contents of the current directory by using a long listing format, which means more detailed. The third and the fourth can print the contents of directory that you point so that you don’t need to switch your current directory.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">man</span><br></pre></td></tr></tbody></table></figure>
 
-<ul>
-<li>定初末状态<br><code>fusc(n) = F(1, 0, n)</code> 初状态跟上面例子一样<br>综上，转换成代码为：</li>
-</ul>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">F</span>(<span class="params">a, b, n</span>):</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">or</span> n == <span class="number">0</span>: <span class="keyword">return</span> n</span><br><span class="line">        <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		    <span class="keyword">return</span> F(a + b, b, n // <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">	        <span class="keyword">return</span> F(a, a + b, (n - <span class="number">1</span>) // <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> F(<span class="number">1</span>, <span class="number">0</span>, n)</span><br></pre></td></tr></tbody></table></figure>
+<p>For example, <code>man ls</code> will let you read the manual page about <code>ls</code> . That is its function.<br>And it is the last line in manual page: Manual page man(1) line 1 (press h for help or q to quit).</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat</span><br></pre></td></tr></tbody></table></figure>
 
-<p>再转换成迭代形式：</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fusc</span>(<span class="params">n</span>):</span><br><span class="line">    a, b = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">            a, b, n = a + b, b, n // <span class="number">2</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            a, b, n = a, a + b, (n - <span class="number">1</span>) // <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> a + b <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">else</span> b</span><br></pre></td></tr></tbody></table></figure>
+<p><code>cat</code> stands for concatenate. You can also type <code>cat --help</code> to find some functions of options. For example, <code>-n</code> can number all output lines.<br><code>cat [file_name]</code> can print the whole text file.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat &gt; file_name</span><br></pre></td></tr></tbody></table></figure>
 
-<p>但这段代码在 commit 时还是出现超时情况，所以还得再优化，比如位运算</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fusc</span>(<span class="params">n</span>):</span><br><span class="line">    a, b = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> n &amp; <span class="number">1</span>:</span><br><span class="line">            a, b, n = a, a + b, (n - <span class="number">1</span>) &gt;&gt; <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            a, b, n = a + b, b, n &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> a + b <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">else</span> b</span><br></pre></td></tr></tbody></table></figure>
+<p>It is better than <code>touch</code> for which it can make a new file and add content to it. What’s more, you can use <code>Ctrl + d</code> to save it.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt; file_B</span><br><span class="line">cat file_A file_C &gt;file_B</span><br><span class="line">cat &lt; file_A &gt; file_B</span><br></pre></td></tr></tbody></table></figure>
 
-<p>这段代码就没有超时了，提交后可以查看别人代码。<br>在这里贴一个只有一行的答案，采用 lambda<br><img src="https://telegraph-image-eja.pages.dev/file/966c1d42f69a041bcbcfb.png" alt="solution"></p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">fusc=<span class="keyword">lambda</span> n,a=<span class="number">1</span>,b=<span class="number">0</span>:[i==<span class="string">'1'</span><span class="keyword">and</span>(b:=b+a)<span class="keyword">or</span>(a:=a+b) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">bin</span>(n)[<span class="number">2</span>:]] <span class="keyword">and</span> b</span><br></pre></td></tr></tbody></table></figure>
+<p>It will delete the file_B’s data, and copy the file_A’s content to file_B. Copy several files is ok as well.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt;&gt; file_B</span><br></pre></td></tr></tbody></table></figure>
+
+<p>When you don’t want to delete file_b’s content, you can use <code>&gt;&gt;</code> instead of <code>&gt;</code> .</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_name | grep -v '^$'</span><br><span class="line">cat file_name1 | grep -v '^$' &gt; file_name2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>They can delete blank line in the file. The first will print the changed content. The second will not output anything. And the file_name1’s content keep the same as before. The changed content is saved in file_name2.</p>
+<p>When it comes to pipe <code>|</code> , let me introduce detailed usage about it.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">command1 | command2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>The output of command1 will become the input of command2.<br>For example:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls | sort</span><br></pre></td></tr></tbody></table></figure>
 ]]></content>
       <categories>
-        <category>codewars</category>
+        <category>Missing Semester</category>
       </categories>
       <tags>
-        <tag>算法</tag>
-        <tag>尾递归</tag>
-        <tag>刷题</tag>
-        <tag>codewars</tag>
+        <tag>工具</tag>
+        <tag>命令笔记</tag>
+        <tag>Shell</tag>
+        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -1238,6 +1163,111 @@ while Q $\not = \not 0$
       </tags>
   </entry>
   <entry>
+    <title>fusc 函数与尾递归优化</title>
+    <url>/2024/07/07/fusc-%E5%B0%BE%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="codewars-fusc-函数"><a href="#codewars-fusc-函数" class="headerlink" title="codewars-fusc 函数"></a>codewars-fusc 函数</h1><p><a href="https://www.codewars.com/kata/the-fusc-function-part-2">codewars 传送门</a></p>
+<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># fusc函数定义如下：</span><br><span class="line">fusc(0) = 0</span><br><span class="line">fusc(1) = 1</span><br><span class="line">fusc(2n) = fusc(n)</span><br><span class="line">fusc(2n + 1) = fusc(n) + fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在这里你需要考虑栈溢出和超时问题，因为测试集是大数。<br>在题目描述中，给出了 fib 函数的优化方法以供参考：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># Fibonacci数定义如下：</span><br><span class="line">fib(0) = 1</span><br><span class="line">fib(1) = 1</span><br><span class="line">fib(n) = fib(n - 1) + fib(n - 2), if n &gt; 1       (1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第一步就是先尝试并找到一个尾递归定义，我们可以对等式 (1) 做处理，使得等式 (1) 两边具有相同形式，现在，等式右边有两项，而左边只有一项，所以容易想到的尝试是把左边也变成两项：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">fib(n) + fib(n - 1) = 2 * fib(n - 1) + fib(n - 2)      (2)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>等式 (2) 看起来是那么一回事了，但我们要做的是抽象出尾递归定义，等式中系数都为常数，因此我们可以从 (1) 式开始就将系数变量化：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">a * fib(n) = a * fib(n - 1) + a * fib(n - 2)</span><br><span class="line"># 接着两边加上b * fib(n - 1)</span><br><span class="line">a * fib(n) + b * fib(n - 1) = (a + b) * fib(n - 1) + a * fib(n - 2)   (3)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现在等式 (3) 两边已有相同的形式，我们可以定义<br><code>F(a, b, n) = a * fib(n) + b * fib(n - 1)</code><br>那么等式 (3) 就可转换如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">F(a, b, n) = F(a + b, a, n - 1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>那么这个定义运行到什么时候结束呢？因为前面 fib 公式定义在 <code>n &gt; 1</code> ，所以在 <code>n == 1</code> 时停止运行，那时有</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">F(a, b, 1) = a * fib(1) + b * fib(0) = a + b          末</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同时根据 F 的定义我们可以得到 fib (n) 在 F 上的定义</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">fib(n) = F(1, 0, n)                                   初</span><br></pre></td></tr></tbody></table></figure>
+
+<p>综上所述，转换成代码即是：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">F</span>(<span class="params">a, b, n</span>):</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">or</span> n == <span class="number">0</span>: <span class="keyword">return</span> a + b</span><br><span class="line">        <span class="keyword">return</span> F(a + b, a, n - <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> F(<span class="number">1</span>, <span class="number">0</span>, n)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>对于某些支持尾递归优化的语言来说，做到这里就结束了<br>Python 语言本身并不支持尾递归优化，因此需要转换成迭代形式</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">n</span>):</span><br><span class="line">    a, b = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">1</span>:</span><br><span class="line">        a, b, n = a + b, a, n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> a + b</span><br></pre></td></tr></tbody></table></figure>
+
+<p>到这里的代码是没问题的，但是感觉总是有点不太对，所以建议还是看 codewar 里面的 description 吧，它是 <code>fib(n + 2) = fib(n) + fib(n + 1), if n + 2 &gt; 1</code> 定义的，这里的 <code>n &gt;= 0</code> 更直观。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>有了上面的 fib 例子，我们也可以按照同样的步骤设计 fusc 函数的尾递归优化</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">fusc(0) = 0</span><br><span class="line">fusc(1) = 1</span><br><span class="line">fusc(2n) = fusc(n)</span><br><span class="line">fusc(2n + 1) = fusc(n) + fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>从上面式子可以观察到是分奇偶的，所以在推导优化式子时也要分奇偶。</p>
+<ul>
+<li>偶数<br>为了统一一下，在系数方面我选择 a 在前面，b 在后面<br>按照上面例子，第一步是系数抽象：</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">b * fusc(2n + 1) = b * fusc(n) + b * fusc(n + 1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第二步是格式统一：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">a * fusc(2n) + b * fusc(2n + 1) = b * fusc(n) + b * fusc(n + 1) + a * fusc(2n)</span><br><span class="line"># 因为 fusc(2n) = fusc(n)，所以上式等于：</span><br><span class="line">a * fusc(2n) + b * fusc(2n + 1) = (a + b) * fusc(n) + b * fusc(n + 1)       (1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第三步是定义抽象函数 F：<br><code>F(a, b, n) = a * fib(n) + b * fib(n + 1)</code><br>第四步是回代 (1) 式：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">F(a, b, 2n) = F(a + b, b, n)</span><br><span class="line"># 所以当n是偶数时，有：</span><br><span class="line">F(a, b, n) = F(a + b, b, n // 2)</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>奇数<br>在看之前可以先自己推一下奇数的，再看我的想法。<br>同样的，这里就简写了：</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">1    a * fusc(2n + 1) = a * fusc(n) + a * fusc(n + 1)</span><br><span class="line"></span><br><span class="line">2    a * fusc(2n + 1) + b * fusc(2n + 2) = a * fusc(n) + (a + b) * fusc(n + 1)</span><br><span class="line">     # 2式运用了 fusc(2n + 2) = fusc(n + 1)</span><br><span class="line"></span><br><span class="line">3    F(a, b, n) = a * fusc(n) + b * fusc(n + 1)</span><br><span class="line">     # 这里还是一样的定义，这就是前面为什么我要说(在系数方面我选择a在前面，b在后面)的原因了</span><br><span class="line"></span><br><span class="line">4    F(a, b, 2n + 1) = F(a, a + b, n)</span><br><span class="line">     # 所以当n是奇数时，有：</span><br><span class="line">     F(a, b, n) = F(a, a + b, (n - 1) // 2)</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>定初末状态<br><code>fusc(n) = F(1, 0, n)</code> 初状态跟上面例子一样<br>综上，转换成代码为：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">F</span>(<span class="params">a, b, n</span>):</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">or</span> n == <span class="number">0</span>: <span class="keyword">return</span> n</span><br><span class="line">        <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		    <span class="keyword">return</span> F(a + b, b, n // <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">	        <span class="keyword">return</span> F(a, a + b, (n - <span class="number">1</span>) // <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> F(<span class="number">1</span>, <span class="number">0</span>, n)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>再转换成迭代形式：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fusc</span>(<span class="params">n</span>):</span><br><span class="line">    a, b = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">            a, b, n = a + b, b, n // <span class="number">2</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            a, b, n = a, a + b, (n - <span class="number">1</span>) // <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> a + b <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">else</span> b</span><br></pre></td></tr></tbody></table></figure>
+
+<p>但这段代码在 commit 时还是出现超时情况，所以还得再优化，比如位运算</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fusc</span>(<span class="params">n</span>):</span><br><span class="line">    a, b = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> n &amp; <span class="number">1</span>:</span><br><span class="line">            a, b, n = a, a + b, (n - <span class="number">1</span>) &gt;&gt; <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            a, b, n = a + b, b, n &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> a + b <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">else</span> b</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这段代码就没有超时了，提交后可以查看别人代码。<br>在这里贴一个只有一行的答案，采用 lambda<br><img src="https://telegraph-image-eja.pages.dev/file/966c1d42f69a041bcbcfb.png" alt="solution"></p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">fusc=<span class="keyword">lambda</span> n,a=<span class="number">1</span>,b=<span class="number">0</span>:[i==<span class="string">'1'</span><span class="keyword">and</span>(b:=b+a)<span class="keyword">or</span>(a:=a+b) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">bin</span>(n)[<span class="number">2</span>:]] <span class="keyword">and</span> b</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>codewars</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>尾递归</tag>
+        <tag>刷题</tag>
+        <tag>codewars</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>汉明数 (Hamming Numbers)</title>
+    <url>/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/</url>
+    <content><![CDATA[<h1 id="codewars-汉明数"><a href="#codewars-汉明数" class="headerlink" title="codewars-汉明数"></a>codewars - 汉明数</h1><p><a href="https://www.codewars.com/kata/526d84b98f428f14a60008da/">codewars 传送门</a></p>
+<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>汉明数是形如 $2^i3^j5^k$ 的正整数，<code>i, j, k</code> 是非负整数，题目要求写一个函数计算出第 n 个最小汉明数<br>特别地：</p>
+<ul>
+<li>第一个最小汉明数是 $1 = 2^03^05^0$</li>
+<li> 第二个最小汉明数是 $2 = 2^13^05^0$</li>
+<li> 第三个最小汉明数是 $3 = 2^03^15^0$</li>
+<li> 第四个最小汉明数是 $4 = 2^23^05^0$</li>
+<li> 第五个最小汉明数是 $5 = 2^03^05^1$</li>
+<li> 第六个最小汉明数是 $6 = 2^13^15^0$<br>首先容易想到的就是暴力解法咯，套三层循环，同时也容易想到必定超时，因此需要设计。</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>第一个问题我觉得就是要考虑汉明数是用数组存着每一个最小汉明数，还是用一个变量存着然后一直更新变量的值。通过观察发现每一个最小汉明数都是由前面的某一个最小汉明数进行乘 2 或乘 3 或乘 5 得到的，因而可以知道的是每一个最小汉明数都得存起来，排除了只用一个变量存储的可能。</p>
+<p>现在就得想如何知道进行什么操作才能做到每一次都是最小的。首先，我们先假设现在前面已经有若干个最小汉明数存着了，现在要求第 n 个，这第 n 个最小汉明数是由 2 或 3 或 5 乘以前面某一个最小汉明数得到，这里有两个未知的量，因此我们先假设某个量是定的，比如假设要进行的是乘 2 操作，接下来就要从前面的最小汉明数中找一个与之相乘，使其乘积最小，那么很显然，我们要找的那个最小汉明数肯定是越前越好，所以就引出关键问题了，我们得知道前面的最小汉明数有没有被用过，或者说有没有被乘 2 这个操作用过，被用过的话就代表着在第 n 个前面肯定是有一个最小汉明数是对其进行乘 2 操作得到的，因此第 n 个就得在后面找第一个没有被用过的，因此我们需要东西去记录用过的汉明数，不难发现只用一个标记就够了，通过右移来更新标记，在标记前面的最小汉明数都是被用过的。因为前面假设的是乘 2 操作，那么乘 3 或乘 5 是同样的情况，所以需要三个标记去记录，这里把标记记为 <code>i, j, k</code> 分别代表着 2，3，5 ，这里的标记其实就是最小汉明数数组的索引，注意此 <code>ijk</code> 跟题目定义的 <code>ijk</code> 不是一个东西，切勿混淆。</p>
+<p>下一步就得考虑一下初始状态了，存储最小汉明数的数组初始化首先得搞个数字存进去吧，那么是存 0 好呢还是把第一个最小汉明数丢进去呢。假设先存个 0，那么 <code>i, j, k</code> 初始化都得是 0，毕竟数组里暂时只有 0 这个索引有数字，那么第一个最小汉明数按上面的操作的话就求不出来了，因为 0 乘任何数都是 0。假设先存个 1，然后从第二个最小汉明数开始按照上面分析的操作进行，2,3,5 分别乘 1，得出 2 最小，接着把 2 加在最小汉明数数组中，然后还得更新 2 所对应的 i 标记右移一个单位，这时 <code>i == 1</code>，此时 i 指向的是数组中索引为 1 的数，即 2，其它两个标记还是 0，为了验证并理解，再举两个例子推演。下面到第三个最小汉明数，为了方便叙述，我把数组实际化为 nums，那么第三个最小汉明数就要在 $nums [i] * 2=4$ ，$nums [j]*3=3$，$nums [k]*5=5$ 中的最小值取得，即是中间的 3，把它加入到 nums 中，并把 j 右移一位，现在 i 和 j 都是 1，k 是 0,。接着第四个最小汉明数就要从 $nums [i] * 2=4$ ，$nums [j]*3=6$，$nums [k]*5=5$ 中取得，即是 4，把 4 加入到 nums，i 再次右移一位，后面的同理。</p>
+<p>可能说的还是有点模糊，下面用一张图来进行具象化：<br><img src="https://telegraph-image-eja.pages.dev/file/12bb4c8ae58643b244279.jpg" alt="image"><br>那就直接上代码</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hamming</span>(<span class="params">n</span>):</span><br><span class="line">    i, j, k = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    nums = [<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(nums) &lt; n:</span><br><span class="line">        nums.append(<span class="built_in">min</span>(nums[i]*<span class="number">2</span>, nums[j]*<span class="number">3</span>, nums[k]*<span class="number">5</span>))</span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[i]*<span class="number">2</span>: i += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[j]*<span class="number">3</span>: j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[k]*<span class="number">5</span>: k += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> nums[-<span class="number">1</span>]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>没想到做完两题就直接从 8kyu 到 6kyu 了</p>
+]]></content>
+      <categories>
+        <category>codewars</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>刷题</tag>
+        <tag>codewars</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>单源最短路径 (Single-Source Shortest Paths)</title>
     <url>/2024/05/12/%E5%8D%95%E6%BA%90%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/</url>
     <content><![CDATA[<h1 id="单源最短路径-SSSP"><a href="#单源最短路径-SSSP" class="headerlink" title="单源最短路径(SSSP)"></a>单源最短路径 (SSSP)</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><h3 id="图的输入"><a href="#图的输入" class="headerlink" title="图的输入"></a>图的输入</h3><ul>
@@ -1336,36 +1366,6 @@ while Q $\not = \not 0$
         <tag>最短路径</tag>
         <tag>Dijkstra</tag>
         <tag>Bellman-Ford</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>汉明数 (Hamming Numbers)</title>
-    <url>/2024/05/27/hamming-numbers-%E6%B1%89%E6%98%8E%E6%95%B0/</url>
-    <content><![CDATA[<h1 id="codewars-汉明数"><a href="#codewars-汉明数" class="headerlink" title="codewars-汉明数"></a>codewars - 汉明数</h1><p><a href="https://www.codewars.com/kata/526d84b98f428f14a60008da/">codewars 传送门</a></p>
-<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>汉明数是形如 $2^i3^j5^k$ 的正整数，<code>i, j, k</code> 是非负整数，题目要求写一个函数计算出第 n 个最小汉明数<br>特别地：</p>
-<ul>
-<li>第一个最小汉明数是 $1 = 2^03^05^0$</li>
-<li> 第二个最小汉明数是 $2 = 2^13^05^0$</li>
-<li> 第三个最小汉明数是 $3 = 2^03^15^0$</li>
-<li> 第四个最小汉明数是 $4 = 2^23^05^0$</li>
-<li> 第五个最小汉明数是 $5 = 2^03^05^1$</li>
-<li> 第六个最小汉明数是 $6 = 2^13^15^0$<br>首先容易想到的就是暴力解法咯，套三层循环，同时也容易想到必定超时，因此需要设计。</li>
-</ul>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>第一个问题我觉得就是要考虑汉明数是用数组存着每一个最小汉明数，还是用一个变量存着然后一直更新变量的值。通过观察发现每一个最小汉明数都是由前面的某一个最小汉明数进行乘 2 或乘 3 或乘 5 得到的，因而可以知道的是每一个最小汉明数都得存起来，排除了只用一个变量存储的可能。</p>
-<p>现在就得想如何知道进行什么操作才能做到每一次都是最小的。首先，我们先假设现在前面已经有若干个最小汉明数存着了，现在要求第 n 个，这第 n 个最小汉明数是由 2 或 3 或 5 乘以前面某一个最小汉明数得到，这里有两个未知的量，因此我们先假设某个量是定的，比如假设要进行的是乘 2 操作，接下来就要从前面的最小汉明数中找一个与之相乘，使其乘积最小，那么很显然，我们要找的那个最小汉明数肯定是越前越好，所以就引出关键问题了，我们得知道前面的最小汉明数有没有被用过，或者说有没有被乘 2 这个操作用过，被用过的话就代表着在第 n 个前面肯定是有一个最小汉明数是对其进行乘 2 操作得到的，因此第 n 个就得在后面找第一个没有被用过的，因此我们需要东西去记录用过的汉明数，不难发现只用一个标记就够了，通过右移来更新标记，在标记前面的最小汉明数都是被用过的。因为前面假设的是乘 2 操作，那么乘 3 或乘 5 是同样的情况，所以需要三个标记去记录，这里把标记记为 <code>i, j, k</code> 分别代表着 2，3，5 ，这里的标记其实就是最小汉明数数组的索引，注意此 <code>ijk</code> 跟题目定义的 <code>ijk</code> 不是一个东西，切勿混淆。</p>
-<p>下一步就得考虑一下初始状态了，存储最小汉明数的数组初始化首先得搞个数字存进去吧，那么是存 0 好呢还是把第一个最小汉明数丢进去呢。假设先存个 0，那么 <code>i, j, k</code> 初始化都得是 0，毕竟数组里暂时只有 0 这个索引有数字，那么第一个最小汉明数按上面的操作的话就求不出来了，因为 0 乘任何数都是 0。假设先存个 1，然后从第二个最小汉明数开始按照上面分析的操作进行，2,3,5 分别乘 1，得出 2 最小，接着把 2 加在最小汉明数数组中，然后还得更新 2 所对应的 i 标记右移一个单位，这时 <code>i == 1</code>，此时 i 指向的是数组中索引为 1 的数，即 2，其它两个标记还是 0，为了验证并理解，再举两个例子推演。下面到第三个最小汉明数，为了方便叙述，我把数组实际化为 nums，那么第三个最小汉明数就要在 $nums [i] * 2=4$ ，$nums [j]*3=3$，$nums [k]*5=5$ 中的最小值取得，即是中间的 3，把它加入到 nums 中，并把 j 右移一位，现在 i 和 j 都是 1，k 是 0,。接着第四个最小汉明数就要从 $nums [i] * 2=4$ ，$nums [j]*3=6$，$nums [k]*5=5$ 中取得，即是 4，把 4 加入到 nums，i 再次右移一位，后面的同理。</p>
-<p>可能说的还是有点模糊，下面用一张图来进行具象化：<br><img src="https://telegraph-image-eja.pages.dev/file/12bb4c8ae58643b244279.jpg" alt="image"><br>那就直接上代码</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hamming</span>(<span class="params">n</span>):</span><br><span class="line">    i, j, k = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    nums = [<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(nums) &lt; n:</span><br><span class="line">        nums.append(<span class="built_in">min</span>(nums[i]*<span class="number">2</span>, nums[j]*<span class="number">3</span>, nums[k]*<span class="number">5</span>))</span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[i]*<span class="number">2</span>: i += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[j]*<span class="number">3</span>: j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> nums[-<span class="number">1</span>] == nums[k]*<span class="number">5</span>: k += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> nums[-<span class="number">1</span>]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>没想到做完两题就直接从 8kyu 到 6kyu 了</p>
-]]></content>
-      <categories>
-        <category>codewars</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-        <tag>刷题</tag>
-        <tag>codewars</tag>
       </tags>
   </entry>
   <entry>
