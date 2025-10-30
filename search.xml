@@ -172,63 +172,6 @@
       </tags>
   </entry>
   <entry>
-    <title>KMP 字符串匹配算法</title>
-    <url>/2024/06/11/Kmp%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="字符串匹配问题"><a href="#字符串匹配问题" class="headerlink" title="字符串匹配问题"></a>字符串匹配问题</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>首先字符串匹配问题是什么很容易知道，如下图<br><img src="https://telegraph-image-eja.pages.dev/file/f6379e3c35441555f747d.png" alt="image"><br>这在搜索引擎，文本编辑器等都有其身影。</p>
-<blockquote>
-<p>字符串匹配问题可以正式地表述如下：</p>
-</blockquote>
-<p>给定文本是一个长度为 &nbsp;𝑛&nbsp; 的数组 &nbsp;𝑇[1 : 𝑛]&nbsp;，模式 (串) 是一个长度为 &nbsp;𝑚(𝑚≤𝑛) 的数组 &nbsp;𝑃[1 : 𝑚]，𝑃&nbsp; 和 &nbsp;𝑇&nbsp; 中的所有元素都是来自一个有限字母集 $\Sigma$ 的字符。例如，$\Sigma$ 可以是 ${0, 1}$，也可以是 ${a, b, … , z}$。字符数组 &nbsp;𝑃&nbsp; 和 &nbsp;𝑇&nbsp; 通常称为字符串。如上图所示，模式 P 伴随着 T 中的偏移量 s 出现 (或者，等价地，模式 P 从文本 T 中的 s + 1 位置开始)。<br>若 $0\le 𝑠\le 𝑛−𝑚$ 且 $𝑇[𝑠+1:𝑠+𝑚]=𝑃[1:𝑚]$，即 $𝑇[𝑠+𝑗]=𝑃[𝑗]$，其中 $1≤𝑗≤𝑚$，那么模式 &nbsp;𝑃&nbsp; 在文本 &nbsp;𝑇&nbsp; 偏移 &nbsp;𝑠&nbsp; 后出现，称 &nbsp;𝑠&nbsp; 是有效偏移，否则 𝑠&nbsp; 就是无效偏移，而字符串匹配问题就是要找出模式 &nbsp;𝑃&nbsp; 出现在给定的文本 &nbsp;𝑇&nbsp; 中所有的有效偏移的问题。<br>为了方便，我们将 $𝑃[1:𝑚]$ 的前 &nbsp;𝑘&nbsp; 个字符组成的前缀 $𝑃[1:𝑘]$ 记作 $𝑃[:𝑘]$，与 python 类似。特别地，有 $𝑃[:0]=𝜀$ 和 $𝑃[:𝑚]=𝑃=𝑃[1:𝑚]$。于是，字符串匹配问题可以表述为找出所有偏移 $0≤𝑠≤𝑛−𝑚$，使得 $𝑃⊐𝑇[:𝑠+𝑚]$。</p>
-<h3 id="术语与符号"><a href="#术语与符号" class="headerlink" title="术语与符号"></a>术语与符号</h3><p>在进入正式介绍前，需要引入一些术语和符号，以便形式化表示。</p>
-<ul>
-<li>$\Sigma ^*$：所有使用 $\Sigma$ 中的字符所构成的有限长度的字符串的集合。</li>
-<li>$\varepsilon$：长度为零的字符串，$\varepsilon \in \Sigma ^*$。</li>
-<li>|x|：字符串 x 的长度。</li>
-<li>xy：字符串 x 和字符串 y 的连结 (concatenation)，反正就是把 y 填补到 x 的后面形成新的字符串。</li>
-<li>$w⊏x$：w 是 x 的前缀，对于某个字符串 $𝑦\in \Sigma ^*$，&nbsp; 有 $𝑥=𝑤𝑦$，显然 $|𝑤|\le|𝑥|$，若 $|𝑤|&lt;|𝑥|$，则称 w 是真前缀。</li>
-<li>$𝑤⊐𝑥$：w 是 x 的后缀，对于某个字符串 $𝑦\in \Sigma ^*$，&nbsp; 有 $𝑥=yw$，显然 $|𝑤|\le|𝑥|$，若 $|𝑤|&lt;|𝑥|$，则称 w 是真后缀，把 ⊐ 当做&gt; 箭头就行，箭头朝前就是前缀，朝后就是后缀。<br>注：</li>
-<li>$\varepsilon$ 是所有字符串的前缀和后缀。</li>
-<li>对于任意字符串 &nbsp;𝑥，𝑦&nbsp;，任意字符 &nbsp;𝑎&nbsp;，$𝑥⊐𝑦$ 当且仅当 $𝑥𝑎⊐𝑦𝑎$。</li>
-<li>$⊏和⊐$ 关系具有传递性。</li>
-</ul>
-<h3 id="引理"><a href="#引理" class="headerlink" title="引理"></a>引理</h3><p>Overlapping-suffix lemma<br>假设 &nbsp;𝑥，𝑦&nbsp;，𝑧&nbsp; 是字符串，且满足 $𝑥⊐𝑧和𝑦⊐𝑧$。若 $|𝑥|≤|𝑦|$，则 $𝑥⊐𝑦$。若 $|𝑥|≥|𝑦|$，则 $𝑦⊐𝑥$。若 $|𝑥|=|𝑦|$，则 $𝑥=𝑦$，这在直觉上也很正确，下图示例：<br><img src="https://telegraph-image-eja.pages.dev/file/f583587ea80b1db76708c.png" alt="image"><br>当然也有 Overlapping-prefix lemma 与之对应，不再赘述。</p>
-<h2 id="朴素字符串匹配算法-The-naive-string-matching-algorithm"><a href="#朴素字符串匹配算法-The-naive-string-matching-algorithm" class="headerlink" title="朴素字符串匹配算法(The naive string-matching algorithm)"></a>朴素字符串匹配算法 (The naive string-matching algorithm)</h2><p>字符串匹配问题容易想到的就是暴力解法了，如下图：<br><img src="https://telegraph-image-eja.pages.dev/file/473bf783a0d0eaa638e9b.png" alt="image"><br>伪代码如下：<br><img src="https://telegraph-image-eja.pages.dev/file/2f7b3445f88cd844aedba.png" alt="image"><br>cpp 代码示例：</p>
-<figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Naive_String_Matcher</span><span class="params">(string T, string P, <span class="type">int</span> n, <span class="type">int</span> m)</span> </span>{</span><br><span class="line">&nbsp; &nbsp; <span class="type">bool</span> found;</span><br><span class="line">&nbsp; &nbsp; <span class="keyword">for</span>(<span class="type">int</span> s = <span class="number">0</span>; s &lt; n - m; s++) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; found = <span class="literal">true</span>;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; i++) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">if</span>(T[s + i] != P[i]) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; found = <span class="literal">false</span>;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">break</span>;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">if</span>(found) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cout &lt;&lt; s &lt;&lt; endl;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>容易得到时间复杂度为 $\Theta ((n - m + 1) m)$，当然这也远远不是解决这个问题的最优方法，因为它没有利用前面比较过的有用的信息。</p>
-<h2 id="Rabin-Karp-算法"><a href="#Rabin-Karp-算法" class="headerlink" title="Rabin-Karp 算法"></a>Rabin-Karp 算法</h2><p>在介绍著名的 kmp 算法前，我们先来了解一下 Rabin-Karp 算法。<br>Rabin 和 Karp 提出了一种字符串匹配算法，它在实践中表现良好，也可以推广到其他相关问题的算法，如二维模式匹配。Rabin-Karp 算法使用 $\Theta (m)$ 预处理时间，其最坏情况下的运行时间为 $\Theta ((n - m + 1) m)$，没错，和朴素算法一样，然而，基于某些假设，它的平均情况运行时间更好。</p>
-<p>在一般情况下，我们可以假设每个字符都是一个以基数 d 表示的数字，因此它有 d 个数值在范围为 0 到 d - 1，，其中 $d=|\Sigma|$，然后，我们可以用长度为 &nbsp;𝑘&nbsp; 的 &nbsp;𝑑&nbsp; 进制数来表示由 &nbsp;𝑘&nbsp; 个连续的字符组成的字符串。为了简单说明，让我们假设 $\Sigma={0,1,2,…,9}$，例如，由 5 个连续的字符组成的字符串 31415，可以用长度为 5 的十进制数 31,415 来表示 (为了区分字符串和数字，在这里数字采用逗号作为千位分隔符)。因为我们将输入字符同时解释为图形符号和数字，所以在本节中可以方便地将它们表示为数字。</p>
-<p>给定模式 $𝑃[1:𝑚]$，设其对应的十进制数为 &nbsp;𝑝&nbsp;。给定文本 $𝑇[1:𝑛]$，设其子字符串 $𝑇[𝑠+1:𝑠+𝑚]$ 对应的十进制数为 $𝑡_𝑠(s = 0,1,…,n-m)$。当且仅当 $𝑇[𝑠+1:𝑠+𝑚]=𝑃[1:𝑚]$ 时，有 $t_s=p$，此时的 s 为一个有效偏移。</p>
-<p>那么 p 怎么求呢？可以先从我们熟知的二进制数入手，就是 $\Sigma={0,1}$ 的情况，那么字符串 100101 对应的二进制数即为 37，相信怎么计算已然熟悉，但我们要设计尽可能快的算法来计算，这里使用霍纳规则 (Horner’s rule)：</p>
-<p>$$<br>𝑝=𝑃[𝑚]+𝑑(𝑃[𝑚−1]+𝑑(𝑃[𝑚−2]+⋯+𝑑(𝑃[2]+𝑑𝑃[1])⋯))<br>$$</p>
-<figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">hornerRule</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">double</span>&gt;&amp; coefficients, <span class="type">double</span> x)</span> </span>{</span><br><span class="line">&nbsp; &nbsp; <span class="type">double</span> result = <span class="number">0.0</span>;</span><br><span class="line">&nbsp; &nbsp; <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; coefficients.<span class="built_in">size</span>(); ++i) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; result = result * x + coefficients[i];</span><br><span class="line">&nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; <span class="keyword">return</span> result;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>这样就可以在 $\Theta (m)$ 内求出 p，求 $t_0$ 同理，但后面的 $t_s$ 就不再用这种求法了，还是有点慢，因此我们可以找出 $t_{s+1} 和 t_s$ 之间的关系：<br>$t_s=T[𝑚+s]+𝑑(T[𝑚+s−1]+𝑑(T[𝑚+s−2]+⋯+𝑑(T[s+2]+𝑑T[s+1])⋯))$<br>$t_{s+1}=T[𝑚+s+1]+𝑑(T[𝑚+s]+𝑑(T[𝑚+s−1]+⋯+𝑑(T[s+3]+𝑑T[s+2])⋯))$<br>观察相同的式子并进行进一步配凑：<br>$dt_s=d(T[𝑚+s]+𝑑(T[𝑚+s−1]+𝑑(T[𝑚+s−2]+⋯+𝑑(T[s+2]+𝑑T[s+1])⋯))$<br>$dt_s-d^mT[s+1]=d(T[𝑚+s]+𝑑(T[𝑚+s−1]+𝑑(T[𝑚+s−2]+⋯+𝑑(T[s+2])⋯))$<br>因此有：<br>$t_{s+1}=T[m+s+1]+d(t_s-d^{m-1}T[s+1])$</p>
-<p>容易得到 $d^{m-1}$ 是一个常数，因此我们可以预先计算它，如果用简单循环的话时间为 $O (m)$，而用<a href="https://oi-wiki.org/math/binary-exponentiation/">快速幂算法</a>的时间是 $O (logm)$。这样一来，执行一次 $t_{s+1} 和 t_s$ 的等式只需要 $\Theta (1)$ 时间。因此，我们可以在求出 $t_0$ 后在 $\Theta (n-m)$ 时间内依次求出 $t_1,…,t_{n-m}$。所以，我们可以在 $\Theta (m)$ 的预处理时间和 $\Theta (n-m+1)$ 的匹配时间内找出模式 $𝑃[1:𝑚]$ 在文本 $𝑇[1:𝑛]$ 中的所有出现的位置。</p>
-<p>当 &nbsp;𝑃&nbsp; 足够短且 $\Sigma$ 足够小时，对 p 和 $t_s$ 的算术运算只需要常数时间，这个方案效果很好。但如果 &nbsp;𝑃&nbsp; 很长，或者 $\Sigma$ 很大导致转化为数字的基数 d 很大，那么就无法在常数时间内计算出 &nbsp;𝑝&nbsp; 或 $𝑡_𝑠$。幸运的是，这个问题可以解决。<br><img src="https://telegraph-image-eja.pages.dev/file/aa3fb3c206ce349a6dfb2.png" alt="image"><br>如图，可以通过选取合适的模 q 来解决，使得 &nbsp;𝑑𝑞&nbsp; 在一个计算字长内，满足进行单精度计算的条件。通常，我们会选择一个形式简单的素数，比如形如 $2^k−1$(费马素数) 或者 $2^k +1$(梅森素数) 的数，因为这样的数在二进制计算机中可以通过位移操作和加法快速进行模运算。</p>
-<p>所以等式相应地变为：<br>$t_{s+1}=(T [m+s+1]+d (t_s-T [s+1] h))$ mod q，其中 $h=d^{m-1}$ mod q<br>为了好看 c 图，改一下位置：<br>$t_{s+1}=((t_s-T[s+1]h)d+T[m+s+1])$ mod q</p>
-<p>但是模 &nbsp;𝑞&nbsp; 后的结果并不完美，因为 $𝑡_𝑠=𝑝$ (mod 𝑞) 并不意味着 $𝑡_𝑠=𝑝$，它只是必要条件，因此，若 $𝑡_𝑠≠𝑝$ (mod 𝑞)，则 $𝑡_𝑠≠𝑝$ 肯定成立。因此可以把测试 $𝑡_𝑠=𝑝$ (mod 𝑞) 是否成立作为一种快速的方法来排除无效偏移 &nbsp;𝑠&nbsp;。当 $𝑡_𝑠=𝑝$ (mod 𝑞) 成立时，称为一个命中 (hit)，然后我们还需要进一步测试此时 $𝑡_𝑠=𝑝$ 是否成立，即检查 $𝑃[1:𝑚]=𝑇[𝑠+1:𝑠+𝑚]$ 是否成立。若 $𝑡_𝑠=𝑝$，则 &nbsp;𝑠&nbsp; 是一个有效偏移，若 $𝑡_𝑠≠𝑝$，则是一个假命中 (spurious hit)。若 &nbsp;𝑞&nbsp; 足够大，则出现假命中的期望次数会更少，从而降低额外检查的代价。</p>
-<p>下面给出伪代码：<br><img src="https://telegraph-image-eja.pages.dev/file/00850934615eb00424f2a.png" alt="image"><br>t 的下标仅仅是为了逻辑清晰，去掉下标也能正确运行。<br>最坏情况下的匹配时间是 $\Theta ((n-m+1) m)$，因为如果 $P=a^m,T=a^n$，这样每个偏移都是有效的，就都得检查一遍。<br>所以为什么说该算法在实践中表现良好呢？<br>在许多应用中，我们希望少一些有效偏移，比如只有常数 &nbsp;𝑐&nbsp; 个。在这样的应用中，加上处理假命中所需时间，该算法的期望匹配时间为 $𝑂((𝑛−𝑚+1)+𝑐𝑚)=𝑂(𝑛+𝑚)$，又因为 $m\le n$，则期望匹配时间为 $O (n)$。</p>
-<h2 id="用有限自动机进行字符串匹配-String-matching-with-finite-automata"><a href="#用有限自动机进行字符串匹配-String-matching-with-finite-automata" class="headerlink" title="用有限自动机进行字符串匹配(String matching with finite automata)"></a>用有限自动机进行字符串匹配 (String matching with finite automata)</h2><h3 id="有限自动机-Finite-automata"><a href="#有限自动机-Finite-automata" class="headerlink" title="有限自动机(Finite automata)"></a>有限自动机 (Finite automata)</h3><p>一个有限自动机 &nbsp;𝑀&nbsp; 是一个 5 元组 $(𝑄,𝑞_0,𝐴,\Sigma,\delta)$：</p>
-<ul>
-<li>Q 是一个有限状态集。</li>
-<li>$𝑞_0\in 𝑄$ 是起始状态。</li>
-<li>$𝐴⊆𝑄$ 是一个接受状态集。</li>
-<li>$\Sigma$ 是一个有限输入字母表。</li>
-<li>$\delta$ 是一个从 $𝑄\times \Sigma$ 到 &nbsp;𝑄&nbsp; 的函数，称为 &nbsp;𝑀&nbsp; 的转移函数。<br><img src="https://telegraph-image-eja.pages.dev/file/a6d4558c65809f64f66c7.png" alt="image"><br>说实话我第一眼看到这图就想到了数字逻辑电路里面的状态转化表和状态转化图</li>
-</ul>
-]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-        <tag>字符串</tag>
-        <tag>KMP</tag>
-        <tag>模式匹配</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Elementary Graph Algorithms</title>
     <url>/2024/04/21/Elementary-Graph-Algorithms/</url>
     <content><![CDATA[<h1 id="Elementary-Graph-Algorithms"><a href="#Elementary-Graph-Algorithms" class="headerlink" title="Elementary Graph Algorithms"></a>Elementary Graph Algorithms</h1><h2 id="Representations-of-graphs"><a href="#Representations-of-graphs" class="headerlink" title="Representations of graphs"></a>Representations of graphs</h2><p>$$<br>G = (V, E)<br>$$</p>
@@ -520,177 +463,12 @@ while Q $\not = \not 0$
         <category>算法</category>
       </categories>
       <tags>
-        <tag>算法</tag>
         <tag>Graph</tag>
+        <tag>算法</tag>
         <tag>数据结构</tag>
         <tag>DFS</tag>
         <tag>BFS</tag>
         <tag>图论</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Minimum Spanning Trees</title>
-    <url>/2024/04/25/Minimum%20Spanning%20Trees/</url>
-    <content><![CDATA[<h1 id="Minimum-Spanning-Trees"><a href="#Minimum-Spanning-Trees" class="headerlink" title="Minimum Spanning Trees"></a>Minimum Spanning Trees</h1><p>对于无向图 $𝐺=(𝑉,𝐸)$，存在一个能够连接所有顶点的无环子集 $𝑇⊆𝐸$，由于 &nbsp;𝑇&nbsp; 无环且连接所有顶点，因此 &nbsp;𝑇&nbsp; 一定为一棵树 (树是特殊的图，为无环连通图)，被称为生成树 (spanning tree)。无向图 $𝐺=(𝑉,𝐸)$ 的所有生成树都恰有 $|𝑉|−1$ 条边。</p>
-<p>设边 $(𝑢,𝑣)∈𝐸$ 的权重为 $𝑤(𝑢,𝑣)$，生成树权重为 $𝑤(𝑇) = \sum_{(𝑢,𝑣)∈𝑇} 𝑤(𝑢,𝑣)$，所有生成树中权重最小的生成树被称为最小权重生成树 (minimum-weight spanning tree)，简称最小生成树 (minimum spanning tree)。</p>
-<h2 id="Growing-a-minimum-spanning-tree"><a href="#Growing-a-minimum-spanning-tree" class="headerlink" title="Growing a minimum spanning tree"></a>Growing a minimum spanning tree</h2><p>最小生成树问题的输入为一个无向连通图 &nbsp;$𝐺=(𝑉,𝐸)$, 伪代码如下：</p>
-<blockquote>
-<p>$GENERIC-MST(G, w)$<br>1 $A = \not 0$<br>2 while A does not form a spanning tree<br>3 find an edge (u, v) that is safe for A<br>4 $A = A \cup {(u, v)}$<br>5 return A</p>
-</blockquote>
-<p>能够被加入 &nbsp;𝐴&nbsp; 的边 &nbsp;(𝑢,𝑣)&nbsp; 被称为 &nbsp;𝐴&nbsp; 的安全边 (safe edge)。通过 &nbsp;𝐴&nbsp; 维持了循环不变量可证明过程 &nbsp;GENERIC-MST&nbsp; 的正确性。在讨论如何识别安全边之前，我们需要了解一些定义。<br><img src="https://telegraph-image-eja.pages.dev/file/d85f5a52655f0d41a977d.png" alt="image"></p>
-<ul>
-<li>$cut$：无向图 $𝐺=(𝑉,𝐸)$ 的一个切割 (cut)&nbsp;$(𝑆,𝑉−𝑆)$ 是对顶点 𝑉 的一个划分，分成两个区域</li>
-<li> $cross$：若边 $(𝑢,𝑣)∈𝐸$ 的一个端点属于 &nbsp;𝑆&nbsp;，另一个端点属于 𝑉−𝑆&nbsp;，则称边 (𝑢,𝑣)&nbsp; 横跨 (cross) cut (𝑆,𝑉−𝑆)，看图的话就是跟红色分割线相交的边都是 cross 的边</li>
-<li> $respect$：若集合 &nbsp;𝐴&nbsp; 中不存在横跨切割 &nbsp;(𝑆,𝑉−𝑆)&nbsp; 的边，则称该切割不影响 (respect)&nbsp;𝐴</li>
-<li>$light\ edge$：权重最小的 cross 边即是轻量边 (light edge)<br>原文如下：<br><img src="https://telegraph-image-eja.pages.dev/file/1833dbc2edcac6e9a8fb9.png" alt="image"><br>当然最好还得知道树的性质：添加一条边就会构成环，删除一条边就会分裂成两棵树。</li>
-</ul>
-<h3 id="Theorem"><a href="#Theorem" class="headerlink" title="Theorem"></a>Theorem</h3><blockquote>
-<p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 &nbsp;𝑤: $𝐸\to𝑅$&nbsp;，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 为 &nbsp;𝐺&nbsp; 中不影响 &nbsp;𝐴&nbsp; 的任意一个切割，若 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</p>
-</blockquote>
-<p><img src="https://telegraph-image-eja.pages.dev/file/bd123ede0b571e7df22aa.png" alt="image"></p>
-<p>// 图中橙色顶点属于 S，其它顶点属于 V-S，蓝色边就是 A 中的边</p>
-<p>证明如下：</p>
-<ul>
-<li>首先假设 T 是包含 A 的最小生成树，并假设 T 不包含轻量边 (u, v)，因为如果包含了，我们就不用证了。接着我们可以通过构造另一棵最小生成树 T’，其中 $A \cup {(u, v)} ⊆ T’$, 从而表明，边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。</li>
-<li>由图可知边 (u, v) 与 $u \to v$ 的简单路径构成环路。因为 u, v 在 cut (𝑆, 𝑉−𝑆) 下分属两边，因此 &nbsp;𝑇&nbsp; 中至少有一条边属于简单路径 &nbsp;𝑝&nbsp; 并且横跨该切割，设 &nbsp;(𝑥, 𝑦)&nbsp; 为这样一条边。因为切割 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 不影响 𝐴&nbsp;，所以 &nbsp;(𝑥, 𝑦) ∉ 𝐴。又因为边 &nbsp;(𝑥, 𝑦)&nbsp; 位于 &nbsp;𝑇&nbsp; 中从 &nbsp;𝑢&nbsp; 到 &nbsp;𝑣&nbsp; 的唯一的简单路径上，所以移除 &nbsp;(𝑥, 𝑦)&nbsp; 会导致 &nbsp;𝑇&nbsp; 分裂成两部分。此时添加 &nbsp;(𝑢, 𝑣)&nbsp; 将这两部分重新连接成一棵新的生成树 ：𝑇′=(𝑇−{(𝑥,𝑦)})∪{(𝑢,𝑣)}&nbsp;。</li>
-<li>我们接下来要证明 T’是最小生成树。由于 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边且 &nbsp;(𝑥, 𝑦)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条边，即 &nbsp;𝑤(𝑢, 𝑣)≤𝑤(𝑥, 𝑦)&nbsp;，因此：<br>$w(T’) = w(T) - w(x, y) + w(u, v)$<br>$\leq w(T)$<br>但是 &nbsp;𝑇&nbsp; 为一棵最小生成树，有 &nbsp;𝑤(𝑇)≤𝑤(𝑇′)&nbsp;。因此，有 &nbsp;𝑤(𝑇) = 𝑤(𝑇′)&nbsp;，所以 &nbsp;𝑇′&nbsp; 也是一棵最小生成树。</li>
-<li>最后，我们还需要说明边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。因为 &nbsp;𝐴⊆𝑇&nbsp; 且 &nbsp;(𝑥, 𝑦)∉𝐴&nbsp;，所以 &nbsp;𝐴⊆𝑇′&nbsp;，所以 &nbsp;(𝐴∪{(𝑢,𝑣)})⊆𝑇′&nbsp;。由于 &nbsp;𝑇′&nbsp; 是一棵最小生成树，因此对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</li>
-</ul>
-<p>感觉有点难咀嚼的话可以看看下面的另一种证明 (算法 4)：<br><img src="https://telegraph-image-eja.pages.dev/file/ef60c9e50f8c87db41f0d.png" alt="image"></p>
-<blockquote>
-<p>在算法执行的任何时候，图 $G_A = (V, A)$ 是一个森林，$G_A$ 中每一个连通分量都是一棵树 (一些树可能只包含一个顶点，例如在算法开始时，A 是空的，因为还没开始加入安全边，并且此时森林包含了 | V | 棵树，每棵树都只有一个顶点)。此外，因为 $A \cup {(u, v)}$ 必须是无环的，因此每一条安全边 (u, v) 都连接着 $G_A$ 中的不同分量。</p>
-</blockquote>
-<h3 id="Corollary"><a href="#Corollary" class="headerlink" title="Corollary"></a>Corollary</h3><p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 $𝑤:𝐸\to𝑅$，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 $𝐶=(𝑉_𝐶, 𝐸_𝐶)$ 为森林 $𝐺_𝐴=(𝑉,𝐴)$ 中的一个连通分量（一棵树）。若 &nbsp;(𝑢,𝑣)&nbsp; 是连接 &nbsp;𝐶&nbsp; 和 $𝐺_𝐴$ 中某一个其它的连通分量的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全边。</p>
-<blockquote>
-<p>Proof：<br>切割 $(V_C,V-V_C)$ 不影响 A，又因为 (u, v) 是该切割的轻量边，因此，对于 A，(u, v) 是安全的。</p>
-</blockquote>
-<h2 id="The-algorithms-of-Kruskal-and-Prim"><a href="#The-algorithms-of-Kruskal-and-Prim" class="headerlink" title="The algorithms of Kruskal and Prim"></a>The algorithms of Kruskal and Prim</h2><p>这里描述的两种最小生成树算法详细介绍了上面的通用方法。它们各自使用一个特殊的规则来确定 $GENERIC-MST (G, w)$ 的第 3 行中的 find an edge (u, v) that is safe for A。在 Kruskal 算法中，集合 A 是一个森林，其顶点都是给定图的顶点。添加到 A 中的安全边总是图中连接两个不同分量的最低权重边。在 Prim 算法中，集合 A 形成了一棵树，算法执行过程中始终为一棵树。添加到 A 中的安全边始终是连接树和树中以外的顶点的最低权重边。下面的介绍中，两种算法都假设输入图是连通的，并由邻接列表表示。</p>
-<h3 id="Kruskal’s-algorithm"><a href="#Kruskal’s-algorithm" class="headerlink" title="Kruskal’s algorithm"></a>Kruskal’s algorithm</h3><p><img src="https://telegraph-image-eja.pages.dev/file/a9d9c05f942462df59992.png" alt="image"><br><img src="https://telegraph-image-eja.pages.dev/file/f2dcf3043bd0577717a43.png" alt="image"></p>
-<blockquote>
-<p>大家可以先通过上图感受一下该算法，蓝色边属于森林 A，透过上图我们还可以观察到被添加到 A 中的安全边的权重是从小到大的，所以容易发现 Kruskal 算法是贪心算法，每次都加入权重最小的安全边，以此来保证总权重最小。该算法以按权重排序的顺序来考虑每条边，因此正在考虑的那条边已经是当前未加入生成树的边中的轻量边，只需再判断是否产生环而决定是否将它加入 A，红色的箭头则指向在算法的每一步中所考虑的边。如果边 (u, v) 连接森林中两棵不同的树 (注意单一的顶点也是树），则将其添加到森林中，从而合并两棵树。</p>
-</blockquote>
-<ul>
-<li>设 $C_1$ 和 $C_2$ 表示由 (u, v) 连接的两棵树。因为 (u, v) 必须是连接 $C_1$ 和其他树的轻量边，根据推论 (Corollary)，&nbsp;(𝑢, 𝑣)&nbsp; 是 $𝐶_1$ 的一条安全边。<br>伪代码如下：<blockquote>
-<p>// 时间复杂度：𝑂(𝐸 lg⁡ 𝑉)<br>$MST-KRUSKAL(G, w)$<br>1 A = $\not 0$ // 初始化空集合<br>2 for each vertex $v \in G.V$<br>3 MAKE-SET (v) // 使用并查集 (disjoint-set) 的数据结构来维护几个不相交的元素集， 每个集合都包含当前林的一棵树中的顶点，初始化即一个顶点一棵树<br>4 create a single list of the edges in G.E<br>5 sort the list of edges into monotonically increasing order by weight w<br>6 for each edge (u, v) taken from the sorted list in order<br>7 if FIND-SET (u) $\not =$ FIND-SET (v) // 确定两个顶点是否属于同一棵树，同一棵树就会 成环<br>8 $A = A \cup {(u, v)}$ // 把边 (u, v) 加入到 A<br>9 UNION (u, v) // 合并树<br>10 return A</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p>上面说到了并查集数据结构，下面简要说一下，已掌握可跳过。</p>
-</blockquote>
-<h4 id="Disjoint-set"><a href="#Disjoint-set" class="headerlink" title="Disjoint-set"></a>Disjoint-set</h4><p>首先并查集用数组来实现，数组的值代表其父节点的位置，在上面代码中的初始化中，一个顶点就是一棵树，因此没有父节点，可以把所有顶点的数组值标为 - 1。<br>并查集支持两个操作：</p>
-<ul>
-<li>查找 (Find)：确定某个元素属于哪个子集，它可以用来确定两个元素是否属于同一个子集。</li>
-<li>合并 (Union)：将两个子集合并成一个集合<br>上面代码中的 FIND-SET 即是查找操作，对某个顶点 i 查找，即循环查找当前位置 i 的父节点，直到 arr [i] = -1 为止，返回 i，如果两个顶点的 FIND-SET 返回结果一样，即两个顶点属于同一棵树。<br>合并操作即是先分别找到 u，v 的根节点，然后将其中一个根节点的父节点设为另一个顶点。这是最基础的并查集实现，要提高效率的话就要进行路径压缩和按秩合并。</li>
-<li>路径压缩：在 Find 过程中在返回之前，路径中的顶点的父节点直接设为根节点，毕竟 Find 返回的就是根节点，这有利于下一次查询的效率。</li>
-<li>按秩合并：上面所说的合并操作是将其中一个根节点的父节点设为另一个顶点，这未免有点随便。比如现在有一棵简单的树，一棵复杂的树，那么是将简单的往复杂的合并好还是复杂的往简单的合并好？答案是前者，如果把复杂的往简单的合并，那么原来在复杂树中的每个元素到根节点的距离都变长了，影响后面 Find 的效率；而如果把简单的往复杂的合并，到根节点距离变长的节点个数比较少。所以就引入秩，初始时每个顶点的秩设为 1，那么什么时候秩会增加呢？这发生在合并时，如果两棵树深度相同，则新的根节点的秩 + 1。秩越高，树 (或子树) 就越复杂。</li>
-</ul>
-<h3 id="Prim’s-algorithm"><a href="#Prim’s-algorithm" class="headerlink" title="Prim’s algorithm"></a>Prim’s algorithm</h3><p>跟上面一样，我们可以先通过过程图感受一下：<br><img src="https://telegraph-image-eja.pages.dev/file/0149f1a64ebab26f61bdd.png" alt="image"><br>// 从上图可以明显感受到与 Kruskal 算法不一样的是，蓝色边之间都是连通的，这里就揭露了 Prim 算法具有的一个性质是 &nbsp;𝐴&nbsp; 中的边总是构成一棵树，我们还可以发现添加边的权重是没有像 Kruskal 算法一样按权重排序的。</p>
-<p>如图所示，这棵树以任意一个顶点 &nbsp;𝑟&nbsp; 为根节点，不断生长直到包含 &nbsp;𝑉&nbsp; 中所有顶点。每次加入到 &nbsp;𝐴&nbsp; 中的安全边永远是 (𝐴, 𝑉−𝐴) 切割的轻量边。根据 Corollary，每次加入 &nbsp;𝐴&nbsp; 的边一定是安全边。该算法也满足贪心性质，因为在每一步它向树添加的一条边，都为树的权重贡献可能的最小量。</p>
-<p>伪代码如下：</p>
-<blockquote>
-<p>$MST-PRIM(G, w, r)$<br>1 for each vertex $u \in G.V$<br>2 $u.key = \infty$ //&nbsp;u.𝑘𝑒𝑦 保存连接 u 和树中任一其它节点的所有边中最小的边的权 重，若不存在这样的边，即设为 $\infty$，初始化时都设为 $\infty$。<br>3 $u.\pi = NIL$ //u.𝜋&nbsp; 保存 u 在树中的父节点<br>4 $r.key = 0$ // 把根节点 r 的 key 设为 0，方便第 9 行第一个处理 r<br>5 $Q = \not 0$ // 创建基于 &nbsp;𝑘𝑒𝑦&nbsp; 属性的优先队列<br>6 for each vertex $u \in G.V$<br>7 INSERT (Q, u)<br>8 while $Q \not = \not 0$ // 只要队列非空<br>9 u = EXTRACT-MIN (Q) // 把 u 加到树 (A) 中<br>10 for each vertex v in $G.Adj [u]$ // 更新 u 的非树邻居的 key<br>11 if $v \in Q$ and w(u, v) &lt; v.key<br>12 $v.\pi = u$<br>13 v.key = w(u, v)<br>14 DECREASE-KEY (Q, v, w (u, v)) // 调整 Q 中 v 的 key 值</p>
-</blockquote>
-<p>该算法保持以下三个循环不变量：</p>
-<ul>
-<li>$𝐴={(𝑣, 𝑣.𝜋): 𝑣∈𝑉−{𝑟}−𝑄}$，(算法终止时，&nbsp;𝑄=∅，因此 G 的最小生成树 $𝐴={(𝑣, 𝑣.𝜋): 𝑣∈𝑉−{𝑟}}$。)</li>
-<li> 已经放在最小生成树中的顶点都是 V - Q 中的顶点。</li>
-<li>对于图中所有的顶点 v∈Q，如果 $v.\pi$ 不等于 NIL，那么 v.key 小于正无穷大，v.key 是连接 v 到已经放置在最小生成树中的某个顶点的轻量边 $(v,v.\pi)$ 的权重。</li>
-</ul>
-<p>Prim 算法的运行时间取决于最小优先级队列 Q 的实现：</p>
-<ul>
-<li>二叉堆：时间复杂度：$𝑂(𝐸lg⁡𝑉)$</li>
-<li> 斐波那契堆：时间复杂度：$O (E+V lg V)$</li>
-</ul>
-]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-        <tag>Graph</tag>
-        <tag>最小生成树</tag>
-        <tag>Kruskal</tag>
-        <tag>Prim</tag>
-        <tag>贪心算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Missing Semester Lecture 1 - Shell 基础</title>
-    <url>/2023/12/17/Missing-Semester-lecture-1/</url>
-    <content><![CDATA[<p><a href="https://missing.csail.mit.edu/2020/course-shell/">missing semester lecture 1</a><br>In my first jump in missing semester – lecture 1, I learned something new(like a new language for me) about shell and had a try on ubuntu terminal. If there are any errors or missing things, please forgive me, as I haven’t really stepped into the Linux operating system yet.</p>
-<p>During my study, there are something what I have learned as follow.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">date</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can display current date and time.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can print out something you want.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">which</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can find the system command position and return it. For example, the result of <code>which echo</code> is <code>/bin/echo</code> or <code>/usr/bin/echo</code>.So, using <code>echo</code> or using <code>/bin/echo</code> have the same effect(the next is an example).</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo $PATH</span><br><span class="line">/bin/echo $PATH</span><br><span class="line">/usr/bin/echo $PATH</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>$PATH</code>&nbsp;lists which directories the shell should search for programs when it is given a command. The result of the three line above is the same.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir</span><br><span class="line">touch</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The first can make a new directory in current directory.<br>The second can make a new file in current directory.(They’re not the same.<code>touch</code>can not make a new directory.)</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm [file_name]</span><br><span class="line">rm -f</span><br><span class="line">rm -i</span><br><span class="line">rm -r(or R)</span><br><span class="line">rm -v</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Using <code>rm --help</code> can find the function of <code>-f</code> and etc.<br>Notice: <code>rm</code> will prompt you that the file is not exist while <code>rm -f</code> ignores whether the file is exist or not.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm -r [directory_name]</span><br><span class="line">rm -rf []</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>rm [directory_name]</code> can not succeed to remove directory. The two above can both remove directory.(But the second is dangerous in some case.)</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rmdir</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can just remove blank directory.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">pwd</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It can display current directory.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd</span><br><span class="line">cd ~</span><br></pre></td></tr></tbody></table></figure>
-
-<p>They can return to current user’s home directory like <code>/home/user_name</code> .</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd -</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It will return to the last directory that you have been accessed.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd .</span><br><span class="line">cd ..</span><br><span class="line">cd ../../</span><br></pre></td></tr></tbody></table></figure>
-
-<p>In a path,&nbsp;<code>.</code>&nbsp;refers to the current directory, and&nbsp;<code>..</code>&nbsp;to its parent directory. And the <code>..</code> can be used for several times. (Hint: you can examine with <code>pwd</code> every time you use the <code>cd</code> .)<br>Notice: <code>cd ../../</code> must be the complete path. But when you are in a subdirectory, you don’t need to type complete path if you want to back to the parent directory or the parent directory of the parent directory and etc.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls</span><br><span class="line">ls -l</span><br><span class="line">ls /[directory_name]</span><br><span class="line">ls -l /[directory_name]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The first will print the contents of the current directory to see what lives in a given directory.<br>The second will print the contents of the current directory by using a long listing format, which means more detailed. The third and the fourth can print the contents of directory that you point so that you don’t need to switch your current directory.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">man</span><br></pre></td></tr></tbody></table></figure>
-
-<p>For example, <code>man ls</code> will let you read the manual page about <code>ls</code> . That is its function.<br>And it is the last line in manual page: Manual page man(1) line 1 (press h for help or q to quit).</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>cat</code> stands for concatenate. You can also type <code>cat --help</code> to find some functions of options. For example, <code>-n</code> can number all output lines.<br><code>cat [file_name]</code> can print the whole text file.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat &gt; file_name</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It is better than <code>touch</code> for which it can make a new file and add content to it. What’s more, you can use <code>Ctrl + d</code> to save it.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt; file_B</span><br><span class="line">cat file_A file_C &gt;file_B</span><br><span class="line">cat &lt; file_A &gt; file_B</span><br></pre></td></tr></tbody></table></figure>
-
-<p>It will delete the file_B’s data, and copy the file_A’s content to file_B. Copy several files is ok as well.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt;&gt; file_B</span><br></pre></td></tr></tbody></table></figure>
-
-<p>When you don’t want to delete file_b’s content, you can use <code>&gt;&gt;</code> instead of <code>&gt;</code> .</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_name | grep -v '^$'</span><br><span class="line">cat file_name1 | grep -v '^$' &gt; file_name2</span><br></pre></td></tr></tbody></table></figure>
-
-<p>They can delete blank line in the file. The first will print the changed content. The second will not output anything. And the file_name1’s content keep the same as before. The changed content is saved in file_name2.</p>
-<p>When it comes to pipe <code>|</code> , let me introduce detailed usage about it.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">command1 | command2</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The output of command1 will become the input of command2.<br>For example:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls | sort</span><br></pre></td></tr></tbody></table></figure>
-]]></content>
-      <categories>
-        <category>Missing Semester</category>
-      </categories>
-      <tags>
-        <tag>工具</tag>
-        <tag>Shell</tag>
-        <tag>Linux</tag>
-        <tag>命令笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -915,91 +693,231 @@ while Q $\not = \not 0$
         <category>工具</category>
       </categories>
       <tags>
-        <tag>命令笔记</tag>
         <tag>Git</tag>
         <tag>版本控制</tag>
+        <tag>命令笔记</tag>
       </tags>
   </entry>
   <entry>
-    <title>Missing Semester Lecture 2 - Shell 工具与脚本</title>
-    <url>/2023/12/18/Missing-Semester-lecture-2/</url>
-    <content><![CDATA[<p><a href="https://missing.csail.mit.edu/2020/shell-tools/">missing semester lecture 2</a></p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">a=hello</span><br><span class="line">echo "$a" #prints hello</span><br><span class="line">echo '$a' #prints $a</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Strings delimited with&nbsp;<code>'</code>&nbsp;are literal strings and will not substitute variable values whereas&nbsp;<code>"</code> delimited strings will.<br>notice: <code>a=hello</code>don’t allow to delimit with space, such as <code>a =hello</code>.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mcd () {</span><br><span class="line">    mkdir -p "$1"</span><br><span class="line">    cd "$1"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Here is an example of a function that creates a directory and&nbsp;<code>cd</code>s into it when you type <code>mcd arg</code>.<br>You can also use <code>vim</code> to create a function.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim mcd.sh</span><br></pre></td></tr></tbody></table></figure>
-
-<p>And then you come to a command pattern, you can type <code>i</code> to input mcd function. After you complete, you can press <code>Esc</code> to return the command pattern, you can type <code>:wq</code> to save it and quit vim. But now you can not use the mcd function.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">source mcd.sh</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Now you can call the mcd function. (If you want to know more about <code>vim</code>, just search it online.)</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mcd arg</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Bash uses a variety of special variables to refer to arguments:</p>
+    <title>Minimum Spanning Trees</title>
+    <url>/2024/04/25/Minimum%20Spanning%20Trees/</url>
+    <content><![CDATA[<h1 id="Minimum-Spanning-Trees"><a href="#Minimum-Spanning-Trees" class="headerlink" title="Minimum Spanning Trees"></a>Minimum Spanning Trees</h1><p>对于无向图 $𝐺=(𝑉,𝐸)$，存在一个能够连接所有顶点的无环子集 $𝑇⊆𝐸$，由于 &nbsp;𝑇&nbsp; 无环且连接所有顶点，因此 &nbsp;𝑇&nbsp; 一定为一棵树 (树是特殊的图，为无环连通图)，被称为生成树 (spanning tree)。无向图 $𝐺=(𝑉,𝐸)$ 的所有生成树都恰有 $|𝑉|−1$ 条边。</p>
+<p>设边 $(𝑢,𝑣)∈𝐸$ 的权重为 $𝑤(𝑢,𝑣)$，生成树权重为 $𝑤(𝑇) = \sum_{(𝑢,𝑣)∈𝑇} 𝑤(𝑢,𝑣)$，所有生成树中权重最小的生成树被称为最小权重生成树 (minimum-weight spanning tree)，简称最小生成树 (minimum spanning tree)。</p>
+<h2 id="Growing-a-minimum-spanning-tree"><a href="#Growing-a-minimum-spanning-tree" class="headerlink" title="Growing a minimum spanning tree"></a>Growing a minimum spanning tree</h2><p>最小生成树问题的输入为一个无向连通图 &nbsp;$𝐺=(𝑉,𝐸)$, 伪代码如下：</p>
+<blockquote>
+<p>$GENERIC-MST(G, w)$<br>1 $A = \not 0$<br>2 while A does not form a spanning tree<br>3 find an edge (u, v) that is safe for A<br>4 $A = A \cup {(u, v)}$<br>5 return A</p>
+</blockquote>
+<p>能够被加入 &nbsp;𝐴&nbsp; 的边 &nbsp;(𝑢,𝑣)&nbsp; 被称为 &nbsp;𝐴&nbsp; 的安全边 (safe edge)。通过 &nbsp;𝐴&nbsp; 维持了循环不变量可证明过程 &nbsp;GENERIC-MST&nbsp; 的正确性。在讨论如何识别安全边之前，我们需要了解一些定义。<br><img src="https://telegraph-image-eja.pages.dev/file/d85f5a52655f0d41a977d.png" alt="image"></p>
 <ul>
-<li><code>$0</code>&nbsp;- Name of the script</li>
-<li><code>$1</code>&nbsp;to&nbsp;<code>$9</code>&nbsp;- Arguments to the script.&nbsp;<code>$1</code>&nbsp;is the first argument and so on.</li>
-<li><code>$@</code>&nbsp;- All the arguments</li>
-<li><code>$#</code>&nbsp;- Number of arguments</li>
-<li><code>$?</code>&nbsp;- Return code of the previous command</li>
-<li><code>$$</code>&nbsp;- Process identification number (PID) for the current script</li>
-<li><code>!!</code>&nbsp;- Entire last command, including arguments. A common pattern is to execute a command only for it to fail due to missing permissions; you can quickly re-execute the command with sudo by doing&nbsp;<code>sudo !!</code></li>
-<li><code>$_</code>&nbsp;- Last argument from the last command. If you are in an interactive shell, you can also quickly get this value by typing&nbsp;<code>Esc</code>&nbsp;followed by&nbsp;<code>.</code>&nbsp;or&nbsp;<code>Alt+.</code></li>
+<li>$cut$：无向图 $𝐺=(𝑉,𝐸)$ 的一个切割 (cut)&nbsp;$(𝑆,𝑉−𝑆)$ 是对顶点 𝑉 的一个划分，分成两个区域</li>
+<li> $cross$：若边 $(𝑢,𝑣)∈𝐸$ 的一个端点属于 &nbsp;𝑆&nbsp;，另一个端点属于 𝑉−𝑆&nbsp;，则称边 (𝑢,𝑣)&nbsp; 横跨 (cross) cut (𝑆,𝑉−𝑆)，看图的话就是跟红色分割线相交的边都是 cross 的边</li>
+<li> $respect$：若集合 &nbsp;𝐴&nbsp; 中不存在横跨切割 &nbsp;(𝑆,𝑉−𝑆)&nbsp; 的边，则称该切割不影响 (respect)&nbsp;𝐴</li>
+<li>$light\ edge$：权重最小的 cross 边即是轻量边 (light edge)<br>原文如下：<br><img src="https://telegraph-image-eja.pages.dev/file/1833dbc2edcac6e9a8fb9.png" alt="image"><br>当然最好还得知道树的性质：添加一条边就会构成环，删除一条边就会分裂成两棵树。</li>
 </ul>
-<p>A value of 0 usually means everything went OK; anything different from 0 means an error occurred.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">false || echo "Oops, fail"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Oops, fail</span></span><br><span class="line"></span><br><span class="line">true || echo "Will not be printed"</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"></span></span><br><span class="line">true &amp;&amp; echo "Things went well"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Things went well</span></span><br><span class="line"></span><br><span class="line">false &amp;&amp; echo "Will not be printed"</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"></span></span><br><span class="line">true ; echo "This will always run"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This will always run</span></span><br><span class="line"></span><br><span class="line">false ; echo "This will always run"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This will always run</span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="Theorem"><a href="#Theorem" class="headerlink" title="Theorem"></a>Theorem</h3><blockquote>
+<p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 &nbsp;𝑤: $𝐸\to𝑅$&nbsp;，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 为 &nbsp;𝐺&nbsp; 中不影响 &nbsp;𝐴&nbsp; 的任意一个切割，若 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</p>
+</blockquote>
+<p><img src="https://telegraph-image-eja.pages.dev/file/bd123ede0b571e7df22aa.png" alt="image"></p>
+<p>// 图中橙色顶点属于 S，其它顶点属于 V-S，蓝色边就是 A 中的边</p>
+<p>证明如下：</p>
+<ul>
+<li>首先假设 T 是包含 A 的最小生成树，并假设 T 不包含轻量边 (u, v)，因为如果包含了，我们就不用证了。接着我们可以通过构造另一棵最小生成树 T’，其中 $A \cup {(u, v)} ⊆ T’$, 从而表明，边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。</li>
+<li>由图可知边 (u, v) 与 $u \to v$ 的简单路径构成环路。因为 u, v 在 cut (𝑆, 𝑉−𝑆) 下分属两边，因此 &nbsp;𝑇&nbsp; 中至少有一条边属于简单路径 &nbsp;𝑝&nbsp; 并且横跨该切割，设 &nbsp;(𝑥, 𝑦)&nbsp; 为这样一条边。因为切割 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 不影响 𝐴&nbsp;，所以 &nbsp;(𝑥, 𝑦) ∉ 𝐴。又因为边 &nbsp;(𝑥, 𝑦)&nbsp; 位于 &nbsp;𝑇&nbsp; 中从 &nbsp;𝑢&nbsp; 到 &nbsp;𝑣&nbsp; 的唯一的简单路径上，所以移除 &nbsp;(𝑥, 𝑦)&nbsp; 会导致 &nbsp;𝑇&nbsp; 分裂成两部分。此时添加 &nbsp;(𝑢, 𝑣)&nbsp; 将这两部分重新连接成一棵新的生成树 ：𝑇′=(𝑇−{(𝑥,𝑦)})∪{(𝑢,𝑣)}&nbsp;。</li>
+<li>我们接下来要证明 T’是最小生成树。由于 &nbsp;(𝑢, 𝑣)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条轻量边且 &nbsp;(𝑥, 𝑦)&nbsp; 为横跨 &nbsp;(𝑆, 𝑉−𝑆)&nbsp; 的一条边，即 &nbsp;𝑤(𝑢, 𝑣)≤𝑤(𝑥, 𝑦)&nbsp;，因此：<br>$w(T’) = w(T) - w(x, y) + w(u, v)$<br>$\leq w(T)$<br>但是 &nbsp;𝑇&nbsp; 为一棵最小生成树，有 &nbsp;𝑤(𝑇)≤𝑤(𝑇′)&nbsp;。因此，有 &nbsp;𝑤(𝑇) = 𝑤(𝑇′)&nbsp;，所以 &nbsp;𝑇′&nbsp; 也是一棵最小生成树。</li>
+<li>最后，我们还需要说明边 &nbsp;(𝑢, 𝑣)&nbsp; 对于 &nbsp;𝐴&nbsp; 是安全的。因为 &nbsp;𝐴⊆𝑇&nbsp; 且 &nbsp;(𝑥, 𝑦)∉𝐴&nbsp;，所以 &nbsp;𝐴⊆𝑇′&nbsp;，所以 &nbsp;(𝐴∪{(𝑢,𝑣)})⊆𝑇′&nbsp;。由于 &nbsp;𝑇′&nbsp; 是一棵最小生成树，因此对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全的。</li>
+</ul>
+<p>感觉有点难咀嚼的话可以看看下面的另一种证明 (算法 4)：<br><img src="https://telegraph-image-eja.pages.dev/file/ef60c9e50f8c87db41f0d.png" alt="image"></p>
+<blockquote>
+<p>在算法执行的任何时候，图 $G_A = (V, A)$ 是一个森林，$G_A$ 中每一个连通分量都是一棵树 (一些树可能只包含一个顶点，例如在算法开始时，A 是空的，因为还没开始加入安全边，并且此时森林包含了 | V | 棵树，每棵树都只有一个顶点)。此外，因为 $A \cup {(u, v)}$ 必须是无环的，因此每一条安全边 (u, v) 都连接着 $G_A$ 中的不同分量。</p>
+</blockquote>
+<h3 id="Corollary"><a href="#Corollary" class="headerlink" title="Corollary"></a>Corollary</h3><p>设 &nbsp;𝐺=(𝑉, 𝐸)&nbsp; 为一个无向连通图，其权重函数为 $𝑤:𝐸\to𝑅$，设 &nbsp;𝐴⊆𝐸&nbsp;，且 &nbsp;𝐴&nbsp; 包含于 &nbsp;𝐺&nbsp; 的一棵最小生成树中。设 $𝐶=(𝑉_𝐶, 𝐸_𝐶)$ 为森林 $𝐺_𝐴=(𝑉,𝐴)$ 中的一个连通分量（一棵树）。若 &nbsp;(𝑢,𝑣)&nbsp; 是连接 &nbsp;𝐶&nbsp; 和 $𝐺_𝐴$ 中某一个其它的连通分量的一条轻量边，则对于 &nbsp;𝐴&nbsp;，(𝑢, 𝑣)&nbsp; 是安全边。</p>
+<blockquote>
+<p>Proof：<br>切割 $(V_C,V-V_C)$ 不影响 A，又因为 (u, v) 是该切割的轻量边，因此，对于 A，(u, v) 是安全的。</p>
+</blockquote>
+<h2 id="The-algorithms-of-Kruskal-and-Prim"><a href="#The-algorithms-of-Kruskal-and-Prim" class="headerlink" title="The algorithms of Kruskal and Prim"></a>The algorithms of Kruskal and Prim</h2><p>这里描述的两种最小生成树算法详细介绍了上面的通用方法。它们各自使用一个特殊的规则来确定 $GENERIC-MST (G, w)$ 的第 3 行中的 find an edge (u, v) that is safe for A。在 Kruskal 算法中，集合 A 是一个森林，其顶点都是给定图的顶点。添加到 A 中的安全边总是图中连接两个不同分量的最低权重边。在 Prim 算法中，集合 A 形成了一棵树，算法执行过程中始终为一棵树。添加到 A 中的安全边始终是连接树和树中以外的顶点的最低权重边。下面的介绍中，两种算法都假设输入图是连通的，并由邻接列表表示。</p>
+<h3 id="Kruskal’s-algorithm"><a href="#Kruskal’s-algorithm" class="headerlink" title="Kruskal’s algorithm"></a>Kruskal’s algorithm</h3><p><img src="https://telegraph-image-eja.pages.dev/file/a9d9c05f942462df59992.png" alt="image"><br><img src="https://telegraph-image-eja.pages.dev/file/f2dcf3043bd0577717a43.png" alt="image"></p>
+<blockquote>
+<p>大家可以先通过上图感受一下该算法，蓝色边属于森林 A，透过上图我们还可以观察到被添加到 A 中的安全边的权重是从小到大的，所以容易发现 Kruskal 算法是贪心算法，每次都加入权重最小的安全边，以此来保证总权重最小。该算法以按权重排序的顺序来考虑每条边，因此正在考虑的那条边已经是当前未加入生成树的边中的轻量边，只需再判断是否产生环而决定是否将它加入 A，红色的箭头则指向在算法的每一步中所考虑的边。如果边 (u, v) 连接森林中两棵不同的树 (注意单一的顶点也是树），则将其添加到森林中，从而合并两棵树。</p>
+</blockquote>
+<ul>
+<li>设 $C_1$ 和 $C_2$ 表示由 (u, v) 连接的两棵树。因为 (u, v) 必须是连接 $C_1$ 和其他树的轻量边，根据推论 (Corollary)，&nbsp;(𝑢, 𝑣)&nbsp; 是 $𝐶_1$ 的一条安全边。<br>伪代码如下：<blockquote>
+<p>// 时间复杂度：𝑂(𝐸 lg⁡ 𝑉)<br>$MST-KRUSKAL(G, w)$<br>1 A = $\not 0$ // 初始化空集合<br>2 for each vertex $v \in G.V$<br>3 MAKE-SET (v) // 使用并查集 (disjoint-set) 的数据结构来维护几个不相交的元素集， 每个集合都包含当前林的一棵树中的顶点，初始化即一个顶点一棵树<br>4 create a single list of the edges in G.E<br>5 sort the list of edges into monotonically increasing order by weight w<br>6 for each edge (u, v) taken from the sorted list in order<br>7 if FIND-SET (u) $\not =$ FIND-SET (v) // 确定两个顶点是否属于同一棵树，同一棵树就会 成环<br>8 $A = A \cup {(u, v)}$ // 把边 (u, v) 加入到 A<br>9 UNION (u, v) // 合并树<br>10 return A</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>上面说到了并查集数据结构，下面简要说一下，已掌握可跳过。</p>
+</blockquote>
+<h4 id="Disjoint-set"><a href="#Disjoint-set" class="headerlink" title="Disjoint-set"></a>Disjoint-set</h4><p>首先并查集用数组来实现，数组的值代表其父节点的位置，在上面代码中的初始化中，一个顶点就是一棵树，因此没有父节点，可以把所有顶点的数组值标为 - 1。<br>并查集支持两个操作：</p>
+<ul>
+<li>查找 (Find)：确定某个元素属于哪个子集，它可以用来确定两个元素是否属于同一个子集。</li>
+<li>合并 (Union)：将两个子集合并成一个集合<br>上面代码中的 FIND-SET 即是查找操作，对某个顶点 i 查找，即循环查找当前位置 i 的父节点，直到 arr [i] = -1 为止，返回 i，如果两个顶点的 FIND-SET 返回结果一样，即两个顶点属于同一棵树。<br>合并操作即是先分别找到 u，v 的根节点，然后将其中一个根节点的父节点设为另一个顶点。这是最基础的并查集实现，要提高效率的话就要进行路径压缩和按秩合并。</li>
+<li>路径压缩：在 Find 过程中在返回之前，路径中的顶点的父节点直接设为根节点，毕竟 Find 返回的就是根节点，这有利于下一次查询的效率。</li>
+<li>按秩合并：上面所说的合并操作是将其中一个根节点的父节点设为另一个顶点，这未免有点随便。比如现在有一棵简单的树，一棵复杂的树，那么是将简单的往复杂的合并好还是复杂的往简单的合并好？答案是前者，如果把复杂的往简单的合并，那么原来在复杂树中的每个元素到根节点的距离都变长了，影响后面 Find 的效率；而如果把简单的往复杂的合并，到根节点距离变长的节点个数比较少。所以就引入秩，初始时每个顶点的秩设为 1，那么什么时候秩会增加呢？这发生在合并时，如果两棵树深度相同，则新的根节点的秩 + 1。秩越高，树 (或子树) 就越复杂。</li>
+</ul>
+<h3 id="Prim’s-algorithm"><a href="#Prim’s-algorithm" class="headerlink" title="Prim’s algorithm"></a>Prim’s algorithm</h3><p>跟上面一样，我们可以先通过过程图感受一下：<br><img src="https://telegraph-image-eja.pages.dev/file/0149f1a64ebab26f61bdd.png" alt="image"><br>// 从上图可以明显感受到与 Kruskal 算法不一样的是，蓝色边之间都是连通的，这里就揭露了 Prim 算法具有的一个性质是 &nbsp;𝐴&nbsp; 中的边总是构成一棵树，我们还可以发现添加边的权重是没有像 Kruskal 算法一样按权重排序的。</p>
+<p>如图所示，这棵树以任意一个顶点 &nbsp;𝑟&nbsp; 为根节点，不断生长直到包含 &nbsp;𝑉&nbsp; 中所有顶点。每次加入到 &nbsp;𝐴&nbsp; 中的安全边永远是 (𝐴, 𝑉−𝐴) 切割的轻量边。根据 Corollary，每次加入 &nbsp;𝐴&nbsp; 的边一定是安全边。该算法也满足贪心性质，因为在每一步它向树添加的一条边，都为树的权重贡献可能的最小量。</p>
+<p>伪代码如下：</p>
+<blockquote>
+<p>$MST-PRIM(G, w, r)$<br>1 for each vertex $u \in G.V$<br>2 $u.key = \infty$ //&nbsp;u.𝑘𝑒𝑦 保存连接 u 和树中任一其它节点的所有边中最小的边的权 重，若不存在这样的边，即设为 $\infty$，初始化时都设为 $\infty$。<br>3 $u.\pi = NIL$ //u.𝜋&nbsp; 保存 u 在树中的父节点<br>4 $r.key = 0$ // 把根节点 r 的 key 设为 0，方便第 9 行第一个处理 r<br>5 $Q = \not 0$ // 创建基于 &nbsp;𝑘𝑒𝑦&nbsp; 属性的优先队列<br>6 for each vertex $u \in G.V$<br>7 INSERT (Q, u)<br>8 while $Q \not = \not 0$ // 只要队列非空<br>9 u = EXTRACT-MIN (Q) // 把 u 加到树 (A) 中<br>10 for each vertex v in $G.Adj [u]$ // 更新 u 的非树邻居的 key<br>11 if $v \in Q$ and w(u, v) &lt; v.key<br>12 $v.\pi = u$<br>13 v.key = w(u, v)<br>14 DECREASE-KEY (Q, v, w (u, v)) // 调整 Q 中 v 的 key 值</p>
+</blockquote>
+<p>该算法保持以下三个循环不变量：</p>
+<ul>
+<li>$𝐴={(𝑣, 𝑣.𝜋): 𝑣∈𝑉−{𝑟}−𝑄}$，(算法终止时，&nbsp;𝑄=∅，因此 G 的最小生成树 $𝐴={(𝑣, 𝑣.𝜋): 𝑣∈𝑉−{𝑟}}$。)</li>
+<li> 已经放在最小生成树中的顶点都是 V - Q 中的顶点。</li>
+<li>对于图中所有的顶点 v∈Q，如果 $v.\pi$ 不等于 NIL，那么 v.key 小于正无穷大，v.key 是连接 v 到已经放置在最小生成树中的某个顶点的轻量边 $(v,v.\pi)$ 的权重。</li>
+</ul>
+<p>Prim 算法的运行时间取决于最小优先级队列 Q 的实现：</p>
+<ul>
+<li>二叉堆：时间复杂度：$𝑂(𝐸lg⁡𝑉)$</li>
+<li> 斐波那契堆：时间复杂度：$O (E+V lg V)$</li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>Graph</tag>
+        <tag>算法</tag>
+        <tag>最小生成树</tag>
+        <tag>Kruskal</tag>
+        <tag>Prim</tag>
+        <tag>贪心算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>KMP 字符串匹配算法</title>
+    <url>/2024/06/11/Kmp%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="字符串匹配问题"><a href="#字符串匹配问题" class="headerlink" title="字符串匹配问题"></a>字符串匹配问题</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>首先字符串匹配问题是什么很容易知道，如下图<br><img src="https://telegraph-image-eja.pages.dev/file/f6379e3c35441555f747d.png" alt="image"><br>这在搜索引擎，文本编辑器等都有其身影。</p>
+<blockquote>
+<p>字符串匹配问题可以正式地表述如下：</p>
+</blockquote>
+<p>给定文本是一个长度为 &nbsp;𝑛&nbsp; 的数组 &nbsp;𝑇[1 : 𝑛]&nbsp;，模式 (串) 是一个长度为 &nbsp;𝑚(𝑚≤𝑛) 的数组 &nbsp;𝑃[1 : 𝑚]，𝑃&nbsp; 和 &nbsp;𝑇&nbsp; 中的所有元素都是来自一个有限字母集 $\Sigma$ 的字符。例如，$\Sigma$ 可以是 ${0, 1}$，也可以是 ${a, b, … , z}$。字符数组 &nbsp;𝑃&nbsp; 和 &nbsp;𝑇&nbsp; 通常称为字符串。如上图所示，模式 P 伴随着 T 中的偏移量 s 出现 (或者，等价地，模式 P 从文本 T 中的 s + 1 位置开始)。<br>若 $0\le 𝑠\le 𝑛−𝑚$ 且 $𝑇[𝑠+1:𝑠+𝑚]=𝑃[1:𝑚]$，即 $𝑇[𝑠+𝑗]=𝑃[𝑗]$，其中 $1≤𝑗≤𝑚$，那么模式 &nbsp;𝑃&nbsp; 在文本 &nbsp;𝑇&nbsp; 偏移 &nbsp;𝑠&nbsp; 后出现，称 &nbsp;𝑠&nbsp; 是有效偏移，否则 𝑠&nbsp; 就是无效偏移，而字符串匹配问题就是要找出模式 &nbsp;𝑃&nbsp; 出现在给定的文本 &nbsp;𝑇&nbsp; 中所有的有效偏移的问题。<br>为了方便，我们将 $𝑃[1:𝑚]$ 的前 &nbsp;𝑘&nbsp; 个字符组成的前缀 $𝑃[1:𝑘]$ 记作 $𝑃[:𝑘]$，与 python 类似。特别地，有 $𝑃[:0]=𝜀$ 和 $𝑃[:𝑚]=𝑃=𝑃[1:𝑚]$。于是，字符串匹配问题可以表述为找出所有偏移 $0≤𝑠≤𝑛−𝑚$，使得 $𝑃⊐𝑇[:𝑠+𝑚]$。</p>
+<h3 id="术语与符号"><a href="#术语与符号" class="headerlink" title="术语与符号"></a>术语与符号</h3><p>在进入正式介绍前，需要引入一些术语和符号，以便形式化表示。</p>
+<ul>
+<li>$\Sigma ^*$：所有使用 $\Sigma$ 中的字符所构成的有限长度的字符串的集合。</li>
+<li>$\varepsilon$：长度为零的字符串，$\varepsilon \in \Sigma ^*$。</li>
+<li>|x|：字符串 x 的长度。</li>
+<li>xy：字符串 x 和字符串 y 的连结 (concatenation)，反正就是把 y 填补到 x 的后面形成新的字符串。</li>
+<li>$w⊏x$：w 是 x 的前缀，对于某个字符串 $𝑦\in \Sigma ^*$，&nbsp; 有 $𝑥=𝑤𝑦$，显然 $|𝑤|\le|𝑥|$，若 $|𝑤|&lt;|𝑥|$，则称 w 是真前缀。</li>
+<li>$𝑤⊐𝑥$：w 是 x 的后缀，对于某个字符串 $𝑦\in \Sigma ^*$，&nbsp; 有 $𝑥=yw$，显然 $|𝑤|\le|𝑥|$，若 $|𝑤|&lt;|𝑥|$，则称 w 是真后缀，把 ⊐ 当做&gt; 箭头就行，箭头朝前就是前缀，朝后就是后缀。<br>注：</li>
+<li>$\varepsilon$ 是所有字符串的前缀和后缀。</li>
+<li>对于任意字符串 &nbsp;𝑥，𝑦&nbsp;，任意字符 &nbsp;𝑎&nbsp;，$𝑥⊐𝑦$ 当且仅当 $𝑥𝑎⊐𝑦𝑎$。</li>
+<li>$⊏和⊐$ 关系具有传递性。</li>
+</ul>
+<h3 id="引理"><a href="#引理" class="headerlink" title="引理"></a>引理</h3><p>Overlapping-suffix lemma<br>假设 &nbsp;𝑥，𝑦&nbsp;，𝑧&nbsp; 是字符串，且满足 $𝑥⊐𝑧和𝑦⊐𝑧$。若 $|𝑥|≤|𝑦|$，则 $𝑥⊐𝑦$。若 $|𝑥|≥|𝑦|$，则 $𝑦⊐𝑥$。若 $|𝑥|=|𝑦|$，则 $𝑥=𝑦$，这在直觉上也很正确，下图示例：<br><img src="https://telegraph-image-eja.pages.dev/file/f583587ea80b1db76708c.png" alt="image"><br>当然也有 Overlapping-prefix lemma 与之对应，不再赘述。</p>
+<h2 id="朴素字符串匹配算法-The-naive-string-matching-algorithm"><a href="#朴素字符串匹配算法-The-naive-string-matching-algorithm" class="headerlink" title="朴素字符串匹配算法(The naive string-matching algorithm)"></a>朴素字符串匹配算法 (The naive string-matching algorithm)</h2><p>字符串匹配问题容易想到的就是暴力解法了，如下图：<br><img src="https://telegraph-image-eja.pages.dev/file/473bf783a0d0eaa638e9b.png" alt="image"><br>伪代码如下：<br><img src="https://telegraph-image-eja.pages.dev/file/2f7b3445f88cd844aedba.png" alt="image"><br>cpp 代码示例：</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Naive_String_Matcher</span><span class="params">(string T, string P, <span class="type">int</span> n, <span class="type">int</span> m)</span> </span>{</span><br><span class="line">&nbsp; &nbsp; <span class="type">bool</span> found;</span><br><span class="line">&nbsp; &nbsp; <span class="keyword">for</span>(<span class="type">int</span> s = <span class="number">0</span>; s &lt; n - m; s++) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; found = <span class="literal">true</span>;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; i++) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">if</span>(T[s + i] != P[i]) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; found = <span class="literal">false</span>;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">break</span>;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; <span class="keyword">if</span>(found) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cout &lt;&lt; s &lt;&lt; endl;</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Another common pattern is wanting to get the output of a command as a variable.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">foo=$(pwd)</span><br><span class="line">echo "$foo"</span><br></pre></td></tr></tbody></table></figure>
+<p>容易得到时间复杂度为 $\Theta ((n - m + 1) m)$，当然这也远远不是解决这个问题的最优方法，因为它没有利用前面比较过的有用的信息。</p>
+<h2 id="Rabin-Karp-算法"><a href="#Rabin-Karp-算法" class="headerlink" title="Rabin-Karp 算法"></a>Rabin-Karp 算法</h2><p>在介绍著名的 kmp 算法前，我们先来了解一下 Rabin-Karp 算法。<br>Rabin 和 Karp 提出了一种字符串匹配算法，它在实践中表现良好，也可以推广到其他相关问题的算法，如二维模式匹配。Rabin-Karp 算法使用 $\Theta (m)$ 预处理时间，其最坏情况下的运行时间为 $\Theta ((n - m + 1) m)$，没错，和朴素算法一样，然而，基于某些假设，它的平均情况运行时间更好。</p>
+<p>在一般情况下，我们可以假设每个字符都是一个以基数 d 表示的数字，因此它有 d 个数值在范围为 0 到 d - 1，，其中 $d=|\Sigma|$，然后，我们可以用长度为 &nbsp;𝑘&nbsp; 的 &nbsp;𝑑&nbsp; 进制数来表示由 &nbsp;𝑘&nbsp; 个连续的字符组成的字符串。为了简单说明，让我们假设 $\Sigma={0,1,2,…,9}$，例如，由 5 个连续的字符组成的字符串 31415，可以用长度为 5 的十进制数 31,415 来表示 (为了区分字符串和数字，在这里数字采用逗号作为千位分隔符)。因为我们将输入字符同时解释为图形符号和数字，所以在本节中可以方便地将它们表示为数字。</p>
+<p>给定模式 $𝑃[1:𝑚]$，设其对应的十进制数为 &nbsp;𝑝&nbsp;。给定文本 $𝑇[1:𝑛]$，设其子字符串 $𝑇[𝑠+1:𝑠+𝑚]$ 对应的十进制数为 $𝑡_𝑠(s = 0,1,…,n-m)$。当且仅当 $𝑇[𝑠+1:𝑠+𝑚]=𝑃[1:𝑚]$ 时，有 $t_s=p$，此时的 s 为一个有效偏移。</p>
+<p>那么 p 怎么求呢？可以先从我们熟知的二进制数入手，就是 $\Sigma={0,1}$ 的情况，那么字符串 100101 对应的二进制数即为 37，相信怎么计算已然熟悉，但我们要设计尽可能快的算法来计算，这里使用霍纳规则 (Horner’s rule)：</p>
+<p>$$<br>𝑝=𝑃[𝑚]+𝑑(𝑃[𝑚−1]+𝑑(𝑃[𝑚−2]+⋯+𝑑(𝑃[2]+𝑑𝑃[1])⋯))<br>$$</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">hornerRule</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">double</span>&gt;&amp; coefficients, <span class="type">double</span> x)</span> </span>{</span><br><span class="line">&nbsp; &nbsp; <span class="type">double</span> result = <span class="number">0.0</span>;</span><br><span class="line">&nbsp; &nbsp; <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; coefficients.<span class="built_in">size</span>(); ++i) {</span><br><span class="line">&nbsp; &nbsp; &nbsp; &nbsp; result = result * x + coefficients[i];</span><br><span class="line">&nbsp; &nbsp; }</span><br><span class="line">&nbsp; &nbsp; <span class="keyword">return</span> result;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat &lt;(ls) &lt;(ls ..)</span><br></pre></td></tr></tbody></table></figure>
+<p>这样就可以在 $\Theta (m)$ 内求出 p，求 $t_0$ 同理，但后面的 $t_s$ 就不再用这种求法了，还是有点慢，因此我们可以找出 $t_{s+1} 和 t_s$ 之间的关系：<br>$t_s=T[𝑚+s]+𝑑(T[𝑚+s−1]+𝑑(T[𝑚+s−2]+⋯+𝑑(T[s+2]+𝑑T[s+1])⋯))$<br>$t_{s+1}=T[𝑚+s+1]+𝑑(T[𝑚+s]+𝑑(T[𝑚+s−1]+⋯+𝑑(T[s+3]+𝑑T[s+2])⋯))$<br>观察相同的式子并进行进一步配凑：<br>$dt_s=d(T[𝑚+s]+𝑑(T[𝑚+s−1]+𝑑(T[𝑚+s−2]+⋯+𝑑(T[s+2]+𝑑T[s+1])⋯))$<br>$dt_s-d^mT[s+1]=d(T[𝑚+s]+𝑑(T[𝑚+s−1]+𝑑(T[𝑚+s−2]+⋯+𝑑(T[s+2])⋯))$<br>因此有：<br>$t_{s+1}=T[m+s+1]+d(t_s-d^{m-1}T[s+1])$</p>
+<p>容易得到 $d^{m-1}$ 是一个常数，因此我们可以预先计算它，如果用简单循环的话时间为 $O (m)$，而用<a href="https://oi-wiki.org/math/binary-exponentiation/">快速幂算法</a>的时间是 $O (logm)$。这样一来，执行一次 $t_{s+1} 和 t_s$ 的等式只需要 $\Theta (1)$ 时间。因此，我们可以在求出 $t_0$ 后在 $\Theta (n-m)$ 时间内依次求出 $t_1,…,t_{n-m}$。所以，我们可以在 $\Theta (m)$ 的预处理时间和 $\Theta (n-m+1)$ 的匹配时间内找出模式 $𝑃[1:𝑚]$ 在文本 $𝑇[1:𝑛]$ 中的所有出现的位置。</p>
+<p>当 &nbsp;𝑃&nbsp; 足够短且 $\Sigma$ 足够小时，对 p 和 $t_s$ 的算术运算只需要常数时间，这个方案效果很好。但如果 &nbsp;𝑃&nbsp; 很长，或者 $\Sigma$ 很大导致转化为数字的基数 d 很大，那么就无法在常数时间内计算出 &nbsp;𝑝&nbsp; 或 $𝑡_𝑠$。幸运的是，这个问题可以解决。<br><img src="https://telegraph-image-eja.pages.dev/file/aa3fb3c206ce349a6dfb2.png" alt="image"><br>如图，可以通过选取合适的模 q 来解决，使得 &nbsp;𝑑𝑞&nbsp; 在一个计算字长内，满足进行单精度计算的条件。通常，我们会选择一个形式简单的素数，比如形如 $2^k−1$(费马素数) 或者 $2^k +1$(梅森素数) 的数，因为这样的数在二进制计算机中可以通过位移操作和加法快速进行模运算。</p>
+<p>所以等式相应地变为：<br>$t_{s+1}=(T [m+s+1]+d (t_s-T [s+1] h))$ mod q，其中 $h=d^{m-1}$ mod q<br>为了好看 c 图，改一下位置：<br>$t_{s+1}=((t_s-T[s+1]h)d+T[m+s+1])$ mod q</p>
+<p>但是模 &nbsp;𝑞&nbsp; 后的结果并不完美，因为 $𝑡_𝑠=𝑝$ (mod 𝑞) 并不意味着 $𝑡_𝑠=𝑝$，它只是必要条件，因此，若 $𝑡_𝑠≠𝑝$ (mod 𝑞)，则 $𝑡_𝑠≠𝑝$ 肯定成立。因此可以把测试 $𝑡_𝑠=𝑝$ (mod 𝑞) 是否成立作为一种快速的方法来排除无效偏移 &nbsp;𝑠&nbsp;。当 $𝑡_𝑠=𝑝$ (mod 𝑞) 成立时，称为一个命中 (hit)，然后我们还需要进一步测试此时 $𝑡_𝑠=𝑝$ 是否成立，即检查 $𝑃[1:𝑚]=𝑇[𝑠+1:𝑠+𝑚]$ 是否成立。若 $𝑡_𝑠=𝑝$，则 &nbsp;𝑠&nbsp; 是一个有效偏移，若 $𝑡_𝑠≠𝑝$，则是一个假命中 (spurious hit)。若 &nbsp;𝑞&nbsp; 足够大，则出现假命中的期望次数会更少，从而降低额外检查的代价。</p>
+<p>下面给出伪代码：<br><img src="https://telegraph-image-eja.pages.dev/file/00850934615eb00424f2a.png" alt="image"><br>t 的下标仅仅是为了逻辑清晰，去掉下标也能正确运行。<br>最坏情况下的匹配时间是 $\Theta ((n-m+1) m)$，因为如果 $P=a^m,T=a^n$，这样每个偏移都是有效的，就都得检查一遍。<br>所以为什么说该算法在实践中表现良好呢？<br>在许多应用中，我们希望少一些有效偏移，比如只有常数 &nbsp;𝑐&nbsp; 个。在这样的应用中，加上处理假命中所需时间，该算法的期望匹配时间为 $𝑂((𝑛−𝑚+1)+𝑐𝑚)=𝑂(𝑛+𝑚)$，又因为 $m\le n$，则期望匹配时间为 $O (n)$。</p>
+<h2 id="用有限自动机进行字符串匹配-String-matching-with-finite-automata"><a href="#用有限自动机进行字符串匹配-String-matching-with-finite-automata" class="headerlink" title="用有限自动机进行字符串匹配(String matching with finite automata)"></a>用有限自动机进行字符串匹配 (String matching with finite automata)</h2><h3 id="有限自动机-Finite-automata"><a href="#有限自动机-Finite-automata" class="headerlink" title="有限自动机(Finite automata)"></a>有限自动机 (Finite automata)</h3><p>一个有限自动机 &nbsp;𝑀&nbsp; 是一个 5 元组 $(𝑄,𝑞_0,𝐴,\Sigma,\delta)$：</p>
+<ul>
+<li>Q 是一个有限状态集。</li>
+<li>$𝑞_0\in 𝑄$ 是起始状态。</li>
+<li>$𝐴⊆𝑄$ 是一个接受状态集。</li>
+<li>$\Sigma$ 是一个有限输入字母表。</li>
+<li>$\delta$ 是一个从 $𝑄\times \Sigma$ 到 &nbsp;𝑄&nbsp; 的函数，称为 &nbsp;𝑀&nbsp; 的转移函数。<br><img src="https://telegraph-image-eja.pages.dev/file/a6d4558c65809f64f66c7.png" alt="image"><br>说实话我第一眼看到这图就想到了数字逻辑电路里面的状态转化表和状态转化图</li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>字符串</tag>
+        <tag>KMP</tag>
+        <tag>模式匹配</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Missing Semester Lecture 1 - Shell 基础</title>
+    <url>/2023/12/17/Missing-Semester-lecture-1/</url>
+    <content><![CDATA[<p><a href="https://missing.csail.mit.edu/2020/course-shell/">missing semester lecture 1</a><br>In my first jump in missing semester – lecture 1, I learned something new(like a new language for me) about shell and had a try on ubuntu terminal. If there are any errors or missing things, please forgive me, as I haven’t really stepped into the Linux operating system yet.</p>
+<p>During my study, there are something what I have learned as follow.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">date</span><br></pre></td></tr></tbody></table></figure>
 
-<p><code>&lt;( CMD )</code>&nbsp;will execute&nbsp;<code>CMD</code>&nbsp;and place the output in a temporary file and substitute the&nbsp;<code>&lt;()</code>&nbsp;with that file’s name. This is useful when commands expect values to be passed by file instead of by STDIN.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo "Starting program at $(date)" # Date will be substituted</span><br><span class="line"></span><br><span class="line">echo "Running program $0 with $# arguments with pid $$"</span><br><span class="line"></span><br><span class="line">for file in "$@"; do</span><br><span class="line">    grep foobar "$file" &gt; /dev/null 2&gt; /dev/null</span><br><span class="line">    # When pattern is not found, grep has exit status 1</span><br><span class="line">    # We redirect STDOUT and STDERR to a null register since we do not care about them</span><br><span class="line">    if [[ $? -ne 0 ]]; then</span><br><span class="line">        echo "File $file does not have any foobar, adding one"</span><br><span class="line">        echo "# foobar" &gt;&gt; "$file"</span><br><span class="line">    fi</span><br><span class="line">done</span><br></pre></td></tr></tbody></table></figure>
+<p>It can display current date and time.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo</span><br></pre></td></tr></tbody></table></figure>
 
-<p>You can also edit it by vim like mcd function.&nbsp;This example will iterate through the arguments we provide,&nbsp;<code>grep</code>&nbsp;for the string&nbsp;<code>foobar</code>, and append it to the file as a comment if it’s not found.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">./example arg1 arg2 ...</span><br></pre></td></tr></tbody></table></figure>
+<p>It can print out something you want.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">which</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Shell globbing<br>you can use&nbsp;<code>?</code>&nbsp;and&nbsp;<code>*</code>&nbsp;to match one or any amount of characters respectively. For instance, given files&nbsp;<code>foo</code>,&nbsp;<code>foo1</code>,&nbsp;<code>foo2</code>,&nbsp;<code>foo10</code>&nbsp;and&nbsp;<code>bar</code>, the command&nbsp;<code>rm foo?</code>&nbsp;will delete&nbsp;<code>foo1</code>&nbsp;and&nbsp;<code>foo2</code>&nbsp;whereas&nbsp;<code>rm foo*</code>&nbsp;will delete all but&nbsp;<code>bar</code>.(<code>?</code> can just replace one.)<br>Other powerful usage:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">convert image.{png,jpg}</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Will <span class="built_in">expand</span> to</span></span><br><span class="line">convert image.png image.jpg</span><br><span class="line"></span><br><span class="line">cp /path/to/project/{foo,bar,baz}.sh /newpath</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Will <span class="built_in">expand</span> to</span></span><br><span class="line">cp /path/to/project/foo.sh /path/to/project/bar.sh /path/to/project/baz.sh /newpath</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Globbing techniques can also be combined</span></span><br><span class="line">mv *{.py,.sh} folder</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Will move all *.py and *.sh files</span></span><br><span class="line"></span><br><span class="line">mkdir foo bar</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This creates files foo/a, foo/b, ... foo/h, bar/a, bar/b, ... bar/h</span></span><br><span class="line">touch {foo,bar}/{a..h}</span><br><span class="line">touch foo/x bar/y</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Show differences between files <span class="keyword">in</span> foo and bar</span></span><br><span class="line">diff &lt;(ls foo) &lt;(ls bar)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Outputs</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">&lt; x</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">---</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">&gt; y</span></span><br></pre></td></tr></tbody></table></figure>
+<p>It can find the system command position and return it. For example, the result of <code>which echo</code> is <code>/bin/echo</code> or <code>/usr/bin/echo</code>.So, using <code>echo</code> or using <code>/bin/echo</code> have the same effect(the next is an example).</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo $PATH</span><br><span class="line">/bin/echo $PATH</span><br><span class="line">/usr/bin/echo $PATH</span><br></pre></td></tr></tbody></table></figure>
 
-<p><code>vim script.py</code>:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/usr/local/bin/python3</span></span><br><span class="line">import sys</span><br><span class="line">for arg in reversed(sys.argv[1:]):</span><br><span class="line">    print(arg)</span><br></pre></td></tr></tbody></table></figure>
+<p><code>$PATH</code>&nbsp;lists which directories the shell should search for programs when it is given a command. The result of the three line above is the same.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir</span><br><span class="line">touch</span><br></pre></td></tr></tbody></table></figure>
 
-<p>You can call it by <code>python3 script.py arg1 arg2 arg3</code>. But if we call it by <code>./script.py arg1 arg2 arg3</code>, it doesn’t work. So it is good practice to write shebang lines using the&nbsp;<code>env</code> that will resolve to wherever the command lives in the system, increasing the portability of your scripts. (<code>#!/usr/bin/env python3</code>)<br>Writing&nbsp;<code>bash</code>&nbsp;scripts can be tricky and unintuitive. There are tools like&nbsp;<a href="https://github.com/koalaman/shellcheck">shellcheck</a>&nbsp;that will help you find errors in your sh/bash scripts. You can also use sudo to install it.(When you call shellcheck, the terminal will give you some tips about how to use <code>sudo</code> to install it.)</p>
-<p>Finding files:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all directories named src</span></span><br><span class="line">find . -name src -type d</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all python files that have a folder named <span class="built_in">test</span> <span class="keyword">in</span> their path</span></span><br><span class="line">find . -path '*/test/*.py' -type f</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all files modified <span class="keyword">in</span> the last day</span></span><br><span class="line">find . -mtime -1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all zip files with size <span class="keyword">in</span> range 500k to 10M</span></span><br><span class="line">find . -size +500k -size -10M -name '*.tar.gz'</span><br></pre></td></tr></tbody></table></figure>
+<p>The first can make a new directory in current directory.<br>The second can make a new file in current directory.(They’re not the same.<code>touch</code>can not make a new directory.)</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm [file_name]</span><br><span class="line">rm -f</span><br><span class="line">rm -i</span><br><span class="line">rm -r(or R)</span><br><span class="line">rm -v</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Other command(should be installed) to find:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">fd ".*py"</span><br><span class="line">locate tmp #`locate`&nbsp;uses a database that is updated using&nbsp;`updatedb`.</span><br></pre></td></tr></tbody></table></figure>
+<p>Using <code>rm --help</code> can find the function of <code>-f</code> and etc.<br>Notice: <code>rm</code> will prompt you that the file is not exist while <code>rm -f</code> ignores whether the file is exist or not.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rm -r [directory_name]</span><br><span class="line">rm -rf []</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Beyond listing files, find can also perform actions over files that match your query.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Delete all files with .tmp extension</span></span><br><span class="line">find . -name '*.tmp' -exec rm {} \;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all PNG files and convert them to JPG</span></span><br><span class="line">find . -name '*.png' -exec convert {} {}.jpg \;</span><br></pre></td></tr></tbody></table></figure>
+<p><code>rm [directory_name]</code> can not succeed to remove directory. The two above can both remove directory.(But the second is dangerous in some case.)</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rmdir</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Finding code:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">grep -R foobar</span><br></pre></td></tr></tbody></table></figure>
+<p>It can just remove blank directory.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">pwd</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Many&nbsp;<code>grep</code>&nbsp;alternatives have been developed, including&nbsp;<code>ack</code>,&nbsp;<code>ag</code>and&nbsp;<code>rg</code>.&nbsp;<br>Finding shell commands:</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">history</span><br><span class="line">history | grep find</span><br></pre></td></tr></tbody></table></figure>
+<p>It can display current directory.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd</span><br><span class="line">cd ~</span><br></pre></td></tr></tbody></table></figure>
 
-<p><code>fzf</code>&nbsp;is a general-purpose fuzzy finder that can be used with many commands. Here it is used to fuzzily match through your history and present results in a convenient and visually pleasing manner.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">history | fzf</span><br></pre></td></tr></tbody></table></figure>
+<p>They can return to current user’s home directory like <code>/home/user_name</code> .</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd -</span><br></pre></td></tr></tbody></table></figure>
 
-<p>Directory Navigation:</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">tree</span><br><span class="line">nnn # press `q` to quit.</span><br></pre></td></tr></tbody></table></figure>
+<p>It will return to the last directory that you have been accessed.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd .</span><br><span class="line">cd ..</span><br><span class="line">cd ../../</span><br></pre></td></tr></tbody></table></figure>
+
+<p>In a path,&nbsp;<code>.</code>&nbsp;refers to the current directory, and&nbsp;<code>..</code>&nbsp;to its parent directory. And the <code>..</code> can be used for several times. (Hint: you can examine with <code>pwd</code> every time you use the <code>cd</code> .)<br>Notice: <code>cd ../../</code> must be the complete path. But when you are in a subdirectory, you don’t need to type complete path if you want to back to the parent directory or the parent directory of the parent directory and etc.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls</span><br><span class="line">ls -l</span><br><span class="line">ls /[directory_name]</span><br><span class="line">ls -l /[directory_name]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>The first will print the contents of the current directory to see what lives in a given directory.<br>The second will print the contents of the current directory by using a long listing format, which means more detailed. The third and the fourth can print the contents of directory that you point so that you don’t need to switch your current directory.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">man</span><br></pre></td></tr></tbody></table></figure>
+
+<p>For example, <code>man ls</code> will let you read the manual page about <code>ls</code> . That is its function.<br>And it is the last line in manual page: Manual page man(1) line 1 (press h for help or q to quit).</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>cat</code> stands for concatenate. You can also type <code>cat --help</code> to find some functions of options. For example, <code>-n</code> can number all output lines.<br><code>cat [file_name]</code> can print the whole text file.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat &gt; file_name</span><br></pre></td></tr></tbody></table></figure>
+
+<p>It is better than <code>touch</code> for which it can make a new file and add content to it. What’s more, you can use <code>Ctrl + d</code> to save it.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt; file_B</span><br><span class="line">cat file_A file_C &gt;file_B</span><br><span class="line">cat &lt; file_A &gt; file_B</span><br></pre></td></tr></tbody></table></figure>
+
+<p>It will delete the file_B’s data, and copy the file_A’s content to file_B. Copy several files is ok as well.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_A &gt;&gt; file_B</span><br></pre></td></tr></tbody></table></figure>
+
+<p>When you don’t want to delete file_b’s content, you can use <code>&gt;&gt;</code> instead of <code>&gt;</code> .</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat file_name | grep -v '^$'</span><br><span class="line">cat file_name1 | grep -v '^$' &gt; file_name2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>They can delete blank line in the file. The first will print the changed content. The second will not output anything. And the file_name1’s content keep the same as before. The changed content is saved in file_name2.</p>
+<p>When it comes to pipe <code>|</code> , let me introduce detailed usage about it.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">command1 | command2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>The output of command1 will become the input of command2.<br>For example:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls | sort</span><br></pre></td></tr></tbody></table></figure>
 ]]></content>
       <categories>
         <category>Missing Semester</category>
       </categories>
       <tags>
         <tag>工具</tag>
+        <tag>命令笔记</tag>
         <tag>Shell</tag>
         <tag>Linux</tag>
-        <tag>命令笔记</tag>
-        <tag>Bash</tag>
       </tags>
   </entry>
   <entry>
@@ -1160,6 +1078,88 @@ while Q $\not = \not 0$
         <tag>DP</tag>
         <tag>背包问题</tag>
         <tag>编辑距离</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Missing Semester Lecture 2 - Shell 工具与脚本</title>
+    <url>/2023/12/18/Missing-Semester-lecture-2/</url>
+    <content><![CDATA[<p><a href="https://missing.csail.mit.edu/2020/shell-tools/">missing semester lecture 2</a></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">a=hello</span><br><span class="line">echo "$a" #prints hello</span><br><span class="line">echo '$a' #prints $a</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Strings delimited with&nbsp;<code>'</code>&nbsp;are literal strings and will not substitute variable values whereas&nbsp;<code>"</code> delimited strings will.<br>notice: <code>a=hello</code>don’t allow to delimit with space, such as <code>a =hello</code>.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mcd () {</span><br><span class="line">    mkdir -p "$1"</span><br><span class="line">    cd "$1"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Here is an example of a function that creates a directory and&nbsp;<code>cd</code>s into it when you type <code>mcd arg</code>.<br>You can also use <code>vim</code> to create a function.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim mcd.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>And then you come to a command pattern, you can type <code>i</code> to input mcd function. After you complete, you can press <code>Esc</code> to return the command pattern, you can type <code>:wq</code> to save it and quit vim. But now you can not use the mcd function.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">source mcd.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Now you can call the mcd function. (If you want to know more about <code>vim</code>, just search it online.)</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mcd arg</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Bash uses a variety of special variables to refer to arguments:</p>
+<ul>
+<li><code>$0</code>&nbsp;- Name of the script</li>
+<li><code>$1</code>&nbsp;to&nbsp;<code>$9</code>&nbsp;- Arguments to the script.&nbsp;<code>$1</code>&nbsp;is the first argument and so on.</li>
+<li><code>$@</code>&nbsp;- All the arguments</li>
+<li><code>$#</code>&nbsp;- Number of arguments</li>
+<li><code>$?</code>&nbsp;- Return code of the previous command</li>
+<li><code>$$</code>&nbsp;- Process identification number (PID) for the current script</li>
+<li><code>!!</code>&nbsp;- Entire last command, including arguments. A common pattern is to execute a command only for it to fail due to missing permissions; you can quickly re-execute the command with sudo by doing&nbsp;<code>sudo !!</code></li>
+<li><code>$_</code>&nbsp;- Last argument from the last command. If you are in an interactive shell, you can also quickly get this value by typing&nbsp;<code>Esc</code>&nbsp;followed by&nbsp;<code>.</code>&nbsp;or&nbsp;<code>Alt+.</code></li>
+</ul>
+<p>A value of 0 usually means everything went OK; anything different from 0 means an error occurred.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">false || echo "Oops, fail"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Oops, fail</span></span><br><span class="line"></span><br><span class="line">true || echo "Will not be printed"</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"></span></span><br><span class="line">true &amp;&amp; echo "Things went well"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Things went well</span></span><br><span class="line"></span><br><span class="line">false &amp;&amp; echo "Will not be printed"</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"></span></span><br><span class="line">true ; echo "This will always run"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This will always run</span></span><br><span class="line"></span><br><span class="line">false ; echo "This will always run"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This will always run</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Another common pattern is wanting to get the output of a command as a variable.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">foo=$(pwd)</span><br><span class="line">echo "$foo"</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat &lt;(ls) &lt;(ls ..)</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>&lt;( CMD )</code>&nbsp;will execute&nbsp;<code>CMD</code>&nbsp;and place the output in a temporary file and substitute the&nbsp;<code>&lt;()</code>&nbsp;with that file’s name. This is useful when commands expect values to be passed by file instead of by STDIN.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo "Starting program at $(date)" # Date will be substituted</span><br><span class="line"></span><br><span class="line">echo "Running program $0 with $# arguments with pid $$"</span><br><span class="line"></span><br><span class="line">for file in "$@"; do</span><br><span class="line">    grep foobar "$file" &gt; /dev/null 2&gt; /dev/null</span><br><span class="line">    # When pattern is not found, grep has exit status 1</span><br><span class="line">    # We redirect STDOUT and STDERR to a null register since we do not care about them</span><br><span class="line">    if [[ $? -ne 0 ]]; then</span><br><span class="line">        echo "File $file does not have any foobar, adding one"</span><br><span class="line">        echo "# foobar" &gt;&gt; "$file"</span><br><span class="line">    fi</span><br><span class="line">done</span><br></pre></td></tr></tbody></table></figure>
+
+<p>You can also edit it by vim like mcd function.&nbsp;This example will iterate through the arguments we provide,&nbsp;<code>grep</code>&nbsp;for the string&nbsp;<code>foobar</code>, and append it to the file as a comment if it’s not found.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">./example arg1 arg2 ...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Shell globbing<br>you can use&nbsp;<code>?</code>&nbsp;and&nbsp;<code>*</code>&nbsp;to match one or any amount of characters respectively. For instance, given files&nbsp;<code>foo</code>,&nbsp;<code>foo1</code>,&nbsp;<code>foo2</code>,&nbsp;<code>foo10</code>&nbsp;and&nbsp;<code>bar</code>, the command&nbsp;<code>rm foo?</code>&nbsp;will delete&nbsp;<code>foo1</code>&nbsp;and&nbsp;<code>foo2</code>&nbsp;whereas&nbsp;<code>rm foo*</code>&nbsp;will delete all but&nbsp;<code>bar</code>.(<code>?</code> can just replace one.)<br>Other powerful usage:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">convert image.{png,jpg}</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Will <span class="built_in">expand</span> to</span></span><br><span class="line">convert image.png image.jpg</span><br><span class="line"></span><br><span class="line">cp /path/to/project/{foo,bar,baz}.sh /newpath</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Will <span class="built_in">expand</span> to</span></span><br><span class="line">cp /path/to/project/foo.sh /path/to/project/bar.sh /path/to/project/baz.sh /newpath</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Globbing techniques can also be combined</span></span><br><span class="line">mv *{.py,.sh} folder</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Will move all *.py and *.sh files</span></span><br><span class="line"></span><br><span class="line">mkdir foo bar</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This creates files foo/a, foo/b, ... foo/h, bar/a, bar/b, ... bar/h</span></span><br><span class="line">touch {foo,bar}/{a..h}</span><br><span class="line">touch foo/x bar/y</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Show differences between files <span class="keyword">in</span> foo and bar</span></span><br><span class="line">diff &lt;(ls foo) &lt;(ls bar)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Outputs</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">&lt; x</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">---</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">&gt; y</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>vim script.py</code>:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/usr/local/bin/python3</span></span><br><span class="line">import sys</span><br><span class="line">for arg in reversed(sys.argv[1:]):</span><br><span class="line">    print(arg)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>You can call it by <code>python3 script.py arg1 arg2 arg3</code>. But if we call it by <code>./script.py arg1 arg2 arg3</code>, it doesn’t work. So it is good practice to write shebang lines using the&nbsp;<code>env</code> that will resolve to wherever the command lives in the system, increasing the portability of your scripts. (<code>#!/usr/bin/env python3</code>)<br>Writing&nbsp;<code>bash</code>&nbsp;scripts can be tricky and unintuitive. There are tools like&nbsp;<a href="https://github.com/koalaman/shellcheck">shellcheck</a>&nbsp;that will help you find errors in your sh/bash scripts. You can also use sudo to install it.(When you call shellcheck, the terminal will give you some tips about how to use <code>sudo</code> to install it.)</p>
+<p>Finding files:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all directories named src</span></span><br><span class="line">find . -name src -type d</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all python files that have a folder named <span class="built_in">test</span> <span class="keyword">in</span> their path</span></span><br><span class="line">find . -path '*/test/*.py' -type f</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all files modified <span class="keyword">in</span> the last day</span></span><br><span class="line">find . -mtime -1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all zip files with size <span class="keyword">in</span> range 500k to 10M</span></span><br><span class="line">find . -size +500k -size -10M -name '*.tar.gz'</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Other command(should be installed) to find:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">fd ".*py"</span><br><span class="line">locate tmp #`locate`&nbsp;uses a database that is updated using&nbsp;`updatedb`.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Beyond listing files, find can also perform actions over files that match your query.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Delete all files with .tmp extension</span></span><br><span class="line">find . -name '*.tmp' -exec rm {} \;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Find all PNG files and convert them to JPG</span></span><br><span class="line">find . -name '*.png' -exec convert {} {}.jpg \;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Finding code:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">grep -R foobar</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Many&nbsp;<code>grep</code>&nbsp;alternatives have been developed, including&nbsp;<code>ack</code>,&nbsp;<code>ag</code>and&nbsp;<code>rg</code>.&nbsp;<br>Finding shell commands:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">history</span><br><span class="line">history | grep find</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>fzf</code>&nbsp;is a general-purpose fuzzy finder that can be used with many commands. Here it is used to fuzzily match through your history and present results in a convenient and visually pleasing manner.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">history | fzf</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Directory Navigation:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">tree</span><br><span class="line">nnn # press `q` to quit.</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>Missing Semester</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
+        <tag>命令笔记</tag>
+        <tag>Shell</tag>
+        <tag>Linux</tag>
+        <tag>Bash</tag>
       </tags>
   </entry>
   <entry>
