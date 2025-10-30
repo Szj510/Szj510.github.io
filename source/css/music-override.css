@@ -1,0 +1,24 @@
+/* Keep Butterfly theme colors on the music page (override hexo-anzhiyu-music) */
+body:has(#anMusic-page){
+  background-color: inherit !important;
+}
+body:has(#anMusic-page) #web_bg{
+  display: block !important;
+}
+body:has(#anMusic-page) #an_music_bg{
+  display: none !important;
+  filter: none !important;
+}
+.page:has(#anMusic-page) #nav{
+  backdrop-filter: unset !important;
+  background: unset !important;
+  border-bottom: unset !important;
+  box-shadow: unset !important;
+}
+.page:has(#anMusic-page) #page-header.not-top-img #nav a,
+.page:has(#anMusic-page) #page-header #nav .back-home-button{
+  color: inherit !important;
+}
+body:has(#anMusic-page) #footer{
+  display: block !important;
+}

@@ -1,6 +1,20 @@
 # Navigation bar settings (導航欄設置)
 # see https://butterfly.js.org/posts/4aa8abbe/##導航欄設置-Navigation-bar-settings
 # --------------------------------------
+# 音乐馆
+anzhiyu_music:
+  enable: true
+  id: "8662123215"
+  server: netease
+  customJS:
+  customCSS:
+  front_matter: |
+    title: 音乐馆
+    type: music
+    aplayer: true
+    top_img: false
+    comments: false
+    aside: false
 
 nav:
   logo: # image
@@ -935,6 +949,9 @@ inject:
     - <link rel="stylesheet" href="/css/transpancy.css">
   bottom:
     # - <script src="xxxx"></script>
+    - <script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script>
+    - <script src="https://npm.elemecdn.com/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script>
+    - <link rel="stylesheet" href="/css/music-override.css">
 
 # CDN
 # Don't modify the following settings unless you know how they work

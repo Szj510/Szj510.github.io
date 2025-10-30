@@ -16,6 +16,7 @@
     "dotenv": "^17.2.3",
     "gitalk": "^1.8.0",
     "hexo": "^6.3.0",
+    "hexo-anzhiyu-music": "^1.0.2",
     "hexo-deployer-git": "^4.0.0",
     "hexo-filter-nofollow": "^2.0.2",
     "hexo-generator-archive": "^2.0.0",
