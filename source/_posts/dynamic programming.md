@@ -5,6 +5,8 @@ tags: [算法, 动态规划, DP, 背包问题, 编辑距离]
 categories: [算法]
 description: 动态规划完整学习笔记，包括最优子结构、无后效性、0-1背包、完全背包、零钱兑换、编辑距离等经典问题。
 mathjax: true
+top_img: /img/banners/dynamic programming.jpg
+cover: /img/banners/dynamic programming.jpg
 ---
 
 # Dynamic Programming

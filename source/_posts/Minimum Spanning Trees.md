@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/Minimum Spanning Trees.jpg
+cover: /img/banners/Minimum Spanning Trees.jpg
 title: Minimum Spanning Trees
 date: 2024-04-25 16:22:36
 tags: [Graph, 算法, 最小生成树, Kruskal, Prim, 贪心算法]

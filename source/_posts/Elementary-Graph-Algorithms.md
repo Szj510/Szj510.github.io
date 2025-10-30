@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/Elementary-Graph-Algorithms.jpg
+cover: /img/banners/Elementary-Graph-Algorithms.jpg
 title: Elementary Graph Algorithms
 date: 2024-04-21 16:27:36
 tags: [Graph, 算法, 数据结构, DFS, BFS, 图论]

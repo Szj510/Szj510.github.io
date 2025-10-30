@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/hamming-numbers-汉明数.jpg
+cover: /img/banners/hamming-numbers-汉明数.jpg
 title: 汉明数 (Hamming Numbers)
 date: 2024-05-27 10:00:00
 tags: [算法, 刷题, codewars]

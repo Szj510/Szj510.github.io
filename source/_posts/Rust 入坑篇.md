@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/Rust 入坑篇.jpg
+cover: /img/banners/Rust 入坑篇.jpg
 title: Rust 入坑篇
 date: 2024-09-25 23:29:00
 tags: [Rust, 编程语言, 所有权, 内存管理]

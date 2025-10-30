@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/Kmp算法.jpg
+cover: /img/banners/Kmp算法.jpg
 title: KMP 字符串匹配算法
 date: 2024-06-11 22:03:00
 tags: [算法, 字符串, KMP, 模式匹配]

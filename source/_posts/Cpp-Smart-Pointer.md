@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/Cpp-Smart-Pointer.jpg
+cover: /img/banners/Cpp-Smart-Pointer.jpg
 title: Cpp智能指针
 date: 2024-09-28 10:00:00
 tags: [C++, 智能指针, lambda, 编程, 内存管理]

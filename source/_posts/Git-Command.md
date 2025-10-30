@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/Git-Command.jpg
+cover: /img/banners/Git-Command.jpg
 title: Git Command 自用
 date: 2025-08-06 14:40:08
 tags: [Git, 版本控制, 命令笔记]

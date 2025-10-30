@@ -8,17 +8,14 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-// 分类到搜索关键词的映射（根据现有文章分类定制）
-const categoryKeywords = {
-  '算法': 'algorithm,data structure,mathematics,abstract',
-  '工具': 'coding,development,programming,technology',
-  'codewars': 'puzzle,code,challenge,creative',
-  'cpp': 'modern,technology,abstract,minimal',
-  'C++': 'modern,technology,abstract,minimal',
-  'Missing Semester': 'terminal,command line,developer,minimal',
-  'Rust': 'system,performance,modern code,technology',
-  '默认': 'landscape,nature,scenery,mountains'  // 随机风景图
-};
+// 改为按标题/文件名检索；若未命中则退回默认风景
+const DEFAULT_QUERY = 'landscape,nature,scenery,mountains';
+
+function buildQueryFromTitleOrSlug(title, slug) {
+  const base = (title && title.trim()) || (slug && slug.trim()) || '';
+  const normalized = base.replace(/[\-_]+/g, ' ').replace(/\s+/g, ', ').trim();
+  return normalized || DEFAULT_QUERY;
+}
 
 /**
  * 从 Unsplash 下载图片
@@ -34,32 +31,27 @@ async function downloadBanner(query, outputPath) {
     return false;
   }
 
-  try {
-    // 1. 随机获取一张图片信息
+  async function fetchOnce(q) {
+    console.log(`🔍 搜索关键词: ${q}`);
     const searchRes = await axios.get('https://api.unsplash.com/photos/random', {
-      params: {
-        query: query,
-        orientation: 'landscape', // 横向图片
-        client_id: accessKey
-      },
+      params: { query: q, orientation: 'landscape', client_id: accessKey },
       timeout: 10000
     });
-
     const imageUrl = searchRes.data.urls.regular; // 1080px 宽度
-    
-    // 2. 下载图片
-    const imageRes = await axios.get(imageUrl, {
-      responseType: 'arraybuffer',
-      timeout: 15000
-    });
-
-    // 3. 保存到本地
+    const imageRes = await axios.get(imageUrl, { responseType: 'arraybuffer', timeout: 15000 });
     fs.writeFileSync(outputPath, imageRes.data);
-    
     console.log(`✅ 题头图已保存: ${path.basename(outputPath)}`);
     console.log(`   来源: ${searchRes.data.user.name} on Unsplash`);
-    
     return true;
+  }
+
+  try {
+    try {
+      return await fetchOnce(query);
+    } catch (e) {
+      console.warn('⚠️ 按标题/文件名检索未命中，改用默认随机风景图');
+      return await fetchOnce(DEFAULT_QUERY);
+    }
   } catch (error) {
     if (error.response && error.response.status === 401) {
       console.error('❌ API Key 无效，请检查 .env 文件中的 UNSPLASH_ACCESS_KEY');
@@ -76,12 +68,8 @@ async function downloadBanner(query, outputPath) {
  * Hexo 新建文章时的钩子
  */
 hexo.on('new', async function(data) {
-  // 获取文章分类（从 scaffolds 模板或命令行参数）
-  const category = data.category || data.categories || '默认';
-  const categoryStr = Array.isArray(category) ? category[0] : category;
-  
-  // 确定搜索关键词
-  const query = categoryKeywords[categoryStr] || categoryKeywords['默认'];
+  // 使用标题或 slug 构建检索词
+  const query = buildQueryFromTitleOrSlug(data.title, data.slug);
   
   // 生成文件名
   const slug = data.slug || path.basename(data.path, '.md');
@@ -95,7 +83,6 @@ hexo.on('new', async function(data) {
   }
   
   console.log(`\n📸 正在为文章 "${data.title}" 下载题头图...`);
-  console.log(`   分类: ${categoryStr}`);
   console.log(`   关键词: ${query}`);
   
   const success = await downloadBanner(query, bannerPath);
@@ -108,18 +95,29 @@ hexo.on('new', async function(data) {
     // 读取并修改文章内容
     try {
       let content = fs.readFileSync(data.path, 'utf8');
-      
-      // 在 front-matter 中插入 top_img
-      if (content.startsWith('---')) {
-        content = content.replace(
-          /---\n/,
-          `---\ntop_img: ${topImgPath}\n`
-        );
-        fs.writeFileSync(data.path, content);
-        console.log('✅ 已自动添加 top_img 到文章 front-matter\n');
+      // 在 front-matter 中插入/替换 top_img 与 cover（首页卡片使用 cover）
+      if (/^---[\s\S]*?---/m.test(content)) {
+        // 已有 front-matter：处理 top_img
+        if (/(?:^|\r?\n)top_img\s*:/m.test(content)) {
+          content = content.replace(/(?:^|\r?\n)top_img\s*:\s*.*/m, `\ntop_img: ${topImgPath}`);
+        } else {
+          content = content.replace(/---\s*\r?\n/, `---\n` + `top_img: ${topImgPath}\n`);
+        }
+
+        // 处理 cover（用于首页卡片）
+        if (/(?:^|\r?\n)cover\s*:/m.test(content)) {
+          content = content.replace(/(?:^|\r?\n)cover\s*:\s*.*/m, `\ncover: ${topImgPath}`);
+        } else {
+          content = content.replace(/---\s*\r?\n/, `---\n` + `cover: ${topImgPath}\n`);
+        }
+
+        fs.writeFileSync(data.path, content, 'utf8');
+        console.log('✅ 已自动更新 front-matter: top_img 与 cover\n');
       }
     } catch (err) {
-      console.warn('⚠️  无法自动修改文章，请手动添加 top_img:', topImgPath);
+      console.warn('⚠️  无法自动修改文章，请手动添加以下字段到 front-matter:');
+      console.warn(`   top_img: ${topImgPath}`);
+      console.warn(`   cover:   ${topImgPath}`);
     }
   } else {
     console.log('💡 提示: 你可以稍后手动下载或使用默认题头图\n');
@@ -128,6 +126,5 @@ hexo.on('new', async function(data) {
 
 // 导出函数供手动使用
 module.exports = {
-  downloadBanner,
-  categoryKeywords
+  downloadBanner
 };

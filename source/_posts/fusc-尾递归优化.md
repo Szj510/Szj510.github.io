@@ -1,4 +1,6 @@
 ---
+top_img: /img/banners/fusc-尾递归优化.jpg
+cover: /img/banners/fusc-尾递归优化.jpg
 title: fusc 函数与尾递归优化
 date: 2024-07-07 10:00:00
 tags: [算法, 尾递归, 刷题, codewars]
