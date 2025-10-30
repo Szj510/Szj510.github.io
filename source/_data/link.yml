@@ -1,14 +1,25 @@
-- class_name: 友情链接
-  class_desc: 那些人，那些事
+## 友链数据按分类展示；可自由增删。示例中保留了常用网站，朋友的小站留空待添加。
+
+- class_name: 朋友的小站
+  class_desc: 互相学习，长期更新更佳
+  link_list: []
+
+- class_name: 社区与工具
+  class_desc: 常用技术社区与工具
   link_list:
-    - name: 苏子杰
-      link: https://suzije.me/
-      avatar: 
-      descr: 热爱运动
-- class_name: 网站
-  class_desc: 值得推荐的网站
+    - name: GitHub
+      link: https://github.com/
+      avatar: https://github.githubassets.com/favicons/favicon.svg
+      descr: 代码托管与协作平台
+    - name: MDN Web Docs
+      link: https://developer.mozilla.org/
+      avatar: https://developer.mozilla.org/static/img/favicon57.e7e21ca263ca.png
+      descr: Web 标准与文档
+
+- class_name: 申请入口
+  class_desc: 想交换友链？点这里提交
   link_list:
-    - name: Twitter
-      link: https://twitter.com/
-      avatar: https://i.loli.net/2020/05/14/5VyHPQqR6LWF39a.png
-      descr: 社交分享平台
+    - name: 提交友链（GitHub Issue）
+      link: https://github.com/Szj510/ius-blog/issues/new?title=%5Bfriend-link%5D+%E7%94%B3%E8%AF%B7&body=name%3A%20%E4%BD%A0%E7%9A%84%E7%AB%99%E7%82%B9%E5%90%8D%E7%A7%B0%0Alink%3A%20https%3A%2F%2Fyour.site%0Aavatar%3A%20https%3A%2F%2Fyour.site%2Favatar.png%0Adescr%3A%20%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0%E4%BD%A0%E7%9A%84%E7%AB%99%E7%82%B9
+      avatar: https://github.githubassets.com/favicons/favicon.svg
+      descr: 按模板填写并提交即可
