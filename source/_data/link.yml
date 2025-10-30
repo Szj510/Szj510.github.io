@@ -1,8 +1,12 @@
 ## 友链数据按分类展示；可自由增删。示例中保留了常用网站，朋友的小站留空待添加。
 
 - class_name: 朋友的小站
-  class_desc: 互相学习，长期更新更佳
-  link_list: []
+  class_desc: 互相学习
+  link_list:
+    - name: ius
+      link: https://ius7.qzz.io/
+      avatar: https://telegraph-image-eja.pages.dev/file/6c13df9768dd014e471a2.png
+      descr: 记录与分享 | 编程、算法、工具
 
 - class_name: 社区与工具
   class_desc: 常用技术社区与工具
